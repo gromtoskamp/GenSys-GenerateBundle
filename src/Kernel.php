@@ -2,7 +2,11 @@
 
 namespace App;
 
+use GenSys\GenerateBundle\GenSysGenerateBundle;
+use Sensio\Bundle\GeneratorBundle\SensioGeneratorBundle;
+use Symfony\Bundle\FrameworkBundle\FrameworkBundle;
 use Symfony\Bundle\FrameworkBundle\Kernel\MicroKernelTrait;
+use Symfony\Bundle\MakerBundle\MakerBundle;
 use Symfony\Component\Config\Loader\LoaderInterface;
 use Symfony\Component\Config\Resource\FileResource;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -27,12 +31,12 @@ class Kernel extends BaseKernel
 
     public function registerBundles()
     {
-        $contents = require $this->getProjectDir().'/config/bundles.php';
-        foreach ($contents as $class => $envs) {
-            if ($envs[$this->environment] ?? $envs['all'] ?? false) {
-                yield new $class();
-            }
-        }
+        return [
+            new FrameworkBundle(),
+            new MakerBundle(),
+            new SensioGeneratorBundle(),
+            new GenSysGenerateBundle(),
+        ];
     }
 
     protected function configureContainer(ContainerBuilder $container, LoaderInterface $loader)
