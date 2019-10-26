@@ -27,12 +27,12 @@
     "autoload": {
         "psr-4": {
             "App\\": "src/",
-            "GenSys\\GenerateBundle\\": "src/GenSys/GenerateBundle/"
+            "GenSys\\GenerateBundle\\": "src/GenSys/GenerateBundle/",
+            "App\\Tests\\Unit\\": "tests/Unit"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "App\\Tests\\": "tests/"
         }
     },
     "replace": {
