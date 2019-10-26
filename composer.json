@@ -9,14 +9,13 @@
         "nette/php-generator": "^3.2",
         "symfony/console": "3.4.*",
         "symfony/dotenv": "3.4.*",
-        "symfony/symfony": "3.4.*",
         "symfony/framework-bundle": "3.4.*",
         "symfony/maker-bundle": "^1.14",
         "symfony/yaml": "3.4.*"
     },
     "require-dev": {
         "sensio/generator-bundle": "^3.1",
-        "phpunit/phpunit": "^5.7.27 || ^6.5.14 || ^7.1"
+        "phpunit/phpunit": "^6.5.14 || ^7.1"
     },
     "config": {
         "preferred-install": {
@@ -55,7 +54,6 @@
         ]
     },
     "conflict": {
-        "symfony/symfony": "*"
     },
     "extra": {
         "symfony": {
