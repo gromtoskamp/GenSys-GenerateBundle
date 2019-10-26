@@ -1,4 +1,17 @@
 services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
+        public: true
+
 #    gen_sys_generate.example:
 #        class: GenSys\GenerateBundle\Example
 #        arguments: ["@service_id", "plain_value", "%parameter%"]
+    GenSys\GenerateBundle\Maker\:
+        resource: '../../Maker/*'
+        tags:
+            - { name: 'maker.command' }
+
+    GenSys\GenerateBundle\:
+        resource: '../../*'
+        exclude: '../../{Model,Resources}'
