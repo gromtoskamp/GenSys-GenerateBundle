@@ -1,4 +1,5 @@
 {
+    "name": "gensys/generatebundle",
     "type": "project",
     "license": "proprietary",
     "require": {
