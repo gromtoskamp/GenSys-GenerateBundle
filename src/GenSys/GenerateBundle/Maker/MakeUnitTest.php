@@ -87,7 +87,7 @@ class MakeUnitTest extends AbstractMaker
         $reflectionClass = new ReflectionClass($className);
 
         $testClassNameDetails = $generator->createClassNameDetails(
-            $className,
+            '\\Tests\\Unit\\' . $className . 'Test',
             'Tests\\Unit\\',
             'Test'
         );
