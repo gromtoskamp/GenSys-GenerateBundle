@@ -6,10 +6,11 @@ use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use \GenSys\GenerateBundle\Resources\Dummy\Object\DummyObject;
 
-class DummyServiceWithDependency extends TestCase
+class DummyServiceWithDependencyTest extends TestCase
 {
     /** @var DummyObject|MockObject */
     public $dummyObject;
+
 
     public function setUp()
     {

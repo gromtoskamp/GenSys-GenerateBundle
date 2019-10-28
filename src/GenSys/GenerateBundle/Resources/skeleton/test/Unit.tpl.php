@@ -6,7 +6,7 @@ use GenSys\GenerateBundle\Model\UnitTest;
 ?>
 <?= "<?php\n" ?>
 
-namespace <?= $unitTest->getNamespace(); ?>;
+namespace <?= $unitTest->getNamespace() ?>;
 
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
@@ -14,10 +14,13 @@ use PHPUnit\Framework\TestCase;
 <?= "use " . $mockDependency->getFullyQualifiedClassName() . ";\n"; ?>
 <?php endforeach; ?>
 
-class <?= $unitTest->getClassName(); ?> extends TestCase
+class <?= $class_name ?> extends TestCase
 {
-    /** @var DummyObject|MockObject */
-    public $dummyObject;
+<?php foreach($unitTest->getMockDependencies() as $mockDependency): ?>
+    /** @var <?= $mockDependency->getClassName() ?>|MockObject */
+    public <?= $mockDependency->getVariableName() ?>;
+
+<?php endforeach; ?>
 
     public function setUp()
     {

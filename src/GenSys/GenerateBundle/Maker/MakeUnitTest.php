@@ -96,7 +96,7 @@ class MakeUnitTest extends AbstractMaker
 
 
 
-        $generator->generateClass(
+        $filePath = $generator->generateClass(
             $testClassNameDetails->getFullName(),
             __DIR__ . '/../Resources/skeleton/test/Unit.tpl.php',
             [
@@ -109,8 +109,8 @@ class MakeUnitTest extends AbstractMaker
         $this->writeSuccessMessage($io);
 
         $io->text([
-            'Next: Open your new test class and start customizing it.',
-            'Find the documentation at <fg=yellow>https://symfony.com/doc/current/testing.html#unit-tests</>',
+            'Next: Open your new test class and start customizing it: ',
+            ' at ' . $generator->getRootDirectory() . '/' . $filePath,
         ]);
     }
 }
