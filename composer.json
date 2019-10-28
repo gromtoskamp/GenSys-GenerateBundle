@@ -6,7 +6,6 @@
         "php": "^7.0.8",
         "ext-ctype": "*",
         "ext-iconv": "*",
-        "nette/php-generator": "^3.2",
         "symfony/console": "3.4.*",
         "symfony/dotenv": "3.4.*",
         "symfony/symfony": "3.4.*",
