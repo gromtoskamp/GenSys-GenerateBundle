@@ -54,8 +54,7 @@ class MakeUnitTest extends AbstractMaker
     {
         $command
             ->setDescription('Creates a new unit test class')
-//            ->addArgument('fileName', InputArgument::REQUIRED, 'Filename of the class to generate a Unit Test for | this has to be the fully qualified filename, from the root of your own directory; In PHPStorm, this is the context menu option -copy path-');
-            ->addArgument(self::ARGUMENT_FILEPATH, InputArgument::REQUIRED, 'Filename of the class to generate a Unit Test for | this has to be the fully qualified filename, from the root of your own directory; In PHPStorm, this is the context menu option -copy path-');
+            ->addArgument(self::ARGUMENT_FILEPATH, InputArgument::REQUIRED, 'Filename of the class to generate a Unit Test for | this has to be the fully qualified filename, from the root of your own directory; In PHPStorm, this is the context menu option -copy path-')
         ;
     }
 

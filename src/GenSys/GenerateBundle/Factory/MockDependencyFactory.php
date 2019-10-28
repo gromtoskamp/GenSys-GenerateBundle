@@ -25,7 +25,9 @@ class MockDependencyFactory
                 continue;
             }
 
-            $this->createFromReflectionMethod($reflectionMethod, $mockDependencies);
+            foreach ($this->createFromReflectionMethod($reflectionMethod) as $key => $methodMockDependency) {
+                $mockDependencies[$key] = $methodMockDependency;
+            }
         }
 
         return $mockDependencies;
@@ -33,11 +35,11 @@ class MockDependencyFactory
 
     /**
      * @param ReflectionMethod $reflectionMethod
-     * @param $mockDependencies
      * @return MockDependency[]
      */
-    private function createFromReflectionMethod(ReflectionMethod $reflectionMethod, $mockDependencies): array
+    public function createFromReflectionMethod(ReflectionMethod $reflectionMethod): array
     {
+        $mockDependencies = [];
         foreach ($reflectionMethod->getParameters() as $parameter) {
             $parameterClass = $parameter->getClass();
             if (null === $parameterClass) {

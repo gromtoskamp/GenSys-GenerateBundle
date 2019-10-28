@@ -4,20 +4,26 @@ namespace GenSys\GenerateBundle\Factory;
 
 use GenSys\GenerateBundle\Model\MockDependency;
 use GenSys\GenerateBundle\Model\TestMethod;
+use GenSys\GenerateBundle\Service\FileService;
 use ReflectionClass;
 use ReflectionMethod;
 
 class TestMethodFactory
 {
-    const REGEX = '/\$this->([a-zA-Z0-9_]*)->[a-zA-Z0-9_]*\(/';
+    private const REGEX_PROPERTY_REFERENCE = '/\$this->(\w*)->\w*\(/';
 
     /** @var MockDependencyFactory */
     private $mockDependencyFactory;
 
+    /** @var FileService */
+    private $fileService;
+
     public function __construct(
-        MockDependencyFactory $mockDependencyFactory
+        MockDependencyFactory $mockDependencyFactory,
+        FileService $fileService
     ) {
         $this->mockDependencyFactory = $mockDependencyFactory;
+        $this->fileService = $fileService;
     }
 
     /**
@@ -27,24 +33,11 @@ class TestMethodFactory
      */
     public function createFromSourceReflectionMethod(ReflectionMethod $reflectionMethod, array $classMockDependencies): TestMethod
     {
-        $methodMockDependencies = [];
-        foreach ($reflectionMethod->getParameters() as $parameter) {
-            $parameterClass = $parameter->getClass();
-            if (null === $parameterClass) {
-                continue;
-            }
-
-            $classMockDependency = $classMockDependencies[$parameterClass->getName()];
-            if (isset($classMockDependency)) {
-                $methodMockDependencies[$classMockDependency->getFullyQualifiedClassName()] = $classMockDependency;
-            }
-        }
-
-
-        $reflectionMethodBody = $this->getReflectionMethodBody($reflectionMethod);
+        $methodMockDependencies = $this->mockDependencyFactory->createFromReflectionMethod($reflectionMethod);
+        $reflectionMethodBody = $this->fileService->getReflectionMethodBody($reflectionMethod);
 
         $matches = [];
-        preg_match_all(self::REGEX, $reflectionMethodBody, $matches);
+        preg_match_all(self::REGEX_PROPERTY_REFERENCE, $reflectionMethodBody, $matches);
         $uniqueMatches = array_unique($matches[1]);
 
 
@@ -84,14 +77,5 @@ class TestMethodFactory
         return $testMethods;
     }
 
-    private function getReflectionMethodBody(ReflectionMethod $reflectionMethod)
-    {
-        $filename = $reflectionMethod->getFileName();
-        $startLine = $reflectionMethod->getStartLine() + 1;
-        $endLine = $reflectionMethod->getEndLine() - 1;
-        $length = $endLine - $startLine;
 
-        $source = file($filename);
-        return implode("", array_slice($source, $startLine, $length));
-    }
 }

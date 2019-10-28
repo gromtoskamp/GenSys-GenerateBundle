@@ -4,6 +4,8 @@
 namespace GenSys\GenerateBundle\Service;
 
 
+use ReflectionMethod;
+
 class FileService
 {
     private const REGEX_CLASSNAME = '/class\s([a-zA-Z0-9]*)\n\{/';
@@ -32,5 +34,16 @@ class FileService
         $className = $matches[1];
 
         return $namespace . '\\' . $className;
+    }
+
+    public function getReflectionMethodBody(ReflectionMethod $reflectionMethod): string
+    {
+        $filename = $reflectionMethod->getFileName();
+        $startLine = $reflectionMethod->getStartLine() + 1;
+        $endLine = $reflectionMethod->getEndLine() - 1;
+        $length = $endLine - $startLine;
+
+        $source = file($filename);
+        return implode('', array_slice($source, $startLine, $length));
     }
 }
