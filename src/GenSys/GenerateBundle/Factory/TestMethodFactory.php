@@ -2,57 +2,55 @@
 
 namespace GenSys\GenerateBundle\Factory;
 
-use GenSys\GenerateBundle\Model\MockDependency;
 use GenSys\GenerateBundle\Model\TestMethod;
-use GenSys\GenerateBundle\Service\FileService;
+use GenSys\GenerateBundle\Service\MethodScanner;
 use ReflectionClass;
 use ReflectionMethod;
 
 class TestMethodFactory
 {
-    private const REGEX_PROPERTY_REFERENCE = '/\$this->(\w*)->\w*\(/';
-
     /** @var MockDependencyFactory */
     private $mockDependencyFactory;
 
-    /** @var FileService */
-    private $fileService;
+    /** @var MethodScanner */
+    private $methodScanner;
 
     public function __construct(
         MockDependencyFactory $mockDependencyFactory,
-        FileService $fileService
+        MethodScanner $methodScanner
     ) {
         $this->mockDependencyFactory = $mockDependencyFactory;
-        $this->fileService = $fileService;
+        $this->methodScanner = $methodScanner;
     }
 
     /**
      * @param ReflectionMethod $reflectionMethod
-     * @param MockDependency[] $classMockDependencies
      * @return TestMethod
      */
-    public function createFromSourceReflectionMethod(ReflectionMethod $reflectionMethod, array $classMockDependencies): TestMethod
+    private function createFromSourceReflectionMethod(ReflectionMethod $reflectionMethod): TestMethod
     {
+        $classMockDependencies = $this->mockDependencyFactory->createFromReflectionClass($reflectionMethod->getDeclaringClass());
         $methodMockDependencies = $this->mockDependencyFactory->createFromReflectionMethod($reflectionMethod);
-        $reflectionMethodBody = $this->fileService->getReflectionMethodBody($reflectionMethod);
 
-        $matches = [];
-        preg_match_all(self::REGEX_PROPERTY_REFERENCE, $reflectionMethodBody, $matches);
-        $uniqueMatches = array_unique($matches[1]);
-
-
-        foreach ($uniqueMatches as $match) {
+        foreach ($this->methodScanner->getPropertyCalls($reflectionMethod) as $propertyCall) {
             foreach ($classMockDependencies as $classMockDependency) {
-                if ($classMockDependency->getPropertyName() === $match) {
+                if ($classMockDependency->getPropertyName() === $propertyCall) {
                     $methodMockDependencies[$classMockDependency->getFullyQualifiedClassName()] = $classMockDependency;
                 }
             }
         }
 
-
         $body = [];
         foreach ($methodMockDependencies as $mockDependency) {
             $body[] = $mockDependency->getVariableName() . ' = clone ' . $mockDependency->getPropertyCall() . ';';
+        }
+
+        foreach ($this->methodScanner->getPropertyMethodCalls($reflectionMethod) as $property => $methodCalls) {
+            foreach ($methodCalls as $methodCall) {
+                $body[] = '$' . $property . "->expects(\$this->any())";
+                $body[] = "    ->method('" . $methodCall . "')";
+                $body[] = "    ->willReturn(null);";
+            }
         }
 
         return new TestMethod(
@@ -61,21 +59,17 @@ class TestMethodFactory
         );
     }
 
-    public function createFromSourceReflectionClass(ReflectionClass $reflectionClass)
+    public function createFromSourceReflectionClass(ReflectionClass $reflectionClass): array
     {
-        $mockDependencies = $this->mockDependencyFactory->createFromReflectionClass($reflectionClass);
-
         $testMethods = [];
         foreach($reflectionClass->getMethods(ReflectionMethod::IS_PUBLIC) as $reflectionMethod) {
             if (strpos($reflectionMethod->getName(), '__') !== false) {
                 continue;
             }
 
-            $testMethods[] = $this->createFromSourceReflectionMethod($reflectionMethod, $mockDependencies);
+            $testMethods[] = $this->createFromSourceReflectionMethod($reflectionMethod);
         }
 
         return $testMethods;
     }
-
-
 }

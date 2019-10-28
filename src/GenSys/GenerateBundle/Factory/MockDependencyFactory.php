@@ -5,19 +5,18 @@ namespace GenSys\GenerateBundle\Factory;
 use GenSys\GenerateBundle\Model\MockDependency;
 use ReflectionClass;
 use ReflectionMethod;
-use ReflectionParameter;
 
 class MockDependencyFactory
 {
     /**
      * @param ReflectionClass $reflectionClass
-     * @return array
+     * @return MockDependency[]
      */
     public function createFromReflectionClass(ReflectionClass $reflectionClass): array
     {
         $mockDependencies = [];
         foreach ($reflectionClass->getConstructor()->getParameters() as $parameter) {
-            $mockDependencies[$parameter->getClass()->getName()] = $this->createFromReflectionParameter($parameter);
+            $mockDependencies[$parameter->getClass()->getName()] = new MockDependency($parameter);
         }
 
         foreach ($reflectionClass->getMethods(ReflectionMethod::IS_PUBLIC) as $reflectionMethod) {
@@ -46,19 +45,10 @@ class MockDependencyFactory
                 continue;
             }
 
-            $mockDependency = $this->createFromReflectionParameter($parameter);
-            $mockDependencies[$parameterClass->getName()] = $mockDependency;
+            $mockDependencies[$parameterClass->getName()] = new MockDependency($parameter);
         }
 
         return $mockDependencies;
     }
 
-    /**
-     * @param ReflectionParameter $parameter
-     * @return MockDependency
-     */
-    private function createFromReflectionParameter(ReflectionParameter $parameter)
-    {
-        return new MockDependency($parameter);
-    }
 }
