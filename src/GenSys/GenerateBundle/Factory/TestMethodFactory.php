@@ -36,18 +36,10 @@ class TestMethodFactory
             }
         }
 
-        $body = [];
-        foreach ($methodMockDependencies as $mockDependency) {
-            $body[] = $mockDependency->getVariableName() . ' = clone ' . $mockDependency->getPropertyCall() . ';';
-        }
-
-        foreach ($methodScanner->getPropertyMethodCalls() as $property => $methodCalls) {
-            array_push($body, ...$this->getBodyFromPropertyMethodCalls($property, $methodCalls));
-        }
-
         return new TestMethod(
             'test' . ucfirst($reflectionMethod->getName()),
-            $body
+            $methodMockDependencies,
+            $methodScanner->getPropertyMethodCalls()
         );
     }
 
@@ -63,15 +55,5 @@ class TestMethodFactory
         }
 
         return $testMethods;
-    }
-
-    private function getBodyFromPropertyMethodCalls($property, $methodCalls): array
-    {
-        $body = [];
-        foreach ($methodCalls as $methodCall) {
-            $body[] = '$' . $property . "->method('" . $methodCall . "')";
-            $body[] = '    ->willReturn(null);';
-        }
-        return $body;
     }
 }

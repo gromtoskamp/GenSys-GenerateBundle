@@ -6,16 +6,19 @@ class TestMethod
 {
     /** @var string */
     private $name;
-
     /** @var array */
-    private $body;
+    private $mockDependencies;
+    /** @var array */
+    private $propertyMethodCalls;
 
     public function __construct(
         $name,
-        array $body
+        array $mockDependencies,
+        array $propertyMethodCalls
     ) {
         $this->name = $name;
-        $this->body = $body;
+        $this->mockDependencies = $mockDependencies;
+        $this->propertyMethodCalls = $propertyMethodCalls;
     }
 
     /**
@@ -29,16 +32,16 @@ class TestMethod
     /**
      * @return array
      */
-    public function getBody(): array
+    public function getMockDependencies(): array
     {
-        return $this->body;
+        return $this->mockDependencies;
     }
 
     /**
-     * @return string
+     * @return array
      */
-    public function getBodyAsString(): string
+    public function getPropertyMethodCalls(): array
     {
-        return implode("\n", $this->getBody());
+        return $this->propertyMethodCalls;
     }
 }

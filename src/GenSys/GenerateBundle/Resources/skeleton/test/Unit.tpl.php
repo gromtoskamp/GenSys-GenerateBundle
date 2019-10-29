@@ -32,8 +32,14 @@ class <?= $unitTest->getClassName() ?> extends TestCase
 <?php foreach($unitTest->getTestMethods() as $testMethod): ?>
     public function <?= $testMethod->getName() ?>()
     {
-<?php foreach($testMethod->getBody() as $body): ?>
-        <?= $body . "\n" ?>
+<?php foreach($testMethod->getMockDependencies() as $mockDependency): ?>
+        <?= $mockDependency->getVariableName() ?> = clone <?= $mockDependency->getPropertyCall() ?>;
+<?php endforeach; ?>
+<?php foreach($testMethod->getPropertyMethodCalls() as $property => $methodCalls): ?>
+<?php foreach($methodCalls as $methodCall): ?>
+        $<?= $property ?>->method('<?= $methodCall ?>')
+            ->willReturn(null);
+<?php endforeach; ?>
 <?php endforeach; ?>
     }
 
