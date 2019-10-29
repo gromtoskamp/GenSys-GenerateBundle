@@ -22,9 +22,8 @@ class TestMethodFactory
      * @param ReflectionMethod $reflectionMethod
      * @return TestMethod
      */
-    private function createFromReflectionMethod(ReflectionMethod $reflectionMethod): TestMethod
+    private function createFromReflectionMethod(ReflectionMethod $reflectionMethod, array $classMockDependencies): TestMethod
     {
-        $classMockDependencies = $this->mockDependencyFactory->createFromReflectionClass($reflectionMethod->getDeclaringClass());
         $methodMockDependencies = $this->mockDependencyFactory->createFromReflectionMethod($reflectionMethod);
 
         $methodScanner = new MethodScanner($reflectionMethod);
@@ -45,13 +44,15 @@ class TestMethodFactory
 
     public function createFromReflectionClass(ReflectionClass $reflectionClass): array
     {
+        $mockDependencies = $this->mockDependencyFactory->createFromReflectionClass($reflectionClass);
+
         $testMethods = [];
         foreach($reflectionClass->getMethods(ReflectionMethod::IS_PUBLIC) as $reflectionMethod) {
             if (strpos($reflectionMethod->getName(), '__') !== false) {
                 continue;
             }
 
-            $testMethods[] = $this->createFromReflectionMethod($reflectionMethod);
+            $testMethods[] = $this->createFromReflectionMethod($reflectionMethod, $mockDependencies);
         }
 
         return $testMethods;
