@@ -1,4 +1,4 @@
-<?php
+<?php /** @noinspection PhpInconsistentReturnPointsInspection */
 
 namespace GenSys\GenerateBundle\Resources\Dummy\Service;
 

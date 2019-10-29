@@ -9,7 +9,7 @@ class UnitTest
     /** @var string */
     private $className;
     /** @var MockDependency[] */
-    private $mockDependencies = [];
+    private $mockDependencies;
     /** @var array */
     private $testMethods;
 

@@ -2,6 +2,7 @@
 
 namespace GenSys\GenerateBundle\Maker;
 
+use Exception;
 use GenSys\GenerateBundle\Factory\UnitTestFactory;
 use GenSys\GenerateBundle\Service\FileService;
 use ReflectionClass;
@@ -50,7 +51,7 @@ class MakeUnitTest extends AbstractMaker
      * @param Command $command
      * @param InputConfiguration $inputConfig
      */
-    public function configureCommand(Command $command, InputConfiguration $inputConfig)
+    public function configureCommand(Command $command, InputConfiguration $inputConfig): void
     {
         $command
             ->setDescription('Creates a new unit test class')
@@ -63,7 +64,7 @@ class MakeUnitTest extends AbstractMaker
      *
      * @param DependencyBuilder $dependencies
      */
-    public function configureDependencies(DependencyBuilder $dependencies)
+    public function configureDependencies(DependencyBuilder $dependencies): void
     {
         // TODO: Implement configureDependencies() method.
     }
@@ -74,9 +75,9 @@ class MakeUnitTest extends AbstractMaker
      * @param InputInterface $input
      * @param ConsoleStyle $io
      * @param Generator $generator
-     * @throws \Exception
+     * @throws Exception
      */
-    public function generate(InputInterface $input, ConsoleStyle $io, Generator $generator)
+    public function generate(InputInterface $input, ConsoleStyle $io, Generator $generator): void
     {
         //TODO: fix.
         $fileService = new FileService();

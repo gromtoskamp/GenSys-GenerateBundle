@@ -65,7 +65,7 @@ class TestMethodFactory
         return $testMethods;
     }
 
-    private function getBodyFromPropertyMethodCalls($property, $methodCalls)
+    private function getBodyFromPropertyMethodCalls($property, $methodCalls): array
     {
         $body = [];
         foreach ($methodCalls as $methodCall) {

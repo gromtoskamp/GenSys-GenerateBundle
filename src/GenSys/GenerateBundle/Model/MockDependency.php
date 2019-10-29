@@ -15,37 +15,37 @@ class MockDependency
         $this->parameter = $parameter;
     }
 
-    public function getClassName()
+    public function getClassName(): string
     {
         return $this->parameter->getClass()->getShortName();
     }
 
-    public function getVariableName()
+    public function getVariableName(): string
     {
         return '$' . $this->getPropertyName();
     }
     
-    public function getPropertyName()
+    public function getPropertyName(): string
     {
         return lcfirst($this->getClassName());
     }
 
-    public function getPropertyCall()
+    public function getPropertyCall(): string
     {
         return '$this->' . $this->getPropertyName();
     }
 
-    public function getFullyQualifiedClassName()
+    public function getFullyQualifiedClassName(): string
     {
         return '\\' . $this->parameter->getClass()->getName();
     }
 
-    public function getBody()
+    public function getBody(): string
     {
         return '$this->' . $this->getPropertyName() . ' = $this->getMockBuilder(' . $this->parameter->getClass()->getShortName() . '::class)->disableOriginalConstructor()->getMock();';
     }
 
-    public function getDocBlock()
+    public function getDocBlock(): string
     {
         return '@var ' . $this->getClassName() . '|MockObject';
     }
