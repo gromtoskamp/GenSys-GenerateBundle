@@ -23,11 +23,11 @@ class UnitTestFactory
     public function createFromSourceReflectionClass(ReflectionClass $reflectionClass): UnitTest
     {
         $mockDependencies = $this->mockDependencyFactory->createFromReflectionClass($reflectionClass);
-        $testMethods = $this->testMethodFactory->createFromSourceReflectionClass($reflectionClass);
+        $testMethods = $this->testMethodFactory->createFromReflectionClass($reflectionClass);
 
         return new UnitTest(
             $reflectionClass->getNamespaceName(),
-            $reflectionClass->getShortName(),
+            $reflectionClass->getShortName() . 'Test',
             $mockDependencies,
             $testMethods
         );

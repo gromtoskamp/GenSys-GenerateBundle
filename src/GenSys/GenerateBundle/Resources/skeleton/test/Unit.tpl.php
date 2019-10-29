@@ -14,7 +14,7 @@ use PHPUnit\Framework\TestCase;
 <?= "use " . $mockDependency->getFullyQualifiedClassName() . ";\n"; ?>
 <?php endforeach; ?>
 
-class <?= $class_name ?> extends TestCase
+class <?= $unitTest->getClassName() ?> extends TestCase
 {
 <?php foreach($unitTest->getMockDependencies() as $mockDependency): ?>
     /** @var <?= $mockDependency->getClassName() ?>|MockObject */

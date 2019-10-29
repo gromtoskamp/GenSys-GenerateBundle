@@ -21,6 +21,11 @@ class DummyServiceWithDependency
         $this->dummyObjectB = $dummyObjectB;
     }
 
+    public function addToDummyValueDirect(DummyObject $dummyObject, int $addTo): int
+    {
+        return $dummyObject->getDummyValue() + $addTo;
+    }
+
     public function addToDummyValueProperty(int $addTo): int
     {
         $this->dummyObjectA->getDummyValue() + $addTo;

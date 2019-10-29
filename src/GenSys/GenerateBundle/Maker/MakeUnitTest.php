@@ -78,6 +78,7 @@ class MakeUnitTest extends AbstractMaker
      */
     public function generate(InputInterface $input, ConsoleStyle $io, Generator $generator)
     {
+        //TODO: fix.
         $fileService = new FileService();
         $className = $fileService->getClassNameFromFile(
             $input->getArgument(self::ARGUMENT_FILEPATH)
@@ -91,15 +92,11 @@ class MakeUnitTest extends AbstractMaker
             'Test'
         );
 
-        $unitTest = $this->unitTestFactory->createFromSourceReflectionClass($reflectionClass);
-
-
-
         $filePath = $generator->generateClass(
             $testClassNameDetails->getFullName(),
             __DIR__ . '/../Resources/skeleton/test/Unit.tpl.php',
             [
-                'unitTest' => $unitTest
+                'unitTest' => $this->unitTestFactory->createFromSourceReflectionClass($reflectionClass)
             ]
         );
 
