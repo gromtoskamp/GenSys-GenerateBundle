@@ -5,7 +5,6 @@ namespace GenSys\GenerateBundle\Maker;
 use Exception;
 use GenSys\GenerateBundle\Factory\UnitTestFactory;
 use GenSys\GenerateBundle\Service\FileService;
-use ReflectionClass;
 use Symfony\Bundle\MakerBundle\ConsoleStyle;
 use Symfony\Bundle\MakerBundle\DependencyBuilder;
 use Symfony\Bundle\MakerBundle\Generator;
@@ -21,15 +20,20 @@ class MakeUnitTest extends AbstractMaker
     private const ARGUMENT_FILEPATH = 'filePath';
     /** @var UnitTestFactory */
     private $unitTestFactory;
+    /** @var FileService */
+    private $fileService;
 
     /**
      * MakeUnitTest constructor.
      * @param UnitTestFactory $unitTestFactory
+     * @param FileService $fileService
      */
     public function __construct(
-        UnitTestFactory $unitTestFactory
+        UnitTestFactory $unitTestFactory,
+        FileService $fileService
     ) {
         $this->unitTestFactory = $unitTestFactory;
+        $this->fileService = $fileService;
     }
 
     /**
@@ -79,13 +83,9 @@ class MakeUnitTest extends AbstractMaker
      */
     public function generate(InputInterface $input, ConsoleStyle $io, Generator $generator): void
     {
-        //TODO: fix.
-        $fileService = new FileService();
-        $className = $fileService->getClassNameFromFile(
+        $className = $this->fileService->getClassNameFromFile(
             $input->getArgument(self::ARGUMENT_FILEPATH)
         );
-
-        $reflectionClass = new ReflectionClass($className);
 
         $testClassNameDetails = $generator->createClassNameDetails(
             '\\Tests\\Unit\\' . $className . 'Test',
@@ -97,7 +97,7 @@ class MakeUnitTest extends AbstractMaker
             $testClassNameDetails->getFullName(),
             __DIR__ . '/../Resources/skeleton/test/Unit.tpl.php',
             [
-                'unitTest' => $this->unitTestFactory->createFromSourceReflectionClass($reflectionClass)
+                'unitTest' => $this->unitTestFactory->createFromClassName($className)
             ]
         );
 
