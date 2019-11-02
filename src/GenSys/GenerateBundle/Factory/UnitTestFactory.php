@@ -29,13 +29,13 @@ class UnitTestFactory
     public function createFromClassName(string $className): UnitTest
     {
         $reflectionClass = new ReflectionClass($className);
-        $mockDependencies = $this->mockDependencyFactory->createFromReflectionClass($reflectionClass);
-        $testMethods = $this->testMethodFactory->createFromReflectionClass($reflectionClass);
+        $mockDependencyRepository = $this->mockDependencyFactory->createFromReflectionClass($reflectionClass);
+        $testMethods = $this->testMethodFactory->createFromReflectionClass($reflectionClass, $mockDependencyRepository);
 
         return new UnitTest(
             $reflectionClass->getNamespaceName(),
             $reflectionClass->getShortName() . 'Test',
-            $mockDependencies,
+            $mockDependencyRepository,
             $testMethods
         );
     }

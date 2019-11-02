@@ -2,26 +2,28 @@
 
 namespace GenSys\GenerateBundle\Model;
 
+use GenSys\GenerateBundle\Service\MockDependencyRepository;
+
 class UnitTest
 {
     /** @var string */
     private $namespace;
     /** @var string */
     private $className;
-    /** @var MockDependency[] */
-    private $mockDependencies;
+    /** @var MockDependencyRepository */
+    private $mockDependencyRepository;
     /** @var array */
     private $testMethods;
 
     public function __construct(
         string $namespace,
         string $className,
-        array $mockDependencies,
+        MockDependencyRepository $mockDependencyRepository,
         array $testMethods
     ) {
         $this->namespace = $namespace;
         $this->className = $className;
-        $this->mockDependencies = $mockDependencies;
+        $this->mockDependencyRepository = $mockDependencyRepository;
         $this->testMethods = $testMethods;
     }
 
@@ -46,7 +48,7 @@ class UnitTest
      */
     public function getMockDependencies(): array
     {
-        return $this->mockDependencies;
+        return $this->mockDependencyRepository->getAll();
     }
 
     /**

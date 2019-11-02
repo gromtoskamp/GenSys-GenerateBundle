@@ -5,7 +5,7 @@ namespace GenSys\GenerateBundle\Service;
 
 class FileService
 {
-    private const REGEX_CLASSNAME = '/class\s([a-zA-Z0-9]*)\n\{/';
+    private const REGEX_CLASSNAME = '/class\s([a-zA-Z0-9]*).*\n\{/';
     private const REGEX_NAMESPACE = '/namespace\s([a-zA-Z0-9\\\\]*);/';
     
     /**

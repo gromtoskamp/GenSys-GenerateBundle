@@ -3,6 +3,7 @@
 namespace GenSys\GenerateBundle\Factory;
 
 use GenSys\GenerateBundle\Model\MockDependency;
+use GenSys\GenerateBundle\Service\MockDependencyRepository;
 use ReflectionClass;
 use ReflectionMethod;
 
@@ -10,45 +11,35 @@ class MockDependencyFactory
 {
     /**
      * @param ReflectionClass $reflectionClass
-     * @return MockDependency[]
+     * @return MockDependencyRepository
      */
-    public function createFromReflectionClass(ReflectionClass $reflectionClass): array
+    public function createFromReflectionClass(ReflectionClass $reflectionClass): MockDependencyRepository
     {
-        $mockDependencies = [];
-        foreach ($reflectionClass->getConstructor()->getParameters() as $parameter) {
-            $mockDependencies[$parameter->getClass()->getName()] = new MockDependency($parameter);
-        }
-
+        $mockDependencyRepository = new MockDependencyRepository();
         foreach ($reflectionClass->getMethods(ReflectionMethod::IS_PUBLIC) as $reflectionMethod) {
-            if (strpos($reflectionMethod->getName(), '__') !== false) {
-                continue;
-            }
-
-            foreach ($this->createFromReflectionMethod($reflectionMethod) as $key => $methodMockDependency) {
-                $mockDependencies[$key] = $methodMockDependency;
-            }
+            $this->createFromReflectionMethod($reflectionMethod, $mockDependencyRepository);
         }
 
-        return $mockDependencies;
+        return $mockDependencyRepository;
     }
 
     /**
      * @param ReflectionMethod $reflectionMethod
-     * @return MockDependency[]
+     * @param MockDependencyRepository $mockDependencyRepository
+     * @return MockDependencyRepository
      */
-    public function createFromReflectionMethod(ReflectionMethod $reflectionMethod): array
+    private function createFromReflectionMethod(ReflectionMethod $reflectionMethod, MockDependencyRepository $mockDependencyRepository): MockDependencyRepository
     {
-        $mockDependencies = [];
         foreach ($reflectionMethod->getParameters() as $parameter) {
             $parameterClass = $parameter->getClass();
             if (null === $parameterClass) {
                 continue;
             }
 
-            $mockDependencies[$parameterClass->getName()] = new MockDependency($parameter);
+            $mockDependencyRepository->add(new MockDependency($parameter), $reflectionMethod);
         }
 
-        return $mockDependencies;
+        return $mockDependencyRepository;
     }
 
 }

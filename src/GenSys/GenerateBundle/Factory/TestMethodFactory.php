@@ -4,47 +4,23 @@ namespace GenSys\GenerateBundle\Factory;
 
 use GenSys\GenerateBundle\Model\TestMethod;
 use GenSys\GenerateBundle\Model\Scanner\MethodScanner;
+use GenSys\GenerateBundle\Service\MockDependencyRepository;
+use InvalidArgumentException;
 use ReflectionClass;
 use ReflectionMethod;
 
 class TestMethodFactory
 {
-    /** @var MockDependencyFactory */
-    private $mockDependencyFactory;
-
-    public function __construct(
-        MockDependencyFactory $mockDependencyFactory
-    ) {
-        $this->mockDependencyFactory = $mockDependencyFactory;
-    }
-
     /**
-     * @param ReflectionMethod $reflectionMethod
-     * @return TestMethod
+     * @param ReflectionClass $reflectionClass
+     * @param MockDependencyRepository $mockDependencyRepository
+     * @return array
      */
-    private function createFromReflectionMethod(ReflectionMethod $reflectionMethod, array $classMockDependencies): TestMethod
+    public function createFromReflectionClass(ReflectionClass $reflectionClass, MockDependencyRepository $mockDependencyRepository): array
     {
-        $methodMockDependencies = $this->mockDependencyFactory->createFromReflectionMethod($reflectionMethod);
-
-        $methodScanner = new MethodScanner($reflectionMethod);
-        foreach ($methodScanner->getPropertyReferences() as $propertyCall) {
-            foreach ($classMockDependencies as $classMockDependency) {
-                if ($classMockDependency->getPropertyName() === $propertyCall) {
-                    $methodMockDependencies[$classMockDependency->getFullyQualifiedClassName()] = $classMockDependency;
-                }
-            }
+        if (empty($mockDependencyRepository->getAll())) {
+            throw new InvalidArgumentException('MockDependencyRepository should be instantiated with mockdependencies');
         }
-
-        return new TestMethod(
-            'test' . ucfirst($reflectionMethod->getName()),
-            $methodMockDependencies,
-            $methodScanner->getPropertyMethodCalls()
-        );
-    }
-
-    public function createFromReflectionClass(ReflectionClass $reflectionClass): array
-    {
-        $mockDependencies = $this->mockDependencyFactory->createFromReflectionClass($reflectionClass);
 
         $testMethods = [];
         foreach($reflectionClass->getMethods(ReflectionMethod::IS_PUBLIC) as $reflectionMethod) {
@@ -52,9 +28,28 @@ class TestMethodFactory
                 continue;
             }
 
-            $testMethods[] = $this->createFromReflectionMethod($reflectionMethod, $mockDependencies);
+            $testMethods[] = $this->createFromReflectionMethod($reflectionMethod, $mockDependencyRepository);
         }
 
         return $testMethods;
+    }
+
+    /**
+     * @param ReflectionMethod $reflectionMethod
+     * @param MockDependencyRepository $mockDependencyRepository
+     * @return TestMethod
+     */
+    private function createFromReflectionMethod(ReflectionMethod $reflectionMethod, MockDependencyRepository $mockDependencyRepository): TestMethod
+    {
+        $methodScanner = new MethodScanner($reflectionMethod);
+        foreach ($methodScanner->getPropertyReferences() as $propertyName) {
+            $mockDependencyRepository->add($mockDependencyRepository->getByPropertyCall($propertyName), $reflectionMethod);
+        }
+
+        return new TestMethod(
+            'test' . ucfirst($reflectionMethod->getName()),
+            $mockDependencyRepository->getByReflectionMethod($reflectionMethod),
+            $methodScanner->getPropertyMethodCalls()
+        );
     }
 }
