@@ -8,25 +8,25 @@ class UnitTest
     private $namespace;
     /** @var string */
     private $className;
+    /** @var string */
+    private $fixtureClassName;
     /** @var MockDependency[] */
     private $mockDependencies;
     /** @var TestMethod[] */
     private $testMethods;
-    /** @var Fixture */
-    private $fixture;
 
     public function __construct(
         string $namespace,
         string $className,
+        string $fixtureClassName,
         array $mockDependencies,
-        array $testMethods,
-        Fixture $fixture
+        array $testMethods
     ) {
         $this->namespace = $namespace;
         $this->className = $className;
+        $this->fixtureClassName = $fixtureClassName;
         $this->mockDependencies = $mockDependencies;
         $this->testMethods = $testMethods;
-        $this->fixture = $fixture;
     }
 
     /**
@@ -43,6 +43,14 @@ class UnitTest
     public function getClassName(): string
     {
         return $this->className;
+    }
+
+    /**
+     * @return string
+     */
+    public function getFixtureClassName(): string
+    {
+        return $this->fixtureClassName;
     }
 
     /**
@@ -67,10 +75,5 @@ class UnitTest
     public function getMockDependencies(): array
     {
         return $this->mockDependencies;
-    }
-
-    public function getFixture(): Fixture
-    {
-        return $this->fixture;
     }
 }

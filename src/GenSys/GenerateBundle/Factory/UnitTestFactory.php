@@ -32,18 +32,13 @@ class UnitTestFactory
         $reflectionClass = new ReflectionClass($className);
         $mockDependencyRepository = $this->mockDependencyFactory->createFromReflectionClass($reflectionClass);
         $testMethods = $this->testMethodFactory->createFromReflectionClass($reflectionClass, $mockDependencyRepository);
-        $fixture = new Fixture(
-            $reflectionClass->getNamespaceName(),
-            $reflectionClass->getShortName(),
-            $mockDependencyRepository->getByReflectionMethod($reflectionClass->getConstructor())
-        );
 
         return new UnitTest(
             'Tests\\Unit\\' . $reflectionClass->getNamespaceName(),
             $reflectionClass->getShortName() . 'Test',
+            $reflectionClass->getName(),
             $mockDependencyRepository->getAll(),
-            $testMethods,
-            $fixture
+            $testMethods
         );
     }
 

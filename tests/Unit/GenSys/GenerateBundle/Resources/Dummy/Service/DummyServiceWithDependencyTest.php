@@ -31,7 +31,11 @@ class DummyServiceWithDependencyTest extends TestCase
     public function testAddToDummyValueDirect(): void
     {
         $this->dummyObject->method('getDummyValue')->willReturn(null);
-        $fixture = new DummyServiceWithDependency($this->dummyObjectA, $this->dummyObjectB);
+        $result = $fixture = new DummyServiceWithDependency($this->dummyObjectA, $this->dummyObjectB);
+        $fixture->addToDummyValueDirect($this->dummyObject,null);
+
+        //TODO: Write assertion.
+
         $this->tearDown();
     }
 
@@ -39,19 +43,31 @@ class DummyServiceWithDependencyTest extends TestCase
     {
         $this->dummyObjectA->method('getDummyValue')->willReturn(null);
         $this->dummyObjectB->method('getDummyValue')->willReturn(null);
-        $fixture = new DummyServiceWithDependency($this->dummyObjectA, $this->dummyObjectB);
+        $result = $fixture = new DummyServiceWithDependency($this->dummyObjectA, $this->dummyObjectB);
+        $fixture->addToDummyValueProperty(null);
+
+        //TODO: Write assertion.
+
         $this->tearDown();
     }
 
     public function testAddToDummyValue(): void
     {
-        $fixture = new DummyServiceWithDependency($this->dummyObjectA, $this->dummyObjectB);
+        $result = $fixture = new DummyServiceWithDependency($this->dummyObjectA, $this->dummyObjectB);
+        $fixture->addToDummyValue($this->dummyObjectB,null);
+
+        //TODO: Write assertion.
+
         $this->tearDown();
     }
 
     public function testAddToMultipleDummyValues(): void
     {
-        $fixture = new DummyServiceWithDependency($this->dummyObjectA, $this->dummyObjectB);
+        $result = $fixture = new DummyServiceWithDependency($this->dummyObjectA, $this->dummyObjectB);
+        $fixture->addToMultipleDummyValues($this->dummyObjectA,$this->dummyObjectB,null);
+
+        //TODO: Write assertion.
+
         $this->tearDown();
     }
 

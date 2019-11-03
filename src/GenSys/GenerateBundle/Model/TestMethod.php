@@ -6,19 +6,23 @@ class TestMethod
 {
     /** @var string */
     private $name;
-    /** @var MockDependency[] */
-    private $mockDependencies;
+    /** @var string */
+    private $originalName;
     /** @var MethodCall[] */
     private $methodCalls;
+    /** @var Fixture */
+    private $fixture;
 
     public function __construct(
         $name,
-        array $mockDependencies,
-        array $methodCalls
+        string $originalName,
+        array $methodCalls,
+        Fixture $fixture
     ) {
         $this->name = $name;
-        $this->mockDependencies = $mockDependencies;
+        $this->originalName = $originalName;
         $this->methodCalls = $methodCalls;
+        $this->fixture = $fixture;
     }
 
     /**
@@ -30,11 +34,11 @@ class TestMethod
     }
 
     /**
-     * @return MockDependency[]
+     * @return string
      */
-    public function getMockDependencies(): array
+    public function getOriginalName(): string
     {
-        return $this->mockDependencies;
+        return $this->originalName;
     }
 
     /**
@@ -43,5 +47,13 @@ class TestMethod
     public function getMethodCalls(): array
     {
         return $this->methodCalls;
+    }
+
+    /**
+     * @return Fixture
+     */
+    public function getFixture(): Fixture
+    {
+        return $this->fixture;
     }
 }
