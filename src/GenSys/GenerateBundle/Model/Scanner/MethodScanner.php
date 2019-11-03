@@ -7,9 +7,9 @@ use ReflectionMethod;
 class MethodScanner
 {
     private const REGEX_PROPERTY_REFERENCE = '/\$this->(\w*)->\w*\(/';
-    private const REGEX_PROPERTY_CALL = '/\$this->(\w*)->(\w*)\(/';
     private const REGEX_INTERNAL_CALL = '/\$this->(\w*)\(/';
-    private const REGEX_VARIABLE_CALL = '/\$(\w*)->\(/';
+    private const REGEX_VARIABLE_CALL = '/\$(\w*)->(\w*)\(/';
+    private const REGEX_PROPERTY_CALL = '/\$this->(\w*)->(\w*)\(/';
 
     /** @var ReflectionMethod */
     private $reflectionMethod;
@@ -17,6 +17,10 @@ class MethodScanner
     /** @var string */
     private $reflectionMethodBody;
 
+    /**
+     * MethodScanner constructor.
+     * @param ReflectionMethod $reflectionMethod
+     */
     public function __construct(
         ReflectionMethod $reflectionMethod
     ) {
@@ -24,25 +28,80 @@ class MethodScanner
         $this->reflectionMethodBody = $this->getReflectionMethodBody($reflectionMethod);
     }
 
+    /**
+     * @return array
+     */
     public function getPropertyReferences(): array
     {
+        return $this->match(self::REGEX_PROPERTY_REFERENCE);
+    }
+
+    /**
+     * @return array
+     */
+    public function getInternalCalls(): array
+    {
+        return $this->match(self::REGEX_INTERNAL_CALL);
+    }
+
+    /**
+     * @return array
+     */
+    public function getPropertyCalls(): array
+    {
+        return $this->combinedMatch(self::REGEX_PROPERTY_CALL);
+    }
+
+    /**
+     * @return array
+     */
+    public function getParameterCalls(): array
+    {
+        /** @var \ReflectionClass[] $parameters */
+        $parameterCalls = [];
+        foreach ($this->reflectionMethod->getParameters() as $parameter) {
+            if ($class = $parameter->getClass()) {
+                $parameters[] = lcfirst($class->getShortName());
+            }
+        }
+
+        $variableCalls = $this->combinedMatch(self::REGEX_VARIABLE_CALL);
+        foreach ($variableCalls as $variable => $calls) {
+            if (in_array($variable, $parameters, true)) {
+                $parameterCalls[$variable] = $calls;
+            }
+        }
+
+        return $parameterCalls;
+    }
+
+    /**
+     * @return array
+     */
+    public function getVariableCalls(): array
+    {
+        return $this->combinedMatch(self::REGEX_VARIABLE_CALL);
+    }
+
+    /**
+     * @param $regex
+     * @return array
+     */
+    private function match(string $regex): array
+    {
         $matches = [];
-        preg_match_all(self::REGEX_PROPERTY_REFERENCE, $this->reflectionMethodBody, $matches);
+        preg_match_all($regex, $this->reflectionMethodBody, $matches);
         return array_unique($matches[1]);
     }
 
-    public function getInternalMethodCalls(): array
+    /**
+     * @param string $regex
+     * @return array
+     */
+    private function combinedMatch(string $regex): array
     {
         $matches = [];
-        preg_match_all(self::REGEX_INTERNAL_CALL, $this->reflectionMethodBody, $matches);
-        return array_unique($matches[1]);
-    }
-
-    public function getPropertyMethodCalls(): array
-    {
-        $matches = [];
-        preg_match_all(self::REGEX_PROPERTY_CALL, $this->reflectionMethodBody, $matches);
-
+        preg_match_all($regex, $this->reflectionMethodBody, $matches);
         $combinedMatches = [];
         foreach ($matches[1] as $key => $match) {
             $combinedMatches[$match][] = $matches[2][$key];
@@ -51,18 +110,10 @@ class MethodScanner
         return $combinedMatches;
     }
 
-    public function getArgumentCalls(): array
-    {
-        $parameters = [];
-        foreach ($this->reflectionMethod->getParameters() as $reflectionParameter) {
-            if ($class = $reflectionParameter->getClass()) {
-                $parameters[] = $reflectionParameter;
-            }
-        }
-
-        return $parameters;
-    }
-
+    /**
+     * @param ReflectionMethod $reflectionMethod
+     * @return string
+     */
     private function getReflectionMethodBody(ReflectionMethod $reflectionMethod): string
     {
         $filename = $reflectionMethod->getFileName();

@@ -95,8 +95,8 @@ class MakeUnitTest extends AbstractMaker
         );
 
         $unitTest = $this->unitTestFactory->createFromClassName($className);
-        if ($input->hasOption('force')) {
-            $reflectionClass = new ReflectionClass($unitTest->getFullyQualifiedName());
+        if ($input->hasOption('force') && class_exists($fqn = $unitTest->getFullyQualifiedName())) {
+            $reflectionClass = new ReflectionClass($fqn);
             unlink($reflectionClass->getFileName());
         }
 

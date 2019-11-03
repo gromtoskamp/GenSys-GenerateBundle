@@ -2,7 +2,7 @@
 
 namespace GenSys\GenerateBundle\Factory;
 
-use GenSys\GenerateBundle\Model\PropertyMethodCall;
+use GenSys\GenerateBundle\Model\MethodCall;
 use GenSys\GenerateBundle\Model\TestMethod;
 use GenSys\GenerateBundle\Model\Scanner\MethodScanner;
 use GenSys\GenerateBundle\Service\MockDependencyRepository;
@@ -47,10 +47,16 @@ class TestMethodFactory
             $mockDependencyRepository->add($mockDependencyRepository->getByPropertyCall($propertyName), $reflectionMethod);
         }
 
-        $propertyMethodCalls = [];
-        foreach ($methodScanner->getPropertyMethodCalls() as $property => $methodCalls) {
-            foreach ($methodCalls as $methodCall) {
-                $propertyMethodCalls[] = new PropertyMethodCall($property, $methodCall);
+        $methodCalls = [];
+        foreach ($methodScanner->getPropertyCalls() as $property => $propertyCalls) {
+            foreach ($propertyCalls as $propertyCall) {
+                $methodCalls[] = new MethodCall($property, $propertyCall);
+            }
+        }
+
+        foreach ($methodScanner->getParameterCalls() as $parameter => $parameterCalls) {
+            foreach ($parameterCalls as $parameterCall) {
+                $methodCalls[] = new MethodCall($parameter, $parameterCall);
             }
         }
 
@@ -59,7 +65,7 @@ class TestMethodFactory
         return new TestMethod(
             'test' . ucfirst($reflectionMethod->getName()),
             $methodMockDependencies,
-            $propertyMethodCalls
+            $methodCalls
         );
     }
 }

@@ -2,27 +2,27 @@
 
 namespace GenSys\GenerateBundle\Model;
 
-class PropertyMethodCall
+class MethodCall
 {
     /** @var string */
-    private $propertyName;
+    private $subject;
     /** @var string */
     private $methodName;
 
     public function __construct(
-        string $propertyName,
+        string $subject,
         string $methodName
     ) {
-        $this->propertyName = $propertyName;
+        $this->subject = $subject;
         $this->methodName = $methodName;
     }
 
     /**
      * @return string
      */
-    public function getPropertyName(): string
+    public function getSubject(): string
     {
-        return $this->propertyName;
+        return $this->subject;
     }
 
     /**

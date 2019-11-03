@@ -6,19 +6,19 @@ class TestMethod
 {
     /** @var string */
     private $name;
-    /** @var array */
+    /** @var MockDependency[] */
     private $mockDependencies;
-    /** @var array */
-    private $propertyMethodCalls;
+    /** @var MethodCall[] */
+    private $methodCalls;
 
     public function __construct(
         $name,
         array $mockDependencies,
-        array $propertyMethodCalls
+        array $methodCalls
     ) {
         $this->name = $name;
         $this->mockDependencies = $mockDependencies;
-        $this->propertyMethodCalls = $propertyMethodCalls;
+        $this->methodCalls = $methodCalls;
     }
 
     /**
@@ -38,10 +38,10 @@ class TestMethod
     }
 
     /**
-     * @return PropertyMethodCall[]
+     * @return MethodCall[]
      */
-    public function getPropertyMethodCalls(): array
+    public function getMethodCalls(): array
     {
-        return $this->propertyMethodCalls;
+        return $this->methodCalls;
     }
 }
