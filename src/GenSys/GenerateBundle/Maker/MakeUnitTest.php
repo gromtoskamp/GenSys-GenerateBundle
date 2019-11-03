@@ -5,6 +5,7 @@ namespace GenSys\GenerateBundle\Maker;
 use Exception;
 use GenSys\GenerateBundle\Factory\UnitTestFactory;
 use GenSys\GenerateBundle\Service\FileService;
+use ReflectionClass;
 use Symfony\Bundle\MakerBundle\ConsoleStyle;
 use Symfony\Bundle\MakerBundle\DependencyBuilder;
 use Symfony\Bundle\MakerBundle\Generator;
@@ -13,11 +14,10 @@ use Symfony\Bundle\MakerBundle\Maker\AbstractMaker;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 
 class MakeUnitTest extends AbstractMaker
 {
-    /** @var string  */
-    private const ARGUMENT_FILEPATH = 'filePath';
     /** @var UnitTestFactory */
     private $unitTestFactory;
     /** @var FileService */
@@ -59,7 +59,8 @@ class MakeUnitTest extends AbstractMaker
     {
         $command
             ->setDescription('Creates a new unit test class')
-            ->addArgument(self::ARGUMENT_FILEPATH, InputArgument::REQUIRED, 'Filename of the class to generate a Unit Test for | this has to be the fully qualified filename, from the root of your own directory; In PHPStorm, this is the context menu option -copy path-')
+            ->addArgument('filePath', InputArgument::REQUIRED, 'Filename of the class to generate a Unit Test for | this has to be the fully qualified filename, from the root of your own directory; In PHPStorm, this is the context menu option -copy path-')
+            ->addOption('force', '-f', InputOption::VALUE_OPTIONAL, 'Overwrite existing file')
         ;
     }
 
@@ -84,7 +85,7 @@ class MakeUnitTest extends AbstractMaker
     public function generate(InputInterface $input, ConsoleStyle $io, Generator $generator): void
     {
         $className = $this->fileService->getClassNameFromFile(
-            $input->getArgument(self::ARGUMENT_FILEPATH)
+            $input->getArgument('filePath')
         );
 
         $testClassNameDetails = $generator->createClassNameDetails(
@@ -93,11 +94,17 @@ class MakeUnitTest extends AbstractMaker
             'Test'
         );
 
+        $unitTest = $this->unitTestFactory->createFromClassName($className);
+        if ($input->hasOption('force')) {
+            $reflectionClass = new ReflectionClass($unitTest->getFullyQualifiedName());
+            unlink($reflectionClass->getFileName());
+        }
+
         $filePath = $generator->generateClass(
             $testClassNameDetails->getFullName(),
             __DIR__ . '/../Resources/skeleton/test/Unit.tpl.php',
             [
-                'unitTest' => $this->unitTestFactory->createFromClassName($className)
+                'unitTest' => $unitTest
             ]
         );
 

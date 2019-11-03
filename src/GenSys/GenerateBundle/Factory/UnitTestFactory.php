@@ -33,7 +33,7 @@ class UnitTestFactory
         $testMethods = $this->testMethodFactory->createFromReflectionClass($reflectionClass, $mockDependencyRepository);
 
         return new UnitTest(
-            $reflectionClass->getNamespaceName(),
+            'Tests\\Unit\\' . $reflectionClass->getNamespaceName(),
             $reflectionClass->getShortName() . 'Test',
             $mockDependencyRepository,
             $testMethods

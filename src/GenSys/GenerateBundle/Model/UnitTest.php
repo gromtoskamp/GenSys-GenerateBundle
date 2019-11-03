@@ -43,6 +43,11 @@ class UnitTest
         return $this->className;
     }
 
+    public function getFullyQualifiedName(): string
+    {
+        return $this->namespace . '\\' . $this->className;
+    }
+
     /**
      * @return MockDependency[]
      */
