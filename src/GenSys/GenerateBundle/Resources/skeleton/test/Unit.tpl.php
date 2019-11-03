@@ -10,6 +10,7 @@ namespace <?= $unitTest->getNamespace() ?>;
 
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
+use <?= $unitTest->getFixtureFullyQualifiedClassName() ?>;
 <?php foreach ($unitTest->getMockDependencies() as $mockDependency): ?>
 use <?= $mockDependency->getFullyQualifiedClassName() . ";\n" ?>
 <?php endforeach; ?>
@@ -32,12 +33,11 @@ class <?= $unitTest->getClassName() ?> extends TestCase
 <?php foreach($unitTest->getTestMethods() as $testMethod): ?>
     public function <?= $testMethod->getName() ?>(): void
     {
-<?php foreach($testMethod->getMockDependencies() as $mockDependency): ?>
-        $<?= $mockDependency->getPropertyName() ?> = clone $this-><?= $mockDependency->getPropertyName() ?>;
-<?php endforeach; ?>
 <?php foreach($testMethod->getMethodCalls() as $methodCall): ?>
-        $<?= $methodCall->getSubject() ?>->method('<?= $methodCall->getMethodName() ?>')->willReturn(null);
+        $this-><?= $methodCall->getSubject() ?>->method('<?= $methodCall->getMethodName() ?>')->willReturn(null);
 <?php endforeach; ?>
+        $fixture = <?= $unitTest->getNewFixture() ?>;
+        $this->tearDown();
     }
 
 <?php endforeach; ?>
