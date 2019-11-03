@@ -69,40 +69,8 @@ class UnitTest
         return $this->mockDependencies;
     }
 
-    /**
-     * @return string
-     */
-    public function getNewFixture(): string
+    public function getFixture(): Fixture
     {
-        $propertyReferences = [];
-        foreach ($this->fixture->getMockDependencies() as $mockDependency) {
-            $propertyReferences[] = '$this->' . $mockDependency->getPropertyName();
-        }
-
-        return 'new ' . $this->getFixtureClassName() . '(' . implode(', ', $propertyReferences) . ')';
-    }
-
-    /**
-     * @return string
-     */
-    public function getFixtureNameSpace(): string
-    {
-        return $this->fixture->getNamespace();
-    }
-
-    /**
-     * @return string
-     */
-    public function getFixtureClassName(): string
-    {
-        return $this->fixture->getClassName();
-    }
-
-    /**
-     * @return string
-     */
-    public function getFixtureFullyQualifiedClassName(): string
-    {
-        return $this->fixture->getFullyQualifiedClassName();
+        return $this->fixture;
     }
 }

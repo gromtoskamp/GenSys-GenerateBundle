@@ -38,6 +38,19 @@ class Fixture
     }
 
     /**
+     * @return string
+     */
+    public function getFixtureArguments(): string
+    {
+        $propertyReferences = [];
+        foreach ($this->getMockDependencies() as $mockDependency) {
+            $propertyReferences[] = '$this->' . $mockDependency->getPropertyName();
+        }
+
+        return implode(', ', $propertyReferences);
+    }
+
+    /**
      * @return MockDependency[]
      */
     public function getMockDependencies(): array
