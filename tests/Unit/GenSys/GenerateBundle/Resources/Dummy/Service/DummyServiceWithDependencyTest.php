@@ -1,12 +1,13 @@
 <?php
 
-namespace GenSys\GenerateBundle\Resources\Dummy\Service;
+namespace Tests\Unit\GenSys\GenerateBundle\Resources\Dummy\Service;
 
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
-use \GenSys\GenerateBundle\Resources\Dummy\Object\DummyObjectA;
-use \GenSys\GenerateBundle\Resources\Dummy\Object\DummyObjectB;
-use \GenSys\GenerateBundle\Resources\Dummy\Object\DummyObject;
+use GenSys\GenerateBundle\Resources\Dummy\Service\DummyServiceWithDependency;
+use GenSys\GenerateBundle\Resources\Dummy\Object\DummyObjectA;
+use GenSys\GenerateBundle\Resources\Dummy\Object\DummyObjectB;
+use GenSys\GenerateBundle\Resources\Dummy\Object\DummyObject;
 
 class DummyServiceWithDependencyTest extends TestCase
 {
@@ -20,37 +21,44 @@ class DummyServiceWithDependencyTest extends TestCase
     public $dummyObject;
 
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->dummyObjectA = $this->getMockBuilder(DummyObjectA::class)->disableOriginalConstructor()->getMock();
         $this->dummyObjectB = $this->getMockBuilder(DummyObjectB::class)->disableOriginalConstructor()->getMock();
         $this->dummyObject = $this->getMockBuilder(DummyObject::class)->disableOriginalConstructor()->getMock();
     }
 
-    public function testAddToDummyValueDirect()
+    public function testAddToDummyValueDirect(): void
     {
-        $dummyObject = clone $this->dummyObject;
+        $this->dummyObject->method('getDummyValue')->willReturn(null);
+        $fixture = new DummyServiceWithDependency($this->dummyObjectA, $this->dummyObjectB);
+        $this->tearDown();
     }
 
-    public function testAddToDummyValueProperty()
+    public function testAddToDummyValueProperty(): void
     {
-        $dummyObjectA = clone $this->dummyObjectA;
-        $dummyObjectB = clone $this->dummyObjectB;
-        $dummyObjectA->method('getDummyValue')
-            ->willReturn(null);
-        $dummyObjectB->method('getDummyValue')
-            ->willReturn(null);
+        $this->dummyObjectA->method('getDummyValue')->willReturn(null);
+        $this->dummyObjectB->method('getDummyValue')->willReturn(null);
+        $fixture = new DummyServiceWithDependency($this->dummyObjectA, $this->dummyObjectB);
+        $this->tearDown();
     }
 
-    public function testAddToDummyValue()
+    public function testAddToDummyValue(): void
     {
-        $dummyObjectB = clone $this->dummyObjectB;
+        $fixture = new DummyServiceWithDependency($this->dummyObjectA, $this->dummyObjectB);
+        $this->tearDown();
     }
 
-    public function testAddToMultipleDummyValues()
+    public function testAddToMultipleDummyValues(): void
     {
-        $dummyObjectA = clone $this->dummyObjectA;
-        $dummyObjectB = clone $this->dummyObjectB;
+        $fixture = new DummyServiceWithDependency($this->dummyObjectA, $this->dummyObjectB);
+        $this->tearDown();
     }
 
+    public function tearDown(): void
+    {
+        unset($this->dummyObjectA);
+        unset($this->dummyObjectB);
+        unset($this->dummyObject);
+    }
 }
