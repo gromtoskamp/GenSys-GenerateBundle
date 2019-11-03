@@ -11,37 +11,40 @@ namespace <?= $unitTest->getNamespace() ?>;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 <?php foreach ($unitTest->getMockDependencies() as $mockDependency): ?>
-<?= 'use ' . $mockDependency->getFullyQualifiedClassName() . ";\n" ?>
+use <?= $mockDependency->getFullyQualifiedClassName() . ";\n" ?>
 <?php endforeach; ?>
 
 class <?= $unitTest->getClassName() ?> extends TestCase
 {
 <?php foreach($unitTest->getMockDependencies() as $mockDependency): ?>
     /** @var <?= $mockDependency->getClassName() ?>|MockObject */
-    public <?= $mockDependency->getVariableName() ?>;
+    public $<?= $mockDependency->getPropertyName() ?>;
 
 <?php endforeach; ?>
 
-    public function setUp()
+    public function setUp(): void
     {
 <?php foreach($unitTest->getMockDependencies() as $mockDependency): ?>
-        <?= $mockDependency->getBody() . "\n" ?>
+        $this-><?= $mockDependency->getPropertyName() ?> = $this->getMockBuilder(<?= $mockDependency->getClassName() ?>::class)->disableOriginalConstructor()->getMock();
 <?php endforeach; ?>
     }
 
 <?php foreach($unitTest->getTestMethods() as $testMethod): ?>
-    public function <?= $testMethod->getName() ?>()
+    public function <?= $testMethod->getName() ?>(): void
     {
 <?php foreach($testMethod->getMockDependencies() as $mockDependency): ?>
-        <?= $mockDependency->getVariableName() ?> = clone <?= $mockDependency->getPropertyCall() ?>;
+        $<?= $mockDependency->getPropertyName() ?> = clone $this-><?= $mockDependency->getPropertyName() ?>;
 <?php endforeach; ?>
-<?php foreach($testMethod->getPropertyMethodCalls() as $property => $methodCalls): ?>
-<?php foreach($methodCalls as $methodCall): ?>
-        $<?= $property ?>->method('<?= $methodCall ?>')
-            ->willReturn(null);
-<?php endforeach; ?>
+<?php foreach($testMethod->getPropertyMethodCalls() as $propertyMethodCall): ?>
+        $<?= $propertyMethodCall->getPropertyName() ?>->method('<?= $propertyMethodCall->getMethodName() ?>')->willReturn(null);
 <?php endforeach; ?>
     }
 
 <?php endforeach; ?>
+    public function tearDown(): void
+    {
+<?php foreach($unitTest->getMockDependencies() as $mockDependency): ?>
+        unset($this-><?= $mockDependency->getPropertyName() ?>);
+<?php endforeach; ?>
+    }
 }

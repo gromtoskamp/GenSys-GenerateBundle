@@ -4,9 +4,6 @@ services:
         autoconfigure: true
         public: true
 
-#    gen_sys_generate.example:
-#        class: GenSys\GenerateBundle\Example
-#        arguments: ["@service_id", "plain_value", "%parameter%"]
     GenSys\GenerateBundle\Maker\:
         resource: '../../Maker/*'
         tags:

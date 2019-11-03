@@ -30,7 +30,7 @@ class TestMethod
     }
 
     /**
-     * @return array
+     * @return MockDependency[]
      */
     public function getMockDependencies(): array
     {
@@ -38,7 +38,7 @@ class TestMethod
     }
 
     /**
-     * @return array
+     * @return PropertyMethodCall[]
      */
     public function getPropertyMethodCalls(): array
     {
