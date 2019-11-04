@@ -4,7 +4,6 @@ namespace GenSys\GenerateBundle\Factory;
 
 use GenSys\GenerateBundle\Model\Fixture;
 use GenSys\GenerateBundle\Model\TestMethod;
-use GenSys\GenerateBundle\Model\Scanner\MethodScanner;
 use GenSys\GenerateBundle\Service\MockDependencyRepository;
 use ReflectionClass;
 use ReflectionMethod;
@@ -13,11 +12,15 @@ class TestMethodFactory
 {
     /** @var MethodCallFactory */
     private $methodCallFactory;
+    /** @var MethodScannerFactory */
+    private $methodScannerFactory;
 
     public function __construct(
-        MethodCallFactory $methodCallFactory
+        MethodCallFactory $methodCallFactory,
+        MethodScannerFactory $methodScannerFactory
     ) {
         $this->methodCallFactory = $methodCallFactory;
+        $this->methodScannerFactory = $methodScannerFactory;
     }
 
     /**
@@ -44,7 +47,7 @@ class TestMethodFactory
      */
     private function createFromReflectionMethod(ReflectionMethod $reflectionMethod, MockDependencyRepository $mockDependencyRepository): TestMethod
     {
-        $methodScanner = new MethodScanner($reflectionMethod);
+        $methodScanner = $this->methodScannerFactory->createFromReflectionMethod($reflectionMethod);
         $methodCalls = $this->methodCallFactory->createFromMethodScanner($methodScanner);
         $reflectionClass = $reflectionMethod->getDeclaringClass();
 

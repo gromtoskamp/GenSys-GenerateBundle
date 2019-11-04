@@ -28,11 +28,21 @@ class DummyServiceWithDependencyTest extends TestCase
         $this->dummyObject = $this->getMockBuilder(DummyObject::class)->disableOriginalConstructor()->getMock();
     }
 
+    public function testAddToDummyValue(): void
+    {
+        $fixture = new DummyServiceWithDependency($this->dummyObjectA, $this->dummyObjectB);
+        $result = $fixture->addToDummyValue($this->dummyObjectB,1);
+
+        //TODO: Write assertion.
+
+        $this->tearDown();
+    }
+
     public function testAddToDummyValueDirect(): void
     {
         $this->dummyObject->method('getDummyValue')->willReturn(null);
-        $result = $fixture = new DummyServiceWithDependency($this->dummyObjectA, $this->dummyObjectB);
-        $fixture->addToDummyValueDirect($this->dummyObject,null);
+        $fixture = new DummyServiceWithDependency($this->dummyObjectA, $this->dummyObjectB);
+        $result = $fixture->addToDummyValueDirect($this->dummyObject,null);
 
         //TODO: Write assertion.
 
@@ -43,18 +53,8 @@ class DummyServiceWithDependencyTest extends TestCase
     {
         $this->dummyObjectA->method('getDummyValue')->willReturn(null);
         $this->dummyObjectB->method('getDummyValue')->willReturn(null);
-        $result = $fixture = new DummyServiceWithDependency($this->dummyObjectA, $this->dummyObjectB);
-        $fixture->addToDummyValueProperty(null);
-
-        //TODO: Write assertion.
-
-        $this->tearDown();
-    }
-
-    public function testAddToDummyValue(): void
-    {
-        $result = $fixture = new DummyServiceWithDependency($this->dummyObjectA, $this->dummyObjectB);
-        $fixture->addToDummyValue($this->dummyObjectB,null);
+        $fixture = new DummyServiceWithDependency($this->dummyObjectA, $this->dummyObjectB);
+        $result = $fixture->addToDummyValueProperty(null);
 
         //TODO: Write assertion.
 
@@ -63,8 +63,8 @@ class DummyServiceWithDependencyTest extends TestCase
 
     public function testAddToMultipleDummyValues(): void
     {
-        $result = $fixture = new DummyServiceWithDependency($this->dummyObjectA, $this->dummyObjectB);
-        $fixture->addToMultipleDummyValues($this->dummyObjectA,$this->dummyObjectB,null);
+        $fixture = new DummyServiceWithDependency($this->dummyObjectA, $this->dummyObjectB);
+        $result = $fixture->addToMultipleDummyValues($this->dummyObjectA,$this->dummyObjectB,null);
 
         //TODO: Write assertion.
 

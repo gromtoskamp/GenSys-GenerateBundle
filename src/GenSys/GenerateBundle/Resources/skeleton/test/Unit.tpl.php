@@ -37,8 +37,8 @@ class <?= $unitTest->getClassName() ?> extends TestCase
         $this-><?= $methodCall->getSubject() ?>->method('<?= $methodCall->getMethodName() ?>')->willReturn(null);
 <?php endforeach; ?>
 <?php $fixture = $testMethod->getFixture() ?>
-        $result = $fixture = new <?= $fixture->getClassName() ?>(<?= $fixture->getFixtureArguments() ?>);
-        $fixture-><?= $testMethod->getOriginalName() ?>(<?= $fixture->getMethodParameters() ?>);
+        $fixture = new <?= $fixture->getClassName() ?>(<?= $fixture->getFixtureArguments() ?>);
+        $result = $fixture-><?= $testMethod->getOriginalName() ?>(<?= $fixture->getMethodParameters() ?>);
 
         //TODO: Write assertion.
 

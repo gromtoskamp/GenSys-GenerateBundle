@@ -3,7 +3,7 @@
 namespace GenSys\GenerateBundle\Factory;
 
 use GenSys\GenerateBundle\Model\MethodCall;
-use GenSys\GenerateBundle\Model\Scanner\MethodScanner;
+use GenSys\GenerateBundle\Service\Scanner\MethodScanner;
 
 class MethodCallFactory
 {
