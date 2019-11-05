@@ -21,9 +21,9 @@ class DummyServiceWithDependency
         $this->dummyObjectB = $dummyObjectB;
     }
 
-    public function addToDummyValue(DummyObjectB $dummyObjectB, int $addTo): int
+    public function addToDummyValue(DummyObjectB $dummyObjectC, int $addTo): int
     {
-        return $this->privateAddToDummyValue($dummyObjectB, $addTo);
+        return $this->privateAddToDummyValue($dummyObjectC, $addTo);
     }
 
     public function addToDummyValueDirect(DummyObject $dummyObject, int $addTo): int
@@ -40,18 +40,17 @@ class DummyServiceWithDependency
 
     public function addToMultipleDummyValues(DummyObjectA $dummyObjectA, DummyObjectB $dummyObjectB, int $addTo): int
     {
-        $this->privateAddToDummyValue($dummyObjectA, $addTo);
-        $this->privateAddToDummyValue2($dummyObjectB, $addTo);
+        return $this->privateAddToDummyValue($dummyObjectA, $addTo) +
+            $this->privateAddToDummyValue2($dummyObjectB, $addTo);
     }
 
-    private function privateAddToDummyValue(DummyObject $dummyObject, int $addTo): int
+    private function privateAddToDummyValue(DummyObject $dummyObjectE, int $addTo): int
     {
-        $value = ($dummyObject->getDummyValue());
-        return $dummyObject->getDummyValue() + $addTo;
+        return $this->privateAddToDummyValue2($dummyObjectE, $addTo);
     }
 
-    private function privateAddToDummyValue2(DummyObject $dummyObject, int $addTo): int
+    private function privateAddToDummyValue2(DummyObject $dummyObjectF, int $addTo): int
     {
-        return $dummyObject->getDummyValue() + $addTo;
+        return $dummyObjectF->getDummyValue() + $addTo;
     }
 }

@@ -1,6 +1,6 @@
 <?php
 
-namespace GenSys\GenerateBundle\Service\Scanner;
+namespace GenSys\GenerateBundle\Model\Scanner;
 
 class AbstractScanner
 {

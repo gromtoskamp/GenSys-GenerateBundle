@@ -3,7 +3,7 @@
 namespace GenSys\GenerateBundle\Factory;
 
 use GenSys\GenerateBundle\Model\MethodCall;
-use GenSys\GenerateBundle\Service\Scanner\MethodScanner;
+use GenSys\GenerateBundle\Model\Scanner\MethodScanner;
 
 class MethodCallFactory
 {
@@ -18,7 +18,7 @@ class MethodCallFactory
 
         foreach ($methodScanner->getParameterCalls() as $parameter => $parameterCalls) {
             foreach ($parameterCalls as $parameterCall) {
-                $methodCalls[] = new MethodCall($parameter, $parameterCall);
+                $methodCalls[] = new MethodCall(lcfirst($parameter), $parameterCall);
             }
         }
 
