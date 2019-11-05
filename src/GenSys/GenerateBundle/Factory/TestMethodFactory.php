@@ -60,11 +60,14 @@ class TestMethodFactory
             }
         }
 
+        $constructor = $reflectionClass->getConstructor();
+        $mockDependencies = null !== $constructor ? $mockDependencyRepository->getByReflectionMethod($constructor) : [];
+
         $fixture = new Fixture(
             $reflectionClass->getNamespaceName(),
             $reflectionClass->getShortName(),
             $reflectionMethod->getName(),
-            $mockDependencyRepository->getByReflectionMethod($reflectionClass->getConstructor()),
+            $mockDependencies,
             implode(',', $parameters)
         );
 

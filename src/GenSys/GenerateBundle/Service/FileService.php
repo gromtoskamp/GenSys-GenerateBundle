@@ -12,7 +12,7 @@ class FileService
      * @param $fileName
      * @return string
      */
-    public function getClassNameFromFile($fileName): string
+    public function getClassNameFromFile(string $fileName): string
     {
         $contents = file_get_contents($fileName);
 
