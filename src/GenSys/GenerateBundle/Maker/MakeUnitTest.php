@@ -94,10 +94,11 @@ class MakeUnitTest extends AbstractMaker
             'Test'
         );
 
-        $unitTest = $this->unitTestFactory->createFromClassName($className);
-        if ($input->hasOption('force') && class_exists($fqn = $unitTest->getFullyQualifiedName())) {
-            $reflectionClass = new ReflectionClass($fqn);
-            unlink($reflectionClass->getFileName());
+        $reflectionClass = new ReflectionClass($className);
+        $unitTest = $this->unitTestFactory->createFromReflectionClass($reflectionClass);
+        if ($input->hasOption('force')  && class_exists($testClassName = $unitTest->getFullyQualifiedName())) {
+            $testReflectionClass = new ReflectionClass($testClassName);
+            unlink($testReflectionClass->getFileName());
         }
 
         $filePath = $generator->generateClass(

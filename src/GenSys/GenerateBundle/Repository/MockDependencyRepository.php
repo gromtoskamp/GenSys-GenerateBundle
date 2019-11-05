@@ -1,14 +1,18 @@
 <?php
 
-namespace GenSys\GenerateBundle\Service;
+namespace GenSys\GenerateBundle\Repository;
 
 use GenSys\GenerateBundle\Model\MockDependency;
 use ReflectionMethod;
 use RuntimeException;
 
+/**
+ * Class MockDependencyRepository
+ * @package GenSys\GenerateBundle\Repository
+ */
 class MockDependencyRepository
 {
-    /** @var MockDependency[] */
+    /** @var MockDependency[] $mockDependencies */
     private $mockDependencies;
 
     /**
@@ -21,6 +25,21 @@ class MockDependencyRepository
 
         $this->$reflectionMethodName[] = $mockDependency;
         $this->mockDependencies[$mockDependency->getClassName()] = $mockDependency;
+    }
+
+    /**
+     * @param string $propertyName
+     * @return MockDependency
+     */
+    public function getByPropertyCall(string $propertyName): MockDependency
+    {
+        foreach ($this->getAll() as $mockDependency) {
+            if ($mockDependency->getPropertyName() === $propertyName) {
+                return $mockDependency;
+            }
+        }
+
+        throw new RuntimeException(sprintf('MockDependency not found by propertyCall %s', $propertyName));//TODO: create MockDependencyNotFoundException
     }
 
     /**
@@ -42,20 +61,5 @@ class MockDependencyRepository
             return [];
         }
         return $this->$reflectionMethodName;
-    }
-
-    /**
-     * @param string $propertyName
-     * @return MockDependency
-     */
-    public function getByPropertyCall(string $propertyName): MockDependency
-    {
-        foreach ($this->mockDependencies as $mockDependency) {
-            if ($mockDependency->getPropertyName() === $propertyName) {
-                return $mockDependency;
-            }
-        }
-
-        throw new RuntimeException(sprintf('MockDependency not found by propertyCall %s', $propertyName));//TODO: create MockDependencyNotFoundException
     }
 }

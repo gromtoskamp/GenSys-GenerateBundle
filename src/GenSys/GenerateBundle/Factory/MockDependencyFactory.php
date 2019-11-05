@@ -3,7 +3,7 @@
 namespace GenSys\GenerateBundle\Factory;
 
 use GenSys\GenerateBundle\Model\MockDependency;
-use GenSys\GenerateBundle\Service\MockDependencyRepository;
+use GenSys\GenerateBundle\Repository\MockDependencyRepository;
 use ReflectionClass;
 use ReflectionMethod;
 

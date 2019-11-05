@@ -2,10 +2,8 @@
 
 namespace GenSys\GenerateBundle\Factory;
 
-use GenSys\GenerateBundle\Model\Fixture;
 use GenSys\GenerateBundle\Model\UnitTest;
 use ReflectionClass;
-use ReflectionException;
 
 class UnitTestFactory
 {
@@ -23,13 +21,11 @@ class UnitTestFactory
     }
 
     /**
-     * @param string $className
+     * @param ReflectionClass $reflectionClass
      * @return UnitTest
-     * @throws ReflectionException
      */
-    public function createFromClassName(string $className): UnitTest
+    public function createFromReflectionClass(ReflectionClass $reflectionClass): UnitTest
     {
-        $reflectionClass = new ReflectionClass($className);
         $mockDependencyRepository = $this->mockDependencyFactory->createFromReflectionClass($reflectionClass);
         $testMethods = $this->testMethodFactory->createFromReflectionClass($reflectionClass, $mockDependencyRepository);
 

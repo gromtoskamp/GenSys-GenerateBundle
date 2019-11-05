@@ -30,11 +30,9 @@ class DummyServiceWithDependencyTest extends TestCase
 
     public function testAddToDummyValue(): void
     {
-        $this->dummyObjectB->method('getDummyValue')->willReturn(5);
+        $this->dummyObjectB->method('getDummyValue')->willReturn(null);
         $fixture = new DummyServiceWithDependency($this->dummyObjectA, $this->dummyObjectB);
-        $result = $fixture->addToDummyValue($this->dummyObjectB,5);
-
-        $this->assertSame(10, $result);
+        $result = $fixture->addToDummyValue($this->dummyObjectB,null);
 
         //TODO: Write assertion.
 
@@ -43,35 +41,35 @@ class DummyServiceWithDependencyTest extends TestCase
 
     public function testAddToDummyValueDirect(): void
     {
-        $this->dummyObject->method('getDummyValue')->willReturn(5);
+        $this->dummyObject->method('getDummyValue')->willReturn(null);
         $fixture = new DummyServiceWithDependency($this->dummyObjectA, $this->dummyObjectB);
-        $result = $fixture->addToDummyValueDirect($this->dummyObject,3);
+        $result = $fixture->addToDummyValueDirect($this->dummyObject,null);
 
-        $this->assertSame(8, $result);
+        //TODO: Write assertion.
 
         $this->tearDown();
     }
 
     public function testAddToDummyValueProperty(): void
     {
-        $this->dummyObjectA->expects($this->atLeastOnce())->method('getDummyValue')->willReturn(1);
-        $this->dummyObjectB->expects($this->atLeastOnce())->method('getDummyValue')->willReturn(1);
+        $this->dummyObjectA->method('getDummyValue')->willReturn(null);
+        $this->dummyObjectB->method('getDummyValue')->willReturn(null);
         $fixture = new DummyServiceWithDependency($this->dummyObjectA, $this->dummyObjectB);
-        $result = $fixture->addToDummyValueProperty(1);
+        $result = $fixture->addToDummyValueProperty(null);
 
-        $this->assertSame(1, $result);
+        //TODO: Write assertion.
 
         $this->tearDown();
     }
 
     public function testAddToMultipleDummyValues(): void
     {
-        $this->dummyObjectA->method('getDummyValue')->willReturn(1);
-        $this->dummyObjectB->method('getDummyValue')->willReturn(2);
+        $this->dummyObjectA->method('getDummyValue')->willReturn(null);
+        $this->dummyObjectB->method('getDummyValue')->willReturn(null);
         $fixture = new DummyServiceWithDependency($this->dummyObjectA, $this->dummyObjectB);
-        $result = $fixture->addToMultipleDummyValues($this->dummyObjectA,$this->dummyObjectB,3);
+        $result = $fixture->addToMultipleDummyValues($this->dummyObjectA,$this->dummyObjectB,null);
 
-        $this->assertSame(9, $result);
+        //TODO: Write assertion.
 
         $this->tearDown();
     }

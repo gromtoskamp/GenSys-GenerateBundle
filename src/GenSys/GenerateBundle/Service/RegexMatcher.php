@@ -1,14 +1,14 @@
 <?php
 
-namespace GenSys\GenerateBundle\Model\Scanner;
+namespace GenSys\GenerateBundle\Service;
 
-class AbstractScanner
+class RegexMatcher
 {
     /**
      * @param $regex
      * @return array
      */
-    protected function match($subject, string $regex): array
+    public function match($subject, string $regex): array
     {
         $matches = [];
         preg_match_all($regex, $subject, $matches);
@@ -19,7 +19,7 @@ class AbstractScanner
      * @param string $regex
      * @return array
      */
-    protected function combinedMatch($subject, string $regex): array
+    public function combinedMatch($subject, string $regex): array
     {
         $matches = [];
         preg_match_all($regex, $subject, $matches);

@@ -4,7 +4,8 @@ namespace GenSys\GenerateBundle\Factory;
 
 use GenSys\GenerateBundle\Model\Fixture;
 use GenSys\GenerateBundle\Model\TestMethod;
-use GenSys\GenerateBundle\Service\MockDependencyRepository;
+use GenSys\GenerateBundle\Repository\MockDependencyRepository;
+use GenSys\GenerateBundle\Service\Reflection\ClassService;
 use ReflectionClass;
 use ReflectionMethod;
 
@@ -12,15 +13,15 @@ class TestMethodFactory
 {
     /** @var MethodCallFactory */
     private $methodCallFactory;
-    /** @var MethodScannerFactory */
-    private $methodScannerFactory;
+    /** @var ClassService */
+    private $classService;
 
     public function __construct(
         MethodCallFactory $methodCallFactory,
-        MethodScannerFactory $methodScannerFactory
+        ClassService $classService
     ) {
         $this->methodCallFactory = $methodCallFactory;
-        $this->methodScannerFactory = $methodScannerFactory;
+        $this->classService = $classService;
     }
 
     /**
@@ -30,11 +31,7 @@ class TestMethodFactory
     public function createFromReflectionClass(ReflectionClass $reflectionClass, MockDependencyRepository $mockDependencyRepository): array
     {
         $testMethods = [];
-        foreach($reflectionClass->getMethods(ReflectionMethod::IS_PUBLIC) as $reflectionMethod) {
-            if (strpos($reflectionMethod->getName(), '__') !== false) {
-                continue;
-            }
-
+        foreach($this->classService->getPublicNonMagicMethods($reflectionClass) as $reflectionMethod) {
             $testMethods[] = $this->createFromReflectionMethod($reflectionMethod, $mockDependencyRepository);
         }
 
@@ -47,8 +44,7 @@ class TestMethodFactory
      */
     private function createFromReflectionMethod(ReflectionMethod $reflectionMethod, MockDependencyRepository $mockDependencyRepository): TestMethod
     {
-        $methodScanner = $this->methodScannerFactory->createFromReflectionMethod($reflectionMethod);
-        $methodCalls = $this->methodCallFactory->createFromMethodScanner($methodScanner);
+        $methodCalls = $this->methodCallFactory->createFromReflectionMethod($reflectionMethod);
         $reflectionClass = $reflectionMethod->getDeclaringClass();
 
         $parameters = [];

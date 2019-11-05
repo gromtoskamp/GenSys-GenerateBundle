@@ -12,7 +12,7 @@ use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use <?= $unitTest->getFixtureClassName() ?>;
 <?php foreach ($unitTest->getMockDependencies() as $mockDependency): ?>
-use <?= $mockDependency->getFullyQualifiedClassName() . ";\n" ?>
+use <?= $mockDependency->getFullyQualifiedClassName() ?>;
 <?php endforeach; ?>
 
 class <?= $unitTest->getClassName() ?> extends TestCase
