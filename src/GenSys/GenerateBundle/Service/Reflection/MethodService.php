@@ -59,6 +59,8 @@ class MethodService
             }
         }
 
+        unset($internalCalls[$reflectionMethod->getName()]);
+
         return $internalCalls;
     }
 
