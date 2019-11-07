@@ -7,6 +7,7 @@ use GenSys\GenerateBundle\Model\TestMethod;
 use GenSys\GenerateBundle\Repository\MockDependencyRepository;
 use GenSys\GenerateBundle\Service\Reflection\ClassService;
 use ReflectionClass;
+use ReflectionException;
 use ReflectionMethod;
 
 class TestMethodFactory
@@ -46,7 +47,9 @@ class TestMethodFactory
 
     /**
      * @param ReflectionMethod $reflectionMethod
+     * @param MockDependencyRepository $mockDependencyRepository
      * @return TestMethod
+     * @throws ReflectionException
      */
     private function createFromReflectionMethod(ReflectionMethod $reflectionMethod, MockDependencyRepository $mockDependencyRepository): TestMethod
     {
