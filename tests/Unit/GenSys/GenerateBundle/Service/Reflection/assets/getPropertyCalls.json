@@ -1,0 +1,88 @@
+{
+  "__construct": [],
+  "addToDummyValue": [],
+  "addToDummyValueDirect": [],
+  "addToDummyValueProperty": [
+    {
+      "nodeType": "Expr_MethodCall",
+      "var": {
+        "nodeType": "Expr_PropertyFetch",
+        "var": {
+          "nodeType": "Expr_Variable",
+          "name": "this",
+          "attributes": {
+            "startLine": 1,
+            "endLine": 1
+          }
+        },
+        "name": {
+          "nodeType": "Identifier",
+          "name": "dummyObjectA",
+          "attributes": {
+            "startLine": 1,
+            "endLine": 1
+          }
+        },
+        "attributes": {
+          "startLine": 1,
+          "endLine": 1
+        }
+      },
+      "name": {
+        "nodeType": "Identifier",
+        "name": "getDummyValue",
+        "attributes": {
+          "startLine": 1,
+          "endLine": 1
+        }
+      },
+      "args": [],
+      "attributes": {
+        "startLine": 1,
+        "endLine": 1
+      }
+    },
+    {
+      "nodeType": "Expr_MethodCall",
+      "var": {
+        "nodeType": "Expr_PropertyFetch",
+        "var": {
+          "nodeType": "Expr_Variable",
+          "name": "this",
+          "attributes": {
+            "startLine": 2,
+            "endLine": 2
+          }
+        },
+        "name": {
+          "nodeType": "Identifier",
+          "name": "dummyObjectB",
+          "attributes": {
+            "startLine": 2,
+            "endLine": 2
+          }
+        },
+        "attributes": {
+          "startLine": 2,
+          "endLine": 2
+        }
+      },
+      "name": {
+        "nodeType": "Identifier",
+        "name": "getDummyValue",
+        "attributes": {
+          "startLine": 2,
+          "endLine": 2
+        }
+      },
+      "args": [],
+      "attributes": {
+        "startLine": 2,
+        "endLine": 2
+      }
+    }
+  ],
+  "addToMultipleDummyValues": [],
+  "privateAddToDummyValue": [],
+  "privateAddToDummyValue2": []
+}

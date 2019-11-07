@@ -7,6 +7,9 @@
 /var/
 /vendor/
 ###< symfony/framework-bundle ###
+/bin/
+/config/
+/public/
 
 ###> phpunit/phpunit ###
 /phpunit.xml

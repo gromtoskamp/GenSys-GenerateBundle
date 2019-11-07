@@ -2,40 +2,26 @@
 
 namespace GenSys\GenerateBundle\Service\Reflection;
 
-use GenSys\GenerateBundle\Factory\ParameterFactory;
-use GenSys\GenerateBundle\Service\RegexMatcher;
+use Exception;
+use PhpParser\Node;
+use PhpParser\Node\Expr\MethodCall;
+use PhpParser\Node\Expr\PropertyFetch;
+use PhpParser\NodeFinder;
+use PhpParser\Parser;
+use PhpParser\ParserFactory;
 use ReflectionMethod;
 
 class MethodService
 {
-    private const REGEX_PROPERTY_REFERENCE = '/\$this->(\w*)->\w*\(/';
-    private const REGEX_INTERNAL_CALL = '/\$this->(\w*)\(([\$,\w\n\s]*)\)/';
-    private const REGEX_VARIABLE_CALL = '/\$(\w*)->(\w*)\(/';
-    private const REGEX_PROPERTY_CALL = '/\$this->(\w*)->(\w*)\(/';
-
-    /** @var RegexMatcher */
-    private $regexMatcher;
-    /** @var ParameterFactory */
-    private $parameterFactory;
+    /** @var Parser */
+    private $parser;
+    /** @var NodeFinder */
+    private $nodeFinder;
 
     public function __construct(
-        RegexMatcher $regexMatcher,
-        ParameterFactory $parameterFactory
     ) {
-        $this->regexMatcher = $regexMatcher;
-        $this->parameterFactory = $parameterFactory;
-    }
-
-    /**
-     * @param ReflectionMethod $reflectionMethod
-     * @return array
-     */
-    public function getPropertyReferences(ReflectionMethod $reflectionMethod): array
-    {
-        return $this->regexMatcher->match(
-            $this->getBody($reflectionMethod),
-            self::REGEX_PROPERTY_REFERENCE
-        );
+        $this->parser = (new ParserFactory())->create(ParserFactory::PREFER_PHP7);
+        $this->nodeFinder = new NodeFinder();
     }
 
     /**
@@ -44,22 +30,14 @@ class MethodService
      */
     public function getInternalCalls(ReflectionMethod $reflectionMethod): array
     {
-        $combinedMatch = $this->regexMatcher->combinedMatch(
-            $this->getBody($reflectionMethod),
-            self::REGEX_INTERNAL_CALL
-        );
+        $methodCalls = $this->getMethodCalls($reflectionMethod);
 
         $internalCalls = [];
-        foreach ($combinedMatch as $methodName => $matches) {
-            foreach ($matches as $match) {
-                $parameters = explode(',', $match);
-                foreach ($parameters as $parameter) {
-                    $internalCalls[$methodName][] = substr($parameter, 1);
-                }
+        foreach ($methodCalls as $methodCall) {
+            if ($methodCall->var->name === 'this') {
+                $internalCalls[] = $methodCall;
             }
         }
-
-        unset($internalCalls[$reflectionMethod->getName()]);
 
         return $internalCalls;
     }
@@ -70,10 +48,16 @@ class MethodService
      */
     public function getPropertyCalls(ReflectionMethod $reflectionMethod): array
     {
-        return $this->regexMatcher->combinedMatch(
-            $this->getBody($reflectionMethod),
-            self::REGEX_PROPERTY_CALL
-        );
+        $methodCalls = $this->getMethodCalls($reflectionMethod);
+
+        $propertyCalls = [];
+        foreach ($methodCalls as $methodCall) {
+            if ($methodCall->var instanceof PropertyFetch) {
+                $propertyCalls[] = $methodCall;
+            }
+        }
+
+        return $propertyCalls;
     }
 
     /**
@@ -82,63 +66,47 @@ class MethodService
      */
     public function getVariableCalls(ReflectionMethod $reflectionMethod): array
     {
-        return $this->regexMatcher->combinedMatch(
-            $this->getBody($reflectionMethod),
-            self::REGEX_VARIABLE_CALL
-        );
+        $methodCalls = $this->getMethodCalls($reflectionMethod);
+
+        $variableCalls = [];
+        foreach ($methodCalls as $methodCall) {
+            if (!$methodCall->var instanceof PropertyFetch && $methodCall->var->name !== 'this') {
+                $variableCalls[] = $methodCall;
+            }
+        }
+
+        return $variableCalls;
     }
 
     /**
      * @param ReflectionMethod $reflectionMethod
      * @return array
+     * @throws \ReflectionException
      */
     public function getParameterCalls(ReflectionMethod $reflectionMethod): array
     {
-        $parameterMapping = $this->getParameters($reflectionMethod);
 
         $parameterCalls = [];
-        foreach ($this->getVariableCalls($reflectionMethod) as $variable => $calls) {
-
-            foreach($parameterMapping as $parameter) {
-                if ($parameter->getName() === $variable) {
-                    $parameterCalls[$parameter->getType()] = $calls;
-                }
-            }
-
-        }
-
-        $calledMethods = [];
-        foreach ($this->getInternalCalls($reflectionMethod) as $methodName => $methodParameters) {
-            foreach ($methodParameters as $methodParameter) {
-                if (in_array($methodParameter, $parameterMapping, true)) {
-                    $calledMethods[$methodName] = $methodParameter;
+        $parameters = $reflectionMethod->getParameters();
+        foreach ($this->getVariableCalls($reflectionMethod) as $variableCall) {
+            foreach($parameters as $parameter) {
+                if ($parameter->getName() === $variableCall->var->name) {
+                    $parameterCalls[] = $variableCall;
                 }
             }
         }
 
         $internalCalls = $this->getInternalCalls($reflectionMethod);
-        foreach ($internalCalls as $calledMethodName => $usedParameters) {
-            $calledReflectionMethod = $reflectionMethod->getDeclaringClass()->getMethod($calledMethodName);
+        foreach ($internalCalls as $internalCall) {
+            $calledReflectionMethod = $reflectionMethod->getDeclaringClass()->getMethod($internalCall->name->name);
+            $calledParameterCalls = $this->getParameterCalls($calledReflectionMethod);
+            $calledParameters = $calledReflectionMethod->getParameters();
 
-            $calledParameterMapping = $this->getParameters($calledReflectionMethod);
-
-            $linkMapping = [];
-            foreach ($parameterMapping as $parameter) {
-
-                if (in_array($parameter->getName(), $usedParameters)) {
-                    $key = array_search($parameter->getName(), $usedParameters);
-
-                    $linkMapping[] = [
-                        'source' => $parameter,
-                        'target' => $calledParameterMapping[$key]
-                    ];
-                }
-            }
-
-            foreach ($this->getParameterCalls($calledReflectionMethod) as $calledParameter => $calledMethods) {
-                foreach ($linkMapping as $linkMap) {
-                    if ($linkMap['target']->getType() === $calledParameter) {
-                        $parameterCalls[$linkMap['source']->getType()] = $calledMethods;
+            foreach ($calledParameterCalls as $calledParameterCall) {
+                foreach ($calledParameters as $key => $calledParameter) {
+                    if ($calledParameterCall->var->name === $calledParameter->getName()) {
+                        $calledParameterCall->var->name = $internalCall->args[$key]->value->name;
+                        $parameterCalls[] = $calledParameterCall;
                     }
                 }
             }
@@ -152,9 +120,20 @@ class MethodService
      * @param ReflectionMethod $reflectionMethod
      * @return array
      */
-    private function getParameters(ReflectionMethod $reflectionMethod)
+    private function getMethodCalls(ReflectionMethod $reflectionMethod): array
     {
-        return $this->parameterFactory->createFromReflectionMethod($reflectionMethod);
+        try {
+            $nodes = $this->parser->parse('<?php ' . $this->getBody($reflectionMethod));
+        } catch (Exception $e) {
+            return [];
+        }
+
+
+        $methodCalls = $this->nodeFinder->find($nodes, function (Node $node) {
+            return $node instanceof MethodCall;
+        });
+
+        return $methodCalls;
     }
 
     /**
@@ -164,13 +143,27 @@ class MethodService
     public function getBody(Reflectionmethod $reflectionMethod): string
     {
         $filename = $reflectionMethod->getFileName();
-        $startLine = $reflectionMethod->getStartLine() + 1;
-        $endLine = $reflectionMethod->getEndLine() - 1;
+        $startLine = $reflectionMethod->getStartLine();
+        $endLine = $reflectionMethod->getEndLine();
         $length = $endLine - $startLine;
 
         $source = file($filename);
-        $implode = implode('', array_slice($source, $startLine, $length));
+        $body = array_slice($source, $startLine, $length);
 
-        return (preg_replace('/\s*/', '', $implode));
+        foreach ($body as $lineNr => $line) {
+            if (strpos($line,'{') !== false) {
+                $startLine += $lineNr + 1 ;
+            }
+        }
+
+        foreach (array_reverse($body) as $lineNr => $line) {
+            if (strpos($line, '}') !== false) {
+                $endLine -= $lineNr + 1;
+            }
+        }
+
+        $length = $endLine - $startLine;
+        $trimmedBody = array_slice($source, $startLine, $length);
+        return implode('', $trimmedBody);
     }
 }

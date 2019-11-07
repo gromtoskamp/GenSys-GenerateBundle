@@ -4,6 +4,7 @@ namespace GenSys\GenerateBundle\Factory;
 
 use GenSys\GenerateBundle\Model\Structure\MethodCall;
 use GenSys\GenerateBundle\Service\Reflection\MethodService;
+use ReflectionException;
 use ReflectionMethod;
 
 class MethodCallFactory
@@ -24,21 +25,23 @@ class MethodCallFactory
     /**
      * @param ReflectionMethod $reflectionMethod
      * @return array
+     * @throws ReflectionException
      */
     public function createFromReflectionMethod(ReflectionMethod $reflectionMethod): array
     {
         $methodCalls = [];
-        foreach ($this->methodService->getPropertyCalls($reflectionMethod) as $property => $propertyCalls) {
-            foreach ($propertyCalls as $propertyCall) {
-                $methodCalls[] = new MethodCall($property, $propertyCall);
+        foreach ($this->methodService->getPropertyCalls($reflectionMethod) as $propertyCall) {
+            $methodCalls[] = new MethodCall($propertyCall->var->name, $propertyCall->name->name);
+        }
+
+        foreach ($this->methodService->getParameterCalls($reflectionMethod) as $parameterCall) {
+            foreach ($reflectionMethod->getParameters() as $reflectionParameter) {
+                if ($reflectionParameter->getName() === $parameterCall->var->name) {
+                    $methodCalls[] = new MethodCall(lcfirst($reflectionParameter->getClass()->getShortName()), $parameterCall->name->name);
+                }
             }
         }
 
-        foreach ($this->methodService->getParameterCalls($reflectionMethod) as $parameter => $parameterCalls) {
-            foreach ($parameterCalls as $parameterCall) {
-                $methodCalls[] = new MethodCall(lcfirst($parameter), $parameterCall);
-            }
-        }
         return $methodCalls;
     }
 }

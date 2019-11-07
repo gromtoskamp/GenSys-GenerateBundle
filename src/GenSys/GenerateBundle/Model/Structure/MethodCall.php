@@ -4,6 +4,8 @@ namespace GenSys\GenerateBundle\Model\Structure;
 
 class MethodCall
 {
+    public const THIS = 'this';
+
     /** @var string */
     private $subject;
     /** @var string */

@@ -26,8 +26,8 @@ class UnitTestFactory
      */
     public function createFromReflectionClass(ReflectionClass $reflectionClass): UnitTest
     {
+        $testMethods = $this->testMethodFactory->createFromReflectionClass($reflectionClass);
         $mockDependencyRepository = $this->mockDependencyFactory->createFromReflectionClass($reflectionClass);
-        $testMethods = $this->testMethodFactory->createFromReflectionClass($reflectionClass, $mockDependencyRepository);
 
         return new UnitTest(
             'Tests\\Unit\\' . $reflectionClass->getNamespaceName(),

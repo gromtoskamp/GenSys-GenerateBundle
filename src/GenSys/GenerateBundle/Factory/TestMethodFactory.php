@@ -15,21 +15,27 @@ class TestMethodFactory
     private $methodCallFactory;
     /** @var ClassService */
     private $classService;
+    /** @var MockDependencyFactory */
+    private $mockDependencyFactory;
 
     public function __construct(
         MethodCallFactory $methodCallFactory,
-        ClassService $classService
+        ClassService $classService,
+        MockDependencyFactory $mockDependencyFactory
     ) {
         $this->methodCallFactory = $methodCallFactory;
         $this->classService = $classService;
+        $this->mockDependencyFactory = $mockDependencyFactory;
     }
 
     /**
      * @param ReflectionClass $reflectionClass
      * @return array
      */
-    public function createFromReflectionClass(ReflectionClass $reflectionClass, MockDependencyRepository $mockDependencyRepository): array
+    public function createFromReflectionClass(ReflectionClass $reflectionClass): array
     {
+        $mockDependencyRepository = $this->mockDependencyFactory->createFromReflectionClass($reflectionClass);
+
         $testMethods = [];
         foreach($this->classService->getPublicNonMagicMethods($reflectionClass) as $reflectionMethod) {
             $testMethods[] = $this->createFromReflectionMethod($reflectionMethod, $mockDependencyRepository);

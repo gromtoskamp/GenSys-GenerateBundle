@@ -1,0 +1,59 @@
+{
+  "__construct": [],
+  "addToDummyValue": [],
+  "addToDummyValueDirect": [
+    {
+      "nodeType": "Expr_MethodCall",
+      "var": {
+        "nodeType": "Expr_Variable",
+        "name": "dummyObject",
+        "attributes": {
+          "startLine": 1,
+          "endLine": 1
+        }
+      },
+      "name": {
+        "nodeType": "Identifier",
+        "name": "getDummyValue",
+        "attributes": {
+          "startLine": 1,
+          "endLine": 1
+        }
+      },
+      "args": [],
+      "attributes": {
+        "startLine": 1,
+        "endLine": 1
+      }
+    }
+  ],
+  "addToDummyValueProperty": [],
+  "addToMultipleDummyValues": [],
+  "privateAddToDummyValue": [],
+  "privateAddToDummyValue2": [
+    {
+      "nodeType": "Expr_MethodCall",
+      "var": {
+        "nodeType": "Expr_Variable",
+        "name": "dummyObjectF",
+        "attributes": {
+          "startLine": 1,
+          "endLine": 1
+        }
+      },
+      "name": {
+        "nodeType": "Identifier",
+        "name": "getDummyValue",
+        "attributes": {
+          "startLine": 1,
+          "endLine": 1
+        }
+      },
+      "args": [],
+      "attributes": {
+        "startLine": 1,
+        "endLine": 1
+      }
+    }
+  ]
+}

@@ -2,118 +2,152 @@
 
 namespace Tests\Unit\GenSys\GenerateBundle\Service\Reflection;
 
+use GenSys\GenerateBundle\Resources\Dummy\Service\DummyServiceWithDependency;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use GenSys\GenerateBundle\Service\Reflection\MethodService;
-use GenSys\GenerateBundle\Service\RegexMatcher;
-use GenSys\GenerateBundle\Factory\ParameterFactory;
+use PHPUnit\Util\Json;
+use ReflectionClass;
+use ReflectionException;
 use ReflectionMethod;
 
 class MethodServiceTest extends TestCase
 {
-    /** @var RegexMatcher|MockObject */
-    public $regexMatcher;
-
-    /** @var ParameterFactory|MockObject */
-    public $parameterFactory;
-
     /** @var ReflectionMethod|MockObject */
     public $reflectionMethod;
-
+    /** @var Json */
+    private $bodyResults;
+    /** @var Json */
+    private $internalCalls;
+    /** @var array */
+    private $propertyCalls;
+    /** @var array */
+    private $variableCalls;
+    /** @var array */
+    private $parameterCalls;
 
     public function setUp(): void
     {
-        $this->regexMatcher = $this->getMockBuilder(RegexMatcher::class)->disableOriginalConstructor()->getMock();
-        $this->parameterFactory = $this->getMockBuilder(ParameterFactory::class)->disableOriginalConstructor()->getMock();
-        $this->reflectionMethod = $this->getMockBuilder(ReflectionMethod::class)->disableOriginalConstructor()->getMock();
+        $this->bodyResults = $this->getJsonAsset('getBody');
+        $this->internalCalls = $this->getJsonAsset('getInternalCalls');
+        $this->propertyCalls = $this->getJsonAsset('getPropertyCalls');
+        $this->variableCalls = $this->getJsonAsset('getVariableCalls');
+        $this->parameterCalls = $this->getJsonAsset('getParameterCalls');
     }
 
-    public function testGetPropertyReferences(): void
+    /**
+     * @dataProvider getDummyServiceWithDependencyMethods
+     * @param ReflectionMethod $reflectionMethod
+     */
+    public function testGetInternalCalls(ReflectionMethod $reflectionMethod): void
     {
-        $this->regexMatcher->method('match')->willReturn(null);
-        $this->reflectionMethod->method('getFileName')->willReturn(null);
-        $this->reflectionMethod->method('getStartLine')->willReturn(null);
-        $this->reflectionMethod->method('getEndLine')->willReturn(null);
-        $fixture = new MethodService($this->regexMatcher, $this->parameterFactory);
-        $result = $fixture->getPropertyReferences($this->reflectionMethod);
+        $fixture = new MethodService();
+        $result = $fixture->getInternalCalls($reflectionMethod);
 
-        //TODO: Write assertion.
-
-        $this->tearDown();
+        $this->assertSame(
+            json_encode($this->internalCalls[$reflectionMethod->getName()]),
+            json_encode($result)
+        );
     }
 
-    public function testGetInternalCalls(): void
+    /**
+     * @dataProvider getDummyServiceWithDependencyMethods
+     * @param ReflectionMethod $reflectionMethod
+     */
+    public function testGetPropertyCalls(ReflectionMethod $reflectionMethod): void
     {
-        $this->regexMatcher->method('combinedMatch')->willReturn(null);
-        $this->reflectionMethod->method('getFileName')->willReturn(null);
-        $this->reflectionMethod->method('getStartLine')->willReturn(null);
-        $this->reflectionMethod->method('getEndLine')->willReturn(null);
-        $fixture = new MethodService($this->regexMatcher, $this->parameterFactory);
-        $result = $fixture->getInternalCalls($this->reflectionMethod);
+        $fixture = new MethodService();
+        $result = $fixture->getPropertyCalls($reflectionMethod);
 
-        //TODO: Write assertion.
-
-        $this->tearDown();
+        $this->assertSame(
+            json_encode($this->propertyCalls[$reflectionMethod->getName()]),
+            json_encode($result)
+        );
     }
 
-    public function testGetPropertyCalls(): void
+    /**
+     * @dataProvider getDummyServiceWithDependencyMethods
+     * @param ReflectionMethod $reflectionMethod
+     */
+    public function testGetVariableCalls(ReflectionMethod $reflectionMethod): void
     {
-        $this->regexMatcher->method('combinedMatch')->willReturn(null);
-        $this->reflectionMethod->method('getFileName')->willReturn(null);
-        $this->reflectionMethod->method('getStartLine')->willReturn(null);
-        $this->reflectionMethod->method('getEndLine')->willReturn(null);
-        $fixture = new MethodService($this->regexMatcher, $this->parameterFactory);
-        $result = $fixture->getPropertyCalls($this->reflectionMethod);
+        $fixture = new MethodService();
+        $result = $fixture->getVariableCalls($reflectionMethod);
 
-        //TODO: Write assertion.
-
-        $this->tearDown();
+        $this->assertSame(
+            json_encode($this->variableCalls[$reflectionMethod->getName()]),
+            json_encode($result)
+        );
     }
 
-    public function testGetVariableCalls(): void
+    /**
+     * @dataProvider getDummyServiceWithDependencyMethods
+     * @param ReflectionMethod $reflectionMethod
+     * @throws ReflectionException
+     */
+    public function testGetParameterCalls(ReflectionMethod $reflectionMethod): void
     {
-        $this->regexMatcher->method('combinedMatch')->willReturn(null);
-        $this->reflectionMethod->method('getFileName')->willReturn(null);
-        $this->reflectionMethod->method('getStartLine')->willReturn(null);
-        $this->reflectionMethod->method('getEndLine')->willReturn(null);
-        $fixture = new MethodService($this->regexMatcher, $this->parameterFactory);
-        $result = $fixture->getVariableCalls($this->reflectionMethod);
+        $fixture = new MethodService();
+        $result = $fixture->getParameterCalls($reflectionMethod);
 
-        //TODO: Write assertion.
-
-        $this->tearDown();
+        $this->assertSame(
+            json_encode($this->parameterCalls[$reflectionMethod->getName()]),
+            json_encode($result)
+        );
     }
 
-    public function testGetParameterCalls(): void
+    /**
+     * @dataProvider getDummyServiceWithDependencyMethods
+     * @param ReflectionMethod $reflectionMethod
+     */
+    public function testGetBody(ReflectionMethod $reflectionMethod): void
     {
-        $this->reflectionMethod->method('getFileName')->willReturn(null);
-        $this->reflectionMethod->method('getStartLine')->willReturn(null);
-        $this->reflectionMethod->method('getEndLine')->willReturn(null);
-        $fixture = new MethodService($this->regexMatcher, $this->parameterFactory);
-        $result = $fixture->getParameterCalls($this->reflectionMethod);
+        $fixture = new MethodService();
+        $result = $fixture->getBody($reflectionMethod);
 
-        //TODO: Write assertion.
+        $name = $reflectionMethod->getName();
+        $this->assertNotNull(
+            $bodyResult = $this->bodyResults[$name]
+        );
 
-        $this->tearDown();
+        $this->assertSame(
+            $this->stripWhitespace($result),
+            $bodyResult
+        );
     }
 
-    public function testGetBody(): void
+    /**
+     * @return ReflectionMethod[]
+     * @throws ReflectionException
+     */
+    public function getDummyServiceWithDependencyMethods(): array
     {
-        $this->reflectionMethod->method('getFileName')->willReturn(null);
-        $this->reflectionMethod->method('getStartLine')->willReturn(null);
-        $this->reflectionMethod->method('getEndLine')->willReturn(null);
-        $fixture = new MethodService($this->regexMatcher, $this->parameterFactory);
-        $result = $fixture->getBody($this->reflectionMethod);
+        $reflectionClass = new ReflectionClass(DummyServiceWithDependency::class);
+        $methods = [];
+        foreach ($reflectionClass->getMethods() as $method) {
+            $methods[] = [$method];
+        }
 
-        //TODO: Write assertion.
-
-        $this->tearDown();
+        return $methods;
     }
 
-    public function tearDown(): void
+    /**
+     * @param $string
+     * @return string
+     */
+    private function stripWhitespace($string): string
     {
-        unset($this->regexMatcher);
-        unset($this->parameterFactory);
-        unset($this->reflectionMethod);
+        return preg_replace('/\s/', '', $string);
+    }
+
+    /**
+     * @param $name
+     * @return array
+     */
+    private function getJsonAsset($name): array
+    {
+        return
+            json_decode(file_get_contents(__DIR__ . '/assets/' . $name . '.json'), true);
+
     }
 }
