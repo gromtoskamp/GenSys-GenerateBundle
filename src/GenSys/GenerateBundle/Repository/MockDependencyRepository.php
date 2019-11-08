@@ -13,7 +13,7 @@ use RuntimeException;
 class MockDependencyRepository
 {
     /** @var MockDependency[] $mockDependencies */
-    private $mockDependencies;
+    private $mockDependencies = [];
 
     /**
      * @param MockDependency $mockDependency

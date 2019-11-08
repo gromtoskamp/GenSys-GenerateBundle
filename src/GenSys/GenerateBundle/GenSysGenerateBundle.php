@@ -6,6 +6,7 @@ use Symfony\Component\HttpKernel\Bundle\Bundle;
 
 class GenSysGenerateBundle extends Bundle
 {
+    //TODO: Better name analysis for propertyCalls.
     //TODO: Analyze properties in private methods
     //TODO: analyze objectname vs variablename when creating methodcalls for parametercalls.
     //TODO: read out multiple return types on tested method, prepare for multiple assertions.
