@@ -60,7 +60,7 @@ class MakeUnitTest extends AbstractMaker
         $command
             ->setDescription('Creates a new unit test class')
             ->addArgument('filePath', InputArgument::REQUIRED, 'Filename of the class to generate a Unit Test for | this has to be the fully qualified filename, from the root of your own directory; In PHPStorm, this is the context menu option -copy path-')
-            ->addOption('force', '-f', InputOption::VALUE_OPTIONAL, 'Overwrite existing file')
+            ->addOption('force', '-f', InputOption::VALUE_NONE, 'Overwrite existing file')
         ;
     }
 
@@ -96,7 +96,7 @@ class MakeUnitTest extends AbstractMaker
 
         $reflectionClass = new ReflectionClass($className);
         $unitTest = $this->unitTestFactory->createFromReflectionClass($reflectionClass);
-        if ($input->hasOption('force')  && class_exists($testClassName = $unitTest->getFullyQualifiedName())) {
+        if ($input->getOption('force')  && class_exists($testClassName = $unitTest->getFullyQualifiedName())) {
             $testReflectionClass = new ReflectionClass($testClassName);
             unlink($testReflectionClass->getFileName());
         }

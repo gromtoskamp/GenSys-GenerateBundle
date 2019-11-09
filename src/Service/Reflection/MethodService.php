@@ -156,12 +156,14 @@ class MethodService
         foreach ($body as $lineNr => $line) {
             if (strpos($line,'{') !== false) {
                 $startLine += $lineNr + 1 ;
+                break;
             }
         }
 
         foreach (array_reverse($body) as $lineNr => $line) {
             if (strpos($line, '}') !== false) {
                 $endLine -= $lineNr + 1;
+                break;
             }
         }
 
@@ -201,8 +203,9 @@ class MethodService
 
     private function parse(ReflectionMethod $reflectionMethod)
     {
+        $body = $this->getBody($reflectionMethod);
         try {
-            return $this->parser->parse('<?php ' . $this->getBody($reflectionMethod));
+            return $this->parser->parse('<?php ' . $body);
         } catch (Exception $e) {
             //well this sure wont bite me in the ass.
             return [];

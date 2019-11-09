@@ -3,6 +3,7 @@
 namespace Tests\Unit\GenSys\GenerateBundle\Service\Reflection;
 
 use GenSys\GenerateBundle\Resources\Dummy\Service\DummyServiceWithDependency;
+use GenSys\GenerateBundle\Resources\Dummy\Service\TestCaseMethods;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use GenSys\GenerateBundle\Service\Reflection\MethodService;
@@ -31,11 +32,7 @@ class MethodServiceTest extends TestCase
     public function setUp(): void
     {
         $this->bodyResults = $this->getJsonAsset('getBody');
-        $this->internalCalls = $this->getJsonAsset('getInternalCalls');
         $this->propertyCalls = $this->getJsonAsset('getPropertyCalls');
-        $this->variableCalls = $this->getJsonAsset('getVariableCalls');
-        $this->parameterCalls = $this->getJsonAsset('getParameterCalls');
-        $this->propertyAssignments = $this->getJsonAsset('getPropertyAssignments');
     }
 
     /**
@@ -44,6 +41,7 @@ class MethodServiceTest extends TestCase
      */
     public function testGetInternalCalls(ReflectionMethod $reflectionMethod): void
     {
+        $this->internalCalls = $this->getJsonAsset('getInternalCalls');
         $fixture = new MethodService();
         $result = $fixture->getInternalCalls($reflectionMethod);
 
@@ -94,6 +92,7 @@ class MethodServiceTest extends TestCase
      */
     public function testGetVariableCalls(ReflectionMethod $reflectionMethod): void
     {
+        $this->variableCalls = $this->getJsonAsset('getVariableCalls');
         $fixture = new MethodService();
         $result = $fixture->getVariableCalls($reflectionMethod);
 
@@ -110,6 +109,7 @@ class MethodServiceTest extends TestCase
      */
     public function testGetParameterCalls(ReflectionMethod $reflectionMethod): void
     {
+        $this->parameterCalls = $this->getJsonAsset('getParameterCalls');
         $fixture = new MethodService();
         $result = $fixture->getParameterCalls($reflectionMethod);
 
@@ -145,6 +145,7 @@ class MethodServiceTest extends TestCase
      */
     public function testGetPropertyAssignments(ReflectionMethod $reflectionMethod): void
     {
+        $this->propertyAssignments = $this->getJsonAsset('getPropertyAssignments');
         $fixture = new MethodService();
         $result = $fixture->getPropertyAssignments($reflectionMethod);
 
@@ -156,6 +157,25 @@ class MethodServiceTest extends TestCase
         $this->assertSame(
             json_encode($result),
             json_encode($bodyResult)
+        );
+    }
+
+    /**
+     * @throws ReflectionException
+     */
+    public function testBracketsDontMessAnythingUp()
+    {
+        $reflectionClass = new ReflectionClass(TestCaseMethods::class);
+
+        $this->assertTrue($reflectionClass->hasMethod('getByReflectionMethod'));
+
+        $method = $reflectionClass->getMethod('getByReflectionMethod');
+        $fixture = new MethodService();
+
+        $result = $fixture->getParameterCalls($method);
+        $this->assertSame(
+            'getName',
+            $result[0]->name->name
         );
     }
 

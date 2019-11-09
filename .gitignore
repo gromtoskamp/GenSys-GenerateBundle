@@ -10,6 +10,7 @@
 /bin/
 /config/
 /public/
+/tests/Dev
 
 ###> phpunit/phpunit ###
 /phpunit.xml

@@ -48,6 +48,9 @@ class ClassService
     public function getConstructorMap(ReflectionClass $reflectionClass): array
     {
         $constructor = $reflectionClass->getConstructor();
+        if (null === $constructor) {
+            return [];
+        }
         $parameters = $constructor->getParameters();
 
         $propertyAssignments = $this->methodService->getPropertyAssignments($constructor);

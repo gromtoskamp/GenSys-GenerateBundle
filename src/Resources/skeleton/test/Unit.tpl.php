@@ -46,10 +46,4 @@ class <?= $unitTest->getClassName() ?> extends TestCase
     }
 
 <?php endforeach; ?>
-    public function tearDown(): void
-    {
-<?php foreach($unitTest->getMockDependencies() as $mockDependency): ?>
-        unset($this-><?= $mockDependency->getPropertyName() ?>);
-<?php endforeach; ?>
-    }
 }

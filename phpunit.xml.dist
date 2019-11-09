@@ -2,7 +2,6 @@
 <phpunit
     backupGlobals="true"
     backupStaticAttributes="false"
-    bootstrap="tests/bootstrap.php"
     cacheResult="false"
     cacheTokens="false"
     colors="true"
@@ -26,11 +25,6 @@
         <env name="PIMCORE_PROJECT_ROOT" value="" />
         <env name="KERNEL_DIR" value="app" />
         <env name="KERNEL_CLASS" value="AppKernel" />
-        <env name="PIMCORE_TEST" value="1" />
-        <env name="PIMCORE_ENVIRONMENT" value="test" />
-        <env name="PIMCORE_TEST_DB_DSN" value="mysql://admin:admin@mysql/pimcore" />
-        <server name="PHP_AUTH_USER" value="admin" />
-        <server name="PHP_AUTH_PW" value="admin" />
     </php>
 
     <testsuites>

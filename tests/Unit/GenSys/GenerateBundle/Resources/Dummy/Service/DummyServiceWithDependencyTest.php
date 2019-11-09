@@ -85,10 +85,4 @@ class DummyServiceWithDependencyTest extends TestCase
         $this->tearDown();
     }
 
-    public function tearDown(): void
-    {
-        unset($this->dummyObjectA);
-        unset($this->dummyObjectB);
-        unset($this->dummyObject);
-    }
 }
