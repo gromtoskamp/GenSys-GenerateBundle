@@ -1,4 +1,5 @@
 <?php
+/** @noinspection PhpUnusedLocalVariableInspection */
 
 namespace Tests\Unit\GenSys\GenerateBundle\Resources\Dummy\Service;
 
@@ -68,6 +69,17 @@ class DummyServiceWithDependencyTest extends TestCase
         $this->dummyObjectB->method('getDummyValue')->willReturn(null);
         $fixture = new DummyServiceWithDependency($this->dummyObjectA, $this->dummyObjectB);
         $result = $fixture->addToMultipleDummyValues($this->dummyObjectA,$this->dummyObjectB,null);
+
+        //TODO: Write assertion.
+
+        $this->tearDown();
+    }
+
+    public function testAddToProperty(): void
+    {
+        $this->dummyObjectA->method('getDummyValue')->willReturn(null);
+        $fixture = new DummyServiceWithDependency($this->dummyObjectA, $this->dummyObjectB);
+        $result = $fixture->addToProperty(null);
 
         //TODO: Write assertion.
 

@@ -1,4 +1,4 @@
-<?php /** @noinspection PhpInconsistentReturnPointsInspection */
+<?php
 
 namespace GenSys\GenerateBundle\Resources\Dummy\Service;
 
@@ -44,6 +44,11 @@ class DummyServiceWithDependency
             $this->privateAddToDummyValue2($dummyObjectB, $addTo);
     }
 
+    public function addToProperty(int $addTo): int
+    {
+        return $this->privateAddToProperty($addTo);
+    }
+
     private function privateAddToDummyValue(DummyObject $dummyObjectE, int $addTo): int
     {
         return $this->privateAddToDummyValue2($dummyObjectE, $addTo);
@@ -52,5 +57,10 @@ class DummyServiceWithDependency
     private function privateAddToDummyValue2(DummyObject $dummyObjectF, int $addTo): int
     {
         return $dummyObjectF->getDummyValue() + $addTo;
+    }
+
+    private function privateAddToProperty(int $addTo): int
+    {
+        return $this->dummyObjectA->getDummyValue() + $addTo;
     }
 }

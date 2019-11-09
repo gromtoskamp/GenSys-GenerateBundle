@@ -3,7 +3,6 @@
 namespace GenSys\GenerateBundle\Service\Reflection;
 
 use Exception;
-use phpDocumentor\Reflection\Types\Array_;
 use PhpParser\Node;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\MethodCall;
@@ -11,6 +10,7 @@ use PhpParser\Node\Expr\PropertyFetch;
 use PhpParser\NodeFinder;
 use PhpParser\Parser;
 use PhpParser\ParserFactory;
+use ReflectionException;
 use ReflectionMethod;
 
 class MethodService
@@ -47,6 +47,7 @@ class MethodService
     /**
      * @param ReflectionMethod $reflectionMethod
      * @return array
+     * @throws ReflectionException
      */
     public function getPropertyCalls(ReflectionMethod $reflectionMethod): array
     {
@@ -56,6 +57,14 @@ class MethodService
         foreach ($methodCalls as $methodCall) {
             if ($methodCall->var instanceof PropertyFetch) {
                 $propertyCalls[] = $methodCall;
+            }
+        }
+
+        $calledReflectionMethods = $this->getInternalCallReflectionMethods($reflectionMethod);
+        foreach ($calledReflectionMethods as $calledReflectionMethod) {
+            $calledPropertyCalls = $this->getPropertyCalls($calledReflectionMethod);
+            foreach ($calledPropertyCalls as $call) {
+                $propertyCalls[] = $call;
             }
         }
 
@@ -83,7 +92,7 @@ class MethodService
     /**
      * @param ReflectionMethod $reflectionMethod
      * @return array
-     * @throws \ReflectionException
+     * @throws ReflectionException
      */
     public function getParameterCalls(ReflectionMethod $reflectionMethod): array
     {
@@ -132,28 +141,6 @@ class MethodService
 
     /**
      * @param ReflectionMethod $reflectionMethod
-     * @return array
-     */
-    private function getMethodCalls(ReflectionMethod $reflectionMethod): array
-    {
-        $nodes = $this->parse($reflectionMethod);
-        return $this->nodeFinder->find($nodes, function (Node $node) {
-            return $node instanceof MethodCall;
-        });
-    }
-
-    private function parse(ReflectionMethod $reflectionMethod)
-    {
-        try {
-            return $this->parser->parse('<?php ' . $this->getBody($reflectionMethod));
-        } catch (Exception $e) {
-            //well this sure wont bite me in the ass.
-            return [];
-        }
-    }
-
-    /**
-     * @param ReflectionMethod $reflectionMethod
      * @return string
      */
     public function getBody(Reflectionmethod $reflectionMethod): string
@@ -181,5 +168,44 @@ class MethodService
         $length = $endLine - $startLine;
         $trimmedBody = array_slice($source, $startLine, $length);
         return implode('', $trimmedBody);
+    }
+
+    /**
+     * @param ReflectionMethod $reflectionMethod
+     * @return array
+     * @throws ReflectionException
+     */
+    private function getInternalCallReflectionMethods(ReflectionMethod $reflectionMethod): array
+    {
+        $internalCalls = $this->getInternalCalls($reflectionMethod);
+
+        $calledReflectionMethods = [];
+        foreach ($internalCalls as $internalCall) {
+            $calledReflectionMethods[] = $reflectionMethod->getDeclaringClass()->getMethod($internalCall->name->name);
+        }
+
+        return $calledReflectionMethods;
+    }
+
+    /**
+     * @param ReflectionMethod $reflectionMethod
+     * @return array
+     */
+    private function getMethodCalls(ReflectionMethod $reflectionMethod): array
+    {
+        $nodes = $this->parse($reflectionMethod);
+        return $this->nodeFinder->find($nodes, function (Node $node) {
+            return $node instanceof MethodCall;
+        });
+    }
+
+    private function parse(ReflectionMethod $reflectionMethod)
+    {
+        try {
+            return $this->parser->parse('<?php ' . $this->getBody($reflectionMethod));
+        } catch (Exception $e) {
+            //well this sure wont bite me in the ass.
+            return [];
+        }
     }
 }

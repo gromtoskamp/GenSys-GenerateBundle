@@ -60,12 +60,32 @@ class MethodServiceTest extends TestCase
     public function testGetPropertyCalls(ReflectionMethod $reflectionMethod): void
     {
         $fixture = new MethodService();
-        $result = $fixture->getPropertyCalls($reflectionMethod);
+        try {
+            $result = $fixture->getPropertyCalls($reflectionMethod);
+        } catch (ReflectionException $e) {
+            $this->fail($e->getMessage());
+        }
 
+        $this->assertArrayHasKey($reflectionMethod->getName(), $this->propertyCalls);
         $this->assertSame(
             json_encode($this->propertyCalls[$reflectionMethod->getName()]),
             json_encode($result)
         );
+    }
+
+    /**
+     * @throws ReflectionException
+     */
+    public function testFetchPrivateProperty(): void
+    {
+        $fixture = new MethodService();
+        $reflectionClass = new ReflectionClass(DummyServiceWithDependency::class);
+        $this->assertTrue($reflectionClass->hasMethod('addToProperty'));
+        $method = $reflectionClass->getMethod('addToProperty');
+
+        $result = $fixture->getPropertyCalls($method);
+        $this->assertSame('dummyObjectA', $result[0]->var->name->name);
+        $this->assertSame('getDummyValue', $result[0]->name->name);
     }
 
     /**
@@ -115,7 +135,7 @@ class MethodServiceTest extends TestCase
 
         $this->assertSame(
             $this->stripWhitespace($result),
-            $bodyResult
+            $this->stripWhitespace($bodyResult)
         );
     }
 
@@ -169,8 +189,7 @@ class MethodServiceTest extends TestCase
      */
     private function getJsonAsset($name): array
     {
-        return
-            json_decode(file_get_contents(__DIR__ . '/assets/' . $name . '.json'), true);
-
+        $contents = file_get_contents(__DIR__ . '/assets/' . $name . '.json');
+        return json_decode($contents, true);
     }
 }
