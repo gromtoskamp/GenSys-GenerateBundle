@@ -7,6 +7,15 @@ use ReflectionMethod;
 
 class ClassService
 {
+    /** @var MethodService */
+    private $methodService;
+
+    public function __construct(
+        MethodService $methodService
+    ) {
+        $this->methodService = $methodService;
+    }
+
     /**
      * @param ReflectionClass $reflectionClass
      * @return ReflectionMethod[]
@@ -30,5 +39,32 @@ class ClassService
         }
 
         return $publicNonMagicMethods;
+    }
+
+    /**
+     * @param ReflectionClass $reflectionClass
+     * @return array
+     */
+    public function getConstructorMap(ReflectionClass $reflectionClass): array
+    {
+        $constructor = $reflectionClass->getConstructor();
+        $parameters = $constructor->getParameters();
+
+        $propertyAssignments = $this->methodService->getPropertyAssignments($constructor);
+
+        $constructorMap = [];
+        foreach ($parameters as $key => $parameter) {
+            if (null === $parameter->getClass()) {
+                continue;
+            }
+
+            foreach ($propertyAssignments as $propertyAssignment) {
+                if ($propertyAssignment->expr->name === $parameter->getName()) {
+                    $constructorMap[$parameter->getClass()->getShortName()] = $propertyAssignment;
+                }
+            }
+        }
+
+        return $constructorMap;
     }
 }

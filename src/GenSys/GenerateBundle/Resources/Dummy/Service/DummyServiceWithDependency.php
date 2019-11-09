@@ -11,14 +11,14 @@ class DummyServiceWithDependency
     /** @var DummyObjectA */
     private $dummyObjectA;
     /** @var DummyObjectB */
-    private $dummyObjectB;
+    private $dummyObjectC;
 
     public function __construct(
         DummyObjectA $dummyObjectA,
         DummyObjectB $dummyObjectB
     ) {
         $this->dummyObjectA = $dummyObjectA;
-        $this->dummyObjectB = $dummyObjectB;
+        $this->dummyObjectC = $dummyObjectB;
     }
 
     public function addToDummyValue(DummyObjectB $dummyObjectC, int $addTo): int
@@ -34,7 +34,7 @@ class DummyServiceWithDependency
     public function addToDummyValueProperty(int $addTo): int
     {
         $this->dummyObjectA->getDummyValue() + $addTo;
-        $this->dummyObjectB->getDummyValue() + $addTo;
+        $this->dummyObjectC->getDummyValue() + $addTo;
         return 1;
     }
 

@@ -25,6 +25,8 @@ class MethodServiceTest extends TestCase
     private $variableCalls;
     /** @var array */
     private $parameterCalls;
+    /** @var array */
+    private $propertyAssignments;
 
     public function setUp(): void
     {
@@ -33,6 +35,7 @@ class MethodServiceTest extends TestCase
         $this->propertyCalls = $this->getJsonAsset('getPropertyCalls');
         $this->variableCalls = $this->getJsonAsset('getVariableCalls');
         $this->parameterCalls = $this->getJsonAsset('getParameterCalls');
+        $this->propertyAssignments = $this->getJsonAsset('getPropertyAssignments');
     }
 
     /**
@@ -113,6 +116,26 @@ class MethodServiceTest extends TestCase
         $this->assertSame(
             $this->stripWhitespace($result),
             $bodyResult
+        );
+    }
+
+    /**
+     * @dataProvider getDummyServiceWithDependencyMethods
+     * @param ReflectionMethod $reflectionMethod
+     */
+    public function testGetPropertyAssignments(ReflectionMethod $reflectionMethod): void
+    {
+        $fixture = new MethodService();
+        $result = $fixture->getPropertyAssignments($reflectionMethod);
+
+        $name = $reflectionMethod->getName();
+        $this->assertNotNull(
+            $bodyResult = $this->propertyAssignments[$name]
+        );
+
+        $this->assertSame(
+            json_encode($result),
+            json_encode($bodyResult)
         );
     }
 

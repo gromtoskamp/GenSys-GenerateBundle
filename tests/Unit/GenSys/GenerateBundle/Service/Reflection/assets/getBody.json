@@ -1,8 +1,8 @@
 {
-  "__construct": "$this->dummyObjectA=$dummyObjectA;$this->dummyObjectB=$dummyObjectB;",
+  "__construct": "$this->dummyObjectA=$dummyObjectA;$this->dummyObjectC=$dummyObjectB;",
   "addToDummyValue": "return$this->privateAddToDummyValue($dummyObjectC,$addTo);",
   "addToDummyValueDirect": "return$dummyObject->getDummyValue()+$addTo;",
-  "addToDummyValueProperty": "$this->dummyObjectA->getDummyValue()+$addTo;$this->dummyObjectB->getDummyValue()+$addTo;return1;",
+  "addToDummyValueProperty": "$this->dummyObjectA->getDummyValue()+$addTo;$this->dummyObjectC->getDummyValue()+$addTo;return1;",
   "addToMultipleDummyValues": "return$this->privateAddToDummyValue($dummyObjectA,$addTo)+$this->privateAddToDummyValue2($dummyObjectB,$addTo);",
   "privateAddToDummyValue": "return$this->privateAddToDummyValue2($dummyObjectE,$addTo);",
   "privateAddToDummyValue2": "return$dummyObjectF->getDummyValue()+$addTo;"

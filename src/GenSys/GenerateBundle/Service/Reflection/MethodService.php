@@ -3,7 +3,9 @@
 namespace GenSys\GenerateBundle\Service\Reflection;
 
 use Exception;
+use phpDocumentor\Reflection\Types\Array_;
 use PhpParser\Node;
+use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\PropertyFetch;
 use PhpParser\NodeFinder;
@@ -120,20 +122,34 @@ class MethodService
      * @param ReflectionMethod $reflectionMethod
      * @return array
      */
+    public function getPropertyAssignments(ReflectionMethod $reflectionMethod): array
+    {
+        $nodes = $this->parse($reflectionMethod);
+        return $this->nodeFinder->find($nodes, function (Node $node) {
+            return $node instanceof Assign && $node->var instanceof PropertyFetch;
+        });
+    }
+
+    /**
+     * @param ReflectionMethod $reflectionMethod
+     * @return array
+     */
     private function getMethodCalls(ReflectionMethod $reflectionMethod): array
     {
-        try {
-            $nodes = $this->parser->parse('<?php ' . $this->getBody($reflectionMethod));
-        } catch (Exception $e) {
-            return [];
-        }
-
-
-        $methodCalls = $this->nodeFinder->find($nodes, function (Node $node) {
+        $nodes = $this->parse($reflectionMethod);
+        return $this->nodeFinder->find($nodes, function (Node $node) {
             return $node instanceof MethodCall;
         });
+    }
 
-        return $methodCalls;
+    private function parse(ReflectionMethod $reflectionMethod)
+    {
+        try {
+            return $this->parser->parse('<?php ' . $this->getBody($reflectionMethod));
+        } catch (Exception $e) {
+            //well this sure wont bite me in the ass.
+            return [];
+        }
     }
 
     /**
