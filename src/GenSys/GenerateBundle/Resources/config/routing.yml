@@ -1,3 +1,0 @@
-gen_sys_generate_homepage:
-    path:     /
-    defaults: { _controller: GenSysGenerateBundle:Default:index }

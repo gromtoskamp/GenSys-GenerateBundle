@@ -1,5 +1,4 @@
 <?php
-/** @noinspection PhpUnusedLocalVariableInspection */
 
 namespace Tests\Unit\GenSys\GenerateBundle\Resources\Dummy\Service;
 

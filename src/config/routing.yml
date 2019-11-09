@@ -1,8 +1,0 @@
-gen_sys_generate:
-    resource: "@GenSysGenerateBundle/Resources/config/routing.yml"
-    prefix:   /
-
-gen_sys_unit_test:
-    resource: "@GenSysUnitTestBundle/Resources/config/routing.yml"
-    prefix:   /
-
