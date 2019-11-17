@@ -3,7 +3,6 @@
 namespace GenSys\GenerateBundle\Factory;
 
 use GenSys\GenerateBundle\Model\Structure\MethodCall;
-use GenSys\GenerateBundle\Service\Reflection\ClassService;
 use GenSys\GenerateBundle\Service\Reflection\MethodService;
 use ReflectionException;
 use ReflectionMethod;
