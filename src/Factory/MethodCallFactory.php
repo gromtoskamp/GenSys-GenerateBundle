@@ -18,6 +18,7 @@ class MethodCallFactory
     /**
      * MethodCallFactory constructor.
      * @param MethodService $methodService
+     * @param ClassService $classService
      */
     public function __construct(
         MethodService $methodService,

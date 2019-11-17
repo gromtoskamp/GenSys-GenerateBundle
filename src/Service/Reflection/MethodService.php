@@ -3,6 +3,7 @@
 namespace GenSys\GenerateBundle\Service\Reflection;
 
 use Exception;
+use GenSys\GenerateBundle\Service\FileService;
 use PhpParser\Node;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\MethodCall;
@@ -19,11 +20,15 @@ class MethodService
     private $parser;
     /** @var NodeFinder */
     private $nodeFinder;
+    /** @var FileService */
+    private $fileService;
 
     public function __construct(
+        FileService $fileService
     ) {
         $this->parser = (new ParserFactory())->create(ParserFactory::PREFER_PHP7);
         $this->nodeFinder = new NodeFinder();
+        $this->fileService = $fileService;
     }
 
     /**
@@ -134,7 +139,7 @@ class MethodService
     public function getPropertyAssignments(ReflectionMethod $reflectionMethod): array
     {
         $nodes = $this->parse($reflectionMethod);
-        return $this->nodeFinder->find($nodes, function (Node $node) {
+        return $this->nodeFinder->find($nodes, static function (Node $node) {
             return $node instanceof Assign && $node->var instanceof PropertyFetch;
         });
     }
@@ -148,28 +153,12 @@ class MethodService
         $filename = $reflectionMethod->getFileName();
         $startLine = $reflectionMethod->getStartLine();
         $endLine = $reflectionMethod->getEndLine();
-        $length = $endLine - $startLine;
 
-        $source = file($filename);
-        $body = array_slice($source, $startLine, $length);
-
-        foreach ($body as $lineNr => $line) {
-            if (strpos($line,'{') !== false) {
-                $startLine += $lineNr + 1 ;
-                break;
-            }
-        }
-
-        foreach (array_reverse($body) as $lineNr => $line) {
-            if (strpos($line, '}') !== false) {
-                $endLine -= $lineNr + 1;
-                break;
-            }
-        }
-
-        $length = $endLine - $startLine;
-        $trimmedBody = array_slice($source, $startLine, $length);
-        return implode('', $trimmedBody);
+        return $this->fileService->getContents(
+            $filename,
+            $startLine,
+            $endLine
+        );
     }
 
     /**
@@ -196,12 +185,12 @@ class MethodService
     private function getMethodCalls(ReflectionMethod $reflectionMethod): array
     {
         $nodes = $this->parse($reflectionMethod);
-        return $this->nodeFinder->find($nodes, function (Node $node) {
+        return $this->nodeFinder->find($nodes, static function (Node $node) {
             return $node instanceof MethodCall;
         });
     }
 
-    private function parse(ReflectionMethod $reflectionMethod)
+    private function parse(ReflectionMethod $reflectionMethod): ?array
     {
         $body = $this->getBody($reflectionMethod);
         try {

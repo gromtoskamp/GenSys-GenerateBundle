@@ -4,6 +4,7 @@ namespace Tests\Unit\GenSys\GenerateBundle\Service\Reflection;
 
 use GenSys\GenerateBundle\Resources\Dummy\Service\DummyServiceWithDependency;
 use GenSys\GenerateBundle\Resources\Dummy\Service\TestCaseMethods;
+use GenSys\GenerateBundle\Service\FileService;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use GenSys\GenerateBundle\Service\Reflection\MethodService;
@@ -28,11 +29,20 @@ class MethodServiceTest extends TestCase
     private $parameterCalls;
     /** @var array */
     private $propertyAssignments;
+    /** @var FileService */
+    private $fileService;
 
-    public function setUp(): void
+    public function __construct($name = null, array $data = [], $dataName = '')
     {
         $this->bodyResults = $this->getJsonAsset('getBody');
         $this->propertyCalls = $this->getJsonAsset('getPropertyCalls');
+        $this->internalCalls = $this->getJsonAsset('getInternalCalls');
+        $this->variableCalls = $this->getJsonAsset('getVariableCalls');
+        $this->parameterCalls = $this->getJsonAsset('getParameterCalls');
+        $this->propertyAssignments = $this->getJsonAsset('getPropertyAssignments');
+
+        $this->fileService = new FileService();
+        parent::__construct($name, $data, $dataName);
     }
 
     /**
@@ -41,8 +51,7 @@ class MethodServiceTest extends TestCase
      */
     public function testGetInternalCalls(ReflectionMethod $reflectionMethod): void
     {
-        $this->internalCalls = $this->getJsonAsset('getInternalCalls');
-        $fixture = new MethodService();
+        $fixture = new MethodService($this->fileService);
         $result = $fixture->getInternalCalls($reflectionMethod);
 
         $this->assertSame(
@@ -57,7 +66,7 @@ class MethodServiceTest extends TestCase
      */
     public function testGetPropertyCalls(ReflectionMethod $reflectionMethod): void
     {
-        $fixture = new MethodService();
+        $fixture = new MethodService($this->fileService);
         try {
             $result = $fixture->getPropertyCalls($reflectionMethod);
         } catch (ReflectionException $e) {
@@ -76,7 +85,7 @@ class MethodServiceTest extends TestCase
      */
     public function testFetchPrivateProperty(): void
     {
-        $fixture = new MethodService();
+        $fixture = new MethodService($this->fileService);
         $reflectionClass = new ReflectionClass(DummyServiceWithDependency::class);
         $this->assertTrue($reflectionClass->hasMethod('addToProperty'));
         $method = $reflectionClass->getMethod('addToProperty');
@@ -92,8 +101,7 @@ class MethodServiceTest extends TestCase
      */
     public function testGetVariableCalls(ReflectionMethod $reflectionMethod): void
     {
-        $this->variableCalls = $this->getJsonAsset('getVariableCalls');
-        $fixture = new MethodService();
+        $fixture = new MethodService($this->fileService);
         $result = $fixture->getVariableCalls($reflectionMethod);
 
         $this->assertSame(
@@ -109,8 +117,7 @@ class MethodServiceTest extends TestCase
      */
     public function testGetParameterCalls(ReflectionMethod $reflectionMethod): void
     {
-        $this->parameterCalls = $this->getJsonAsset('getParameterCalls');
-        $fixture = new MethodService();
+        $fixture = new MethodService($this->fileService);
         $result = $fixture->getParameterCalls($reflectionMethod);
 
         $this->assertSame(
@@ -125,7 +132,7 @@ class MethodServiceTest extends TestCase
      */
     public function testGetBody(ReflectionMethod $reflectionMethod): void
     {
-        $fixture = new MethodService();
+        $fixture = new MethodService($this->fileService);
         $result = $fixture->getBody($reflectionMethod);
 
         $name = $reflectionMethod->getName();
@@ -145,8 +152,7 @@ class MethodServiceTest extends TestCase
      */
     public function testGetPropertyAssignments(ReflectionMethod $reflectionMethod): void
     {
-        $this->propertyAssignments = $this->getJsonAsset('getPropertyAssignments');
-        $fixture = new MethodService();
+        $fixture = new MethodService($this->fileService);
         $result = $fixture->getPropertyAssignments($reflectionMethod);
 
         $name = $reflectionMethod->getName();
@@ -170,7 +176,7 @@ class MethodServiceTest extends TestCase
         $this->assertTrue($reflectionClass->hasMethod('getByReflectionMethod'));
 
         $method = $reflectionClass->getMethod('getByReflectionMethod');
-        $fixture = new MethodService();
+        $fixture = new MethodService($this->fileService);
 
         $result = $fixture->getParameterCalls($method);
         $this->assertSame(

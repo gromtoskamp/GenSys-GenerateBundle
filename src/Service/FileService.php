@@ -32,4 +32,36 @@ class FileService
 
         return $namespace . '\\' . $className;
     }
+
+    /**
+     * @param $fileName
+     * @param $startLine
+     * @param $endLine
+     * @return string
+     */
+    public function getContents(string $fileName, int $startLine, int $endLine): string
+    {
+        $source = file($fileName);
+
+        $length = $endLine - $startLine;
+        $body = array_slice($source, $startLine, $length);
+
+        foreach ($body as $lineNr => $line) {
+            if (strpos($line,'{') !== false) {
+                $startLine += $lineNr + 1 ;
+                break;
+            }
+        }
+
+        foreach (array_reverse($body) as $lineNr => $line) {
+            if (strpos($line, '}') !== false) {
+                $endLine -= $lineNr + 1;
+                break;
+            }
+        }
+
+        $length = $endLine - $startLine;
+        $trimmedBody = array_slice($source, $startLine, $length);
+        return implode('', $trimmedBody);
+    }
 }

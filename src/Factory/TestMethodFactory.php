@@ -32,6 +32,7 @@ class TestMethodFactory
     /**
      * @param ReflectionClass $reflectionClass
      * @return array
+     * @throws ReflectionException
      */
     public function createFromReflectionClass(ReflectionClass $reflectionClass): array
     {
