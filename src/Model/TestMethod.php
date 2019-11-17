@@ -2,6 +2,8 @@
 
 namespace GenSys\GenerateBundle\Model;
 
+use GenSys\GenerateBundle\Model\Structure\MethodCall;
+
 class TestMethod
 {
     /** @var string */
@@ -16,7 +18,7 @@ class TestMethod
     public function __construct(
         $name,
         string $originalName,
-        array $methodCalls,
+        iterable $methodCalls,
         Fixture $fixture
     ) {
         $this->name = $name;
@@ -44,7 +46,7 @@ class TestMethod
     /**
      * @return MethodCall[]
      */
-    public function getMethodCalls(): array
+    public function getMethodCalls(): iterable
     {
         return $this->methodCalls;
     }

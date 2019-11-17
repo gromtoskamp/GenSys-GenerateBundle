@@ -162,6 +162,31 @@ class MethodService
     }
 
     /**
+     * @param ReflectionMethod $constructor
+     * @return array
+     */
+    public function getMethodMap(ReflectionMethod $constructor): array
+    {
+        $parameters = $constructor->getParameters();
+        $propertyAssignments = $this->getPropertyAssignments($constructor);
+
+        $constructorMap = [];
+        foreach ($parameters as $key => $parameter) {
+            if (null === $parameter->getClass()) {
+                continue;
+            }
+
+            foreach ($propertyAssignments as $propertyAssignment) {
+                if ($propertyAssignment->expr->name === $parameter->getName()) {
+                    $constructorMap[$parameter->getClass()->getShortName()] = $propertyAssignment;
+                }
+            }
+        }
+
+        return $constructorMap;
+    }
+
+    /**
      * @param ReflectionMethod $reflectionMethod
      * @return array
      * @throws ReflectionException

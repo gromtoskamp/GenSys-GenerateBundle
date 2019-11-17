@@ -12,20 +12,15 @@ class MethodCallFactory
 {
     /** @var MethodService */
     private $methodService;
-    /** @var ClassService */
-    private $classService;
 
     /**
      * MethodCallFactory constructor.
      * @param MethodService $methodService
-     * @param ClassService $classService
      */
     public function __construct(
-        MethodService $methodService,
-        ClassService $classService
+        MethodService $methodService
     ) {
         $this->methodService = $methodService;
-        $this->classService = $classService;
     }
 
     /**
@@ -36,7 +31,9 @@ class MethodCallFactory
     public function createFromReflectionMethod(ReflectionMethod $reflectionMethod): array
     {
         $propertyCalls = $this->methodService->getPropertyCalls($reflectionMethod);
-        $constructorMap = $this->classService->getConstructorMap($reflectionMethod->getDeclaringClass());
+
+        $constructor = $reflectionMethod->getDeclaringClass()->getConstructor();
+        $constructorMap = $this->methodService->getMethodMap($constructor);
 
         $methodCalls = [];
         foreach ($propertyCalls as $propertyCall) {

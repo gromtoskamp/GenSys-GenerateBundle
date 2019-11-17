@@ -2,6 +2,7 @@
 
 namespace GenSys\GenerateBundle\Factory;
 
+use GenSys\GenerateBundle\Model\Decorator\SortedMethodCalls;
 use GenSys\GenerateBundle\Model\Fixture;
 use GenSys\GenerateBundle\Model\TestMethod;
 use GenSys\GenerateBundle\Repository\MockDependencyRepository;
@@ -77,6 +78,7 @@ class TestMethodFactory
             implode(',', $parameters)
         );
 
+        $methodCalls = new SortedMethodCalls($methodCalls);
         return new TestMethod(
             'test' . ucfirst($reflectionMethod->getName()),
             $reflectionMethod->getName(),
