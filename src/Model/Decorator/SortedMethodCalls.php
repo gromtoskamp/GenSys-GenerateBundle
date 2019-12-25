@@ -4,15 +4,15 @@ namespace GenSys\GenerateBundle\Model\Decorator;
 
 use GenSys\GenerateBundle\Model\Structure\MethodCall;
 
-class SortedMethodCalls extends AbstractMethodCallDecorator
+class SortedMethodCalls extends IterableDecorator
 {
     /**
-     * @param iterable $methodCalls
+     * @param iterable $items
      * @return iterable
      */
-    protected function decorate(iterable $methodCalls): iterable
+    public function decorate(iterable $items): iterable
     {
-        return $this->sortMethodCalls($methodCalls);
+        return $this->sortMethodCalls($items);
     }
 
     /**
