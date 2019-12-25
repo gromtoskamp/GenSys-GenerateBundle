@@ -24,11 +24,25 @@ class ClassService
     {
         $publicNonMagicMethods = [];
         foreach ($this->getPublicMethods($reflectionClass) as $reflectionMethod) {
+            if (!$this->isDeclaredInClass($reflectionMethod, $reflectionClass)) {
+                continue;
+            }
+
             if (strpos($reflectionMethod->getName(), '__') !== 0) {
                 $publicNonMagicMethods[] = $reflectionMethod;
             }
         }
 
         return $publicNonMagicMethods;
+    }
+
+    /**
+     * @param ReflectionMethod $reflectionMethod
+     * @param ReflectionClass $reflectionClass
+     * @return bool
+     */
+    private function isDeclaredInClass(ReflectionMethod $reflectionMethod, ReflectionClass $reflectionClass): bool
+    {
+        return $reflectionMethod->getDeclaringClass()->getName() === $reflectionClass->getName();
     }
 }
