@@ -30,9 +30,7 @@ class MethodCallFactory
     public function createFromReflectionMethod(ReflectionMethod $reflectionMethod): array
     {
         $propertyCalls = $this->methodService->getPropertyCalls($reflectionMethod);
-
-        $constructor = $reflectionMethod->getDeclaringClass()->getConstructor();
-        $constructorMap = $this->methodService->getMethodMap($constructor);
+        $constructorMap = $this->getConstructorMap($reflectionMethod);
 
         $methodCalls = [];
         foreach ($propertyCalls as $propertyCall) {
@@ -53,4 +51,18 @@ class MethodCallFactory
 
         return $methodCalls;
     }
+
+    /**
+     * @param ReflectionMethod $reflectionMethod
+     * @return array
+     */
+    private function getConstructorMap(ReflectionMethod $reflectionMethod): array
+    {
+        $constructor = $reflectionMethod->getDeclaringClass()->getConstructor();
+        if (null === $constructor) {
+            return [];
+        }
+        return $this->methodService->getMethodMap($constructor);
+    }
+
 }
