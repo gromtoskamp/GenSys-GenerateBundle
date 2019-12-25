@@ -10,17 +10,13 @@ class MethodCall
     private $subject;
     /** @var string */
     private $methodName;
-    /** @var array */
-    private $parameters;
 
     public function __construct(
         string $subject,
-        string $methodName,
-        array $parameters = []
+        string $methodName
     ) {
         $this->subject = $subject;
         $this->methodName = $methodName;
-        $this->parameters = $parameters;
     }
 
     /**
@@ -37,14 +33,6 @@ class MethodCall
     public function getMethodName(): string
     {
         return $this->methodName;
-    }
-
-    /**
-     * @return array
-     */
-    public function getParameters(): array
-    {
-        return $this->parameters;
     }
 
 }
