@@ -10,6 +10,8 @@ class TestMethod
     private $name;
     /** @var string */
     private $originalName;
+    /** @var bool */
+    private $returnsVoid;
     /** @var MethodCall[] */
     private $methodCalls;
     /** @var Fixture */
@@ -18,11 +20,13 @@ class TestMethod
     public function __construct(
         $name,
         string $originalName,
+        bool $returnsVoid,
         iterable $methodCalls,
         Fixture $fixture
     ) {
         $this->name = $name;
         $this->originalName = $originalName;
+        $this->returnsVoid = $returnsVoid;
         $this->methodCalls = $methodCalls;
         $this->fixture = $fixture;
     }
@@ -41,6 +45,14 @@ class TestMethod
     public function getOriginalName(): string
     {
         return $this->originalName;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isReturnsVoid(): bool
+    {
+        return $this->returnsVoid;
     }
 
     /**

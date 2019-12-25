@@ -13,6 +13,8 @@ use ReflectionMethod;
 
 class TestMethodFactory
 {
+    private const RETURN_VOID = 'void';
+
     /** @var MethodCallFactory */
     private $methodCallFactory;
     /** @var ClassService */
@@ -83,11 +85,28 @@ class TestMethodFactory
         );
 
         $methodCalls = $this->methodCallSorter->decorate($methodCalls);
+        $returnsVoid = $this->getReturnsVoid($reflectionMethod);
         return new TestMethod(
             'test' . ucfirst($reflectionMethod->getName()),
             $reflectionMethod->getName(),
+            $returnsVoid,
             $methodCalls,
             $fixture
         );
+    }
+
+    /**
+     * @param ReflectionMethod $reflectionMethod
+     * @return bool
+     */
+    private function getReturnsVoid(ReflectionMethod $reflectionMethod): bool
+    {
+        $returnType = $reflectionMethod->getReturnType();
+        if (null === $returnType) {
+            return false;
+        }
+
+        $returnTypeName = $returnType->getName();
+        return $returnTypeName === self::RETURN_VOID;
     }
 }

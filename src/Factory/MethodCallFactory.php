@@ -41,8 +41,10 @@ class MethodCallFactory
             }
         }
 
-        foreach ($this->methodService->getParameterCalls($reflectionMethod) as $parameterCall) {
-            foreach ($reflectionMethod->getParameters() as $reflectionParameter) {
+        $parameterCalls = $this->methodService->getParameterCalls($reflectionMethod);
+        foreach ($parameterCalls as $parameterCall) {
+            $reflectionParameters = $reflectionMethod->getParameters();
+            foreach ($reflectionParameters as $reflectionParameter) {
                 if ($reflectionParameter->getName() === $parameterCall->var->name) {
                     $methodCalls[] = new MethodCall(lcfirst($reflectionParameter->getClass()->getShortName()), $parameterCall->name->name);
                 }
