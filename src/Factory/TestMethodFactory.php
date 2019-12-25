@@ -2,7 +2,7 @@
 
 namespace GenSys\GenerateBundle\Factory;
 
-use GenSys\GenerateBundle\Model\Decorator\SortedMethodCalls;
+use GenSys\GenerateBundle\Service\Decorator\MethodCallSorter;
 use GenSys\GenerateBundle\Model\Fixture;
 use GenSys\GenerateBundle\Model\TestMethod;
 use GenSys\GenerateBundle\Repository\MockDependencyRepository;
@@ -19,15 +19,19 @@ class TestMethodFactory
     private $classService;
     /** @var MockDependencyFactory */
     private $mockDependencyFactory;
+    /** @var MethodCallSorter */
+    private $methodCallSorter;
 
     public function __construct(
         MethodCallFactory $methodCallFactory,
         ClassService $classService,
-        MockDependencyFactory $mockDependencyFactory
+        MockDependencyFactory $mockDependencyFactory,
+        MethodCallSorter $methodCallSorter
     ) {
         $this->methodCallFactory = $methodCallFactory;
         $this->classService = $classService;
         $this->mockDependencyFactory = $mockDependencyFactory;
+        $this->methodCallSorter = $methodCallSorter;
     }
 
     /**
@@ -78,7 +82,7 @@ class TestMethodFactory
             implode(',', $parameters)
         );
 
-        $methodCalls = new SortedMethodCalls($methodCalls);
+        $methodCalls = $this->methodCallSorter->decorate($methodCalls);
         return new TestMethod(
             'test' . ucfirst($reflectionMethod->getName()),
             $reflectionMethod->getName(),

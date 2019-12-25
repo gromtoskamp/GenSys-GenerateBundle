@@ -1,6 +1,6 @@
 <?php
 
-namespace GenSys\GenerateBundle\Model\Decorator;
+namespace GenSys\GenerateBundle\Service\Decorator;
 
 use Iterator;
 

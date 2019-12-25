@@ -1,10 +1,10 @@
 <?php
 
-namespace GenSys\GenerateBundle\Model\Decorator;
+namespace GenSys\GenerateBundle\Service\Decorator;
 
 use GenSys\GenerateBundle\Model\Structure\MethodCall;
 
-class SortedMethodCalls extends IterableDecorator
+class MethodCallSorter extends IterableDecorator
 {
     /**
      * @param iterable $items
@@ -36,7 +36,8 @@ class SortedMethodCalls extends IterableDecorator
     private function sortMethodCalls(iterable $methodCalls): iterable
     {
         $sortedMethodCalls = [];
-        foreach ($this->groupMethodCalls($methodCalls) as $subject => $group) {
+        $groupedMethodCalls = $this->groupMethodCalls($methodCalls);
+        foreach ($groupedMethodCalls as $subject => $group) {
             foreach ($group as $methodCall) {
                 $sortedMethodCalls[] = $methodCall;
             }
