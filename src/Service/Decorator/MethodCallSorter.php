@@ -12,7 +12,7 @@ class MethodCallSorter extends IterableDecorator
      */
     public function decorate(iterable $items): iterable
     {
-        return $this->sortMethodCalls($items);
+        return $this->groupMethodCallsBySubject($items);
     }
 
     /**
@@ -33,11 +33,11 @@ class MethodCallSorter extends IterableDecorator
      * @param MethodCall[] $methodCalls
      * @return array
      */
-    private function sortMethodCalls(iterable $methodCalls): iterable
+    private function groupMethodCallsBySubject(iterable $methodCalls): iterable
     {
         $sortedMethodCalls = [];
         $groupedMethodCalls = $this->groupMethodCalls($methodCalls);
-        foreach ($groupedMethodCalls as $subject => $group) {
+        foreach ($groupedMethodCalls as $group) {
             foreach ($group as $methodCall) {
                 $sortedMethodCalls[] = $methodCall;
             }
