@@ -2,7 +2,7 @@
 
 namespace GenSys\GenerateBundle\Service\Decorator;
 
-use GenSys\GenerateBundle\Model\Structure\MethodCall;
+use GenSys\GenerateBundle\Model\MethodCall;
 
 class MethodCallSorter extends IterableDecorator
 {

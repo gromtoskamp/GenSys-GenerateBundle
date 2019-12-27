@@ -2,7 +2,7 @@
 
 namespace Tests\Unit\GenSys\GenerateBundle\Service\Decorator;
 
-use GenSys\GenerateBundle\Model\Structure\MethodCall;
+use GenSys\GenerateBundle\Model\MethodCall;
 use PHPUnit\Framework\TestCase;
 use GenSys\GenerateBundle\Service\Decorator\MethodCallSorter;
 

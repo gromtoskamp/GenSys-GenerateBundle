@@ -1,6 +1,6 @@
 <?php
 
-namespace GenSys\GenerateBundle\Model\Structure;
+namespace GenSys\GenerateBundle\Model;
 
 class MethodCall
 {
@@ -11,6 +11,11 @@ class MethodCall
     /** @var string */
     private $methodName;
 
+    /**
+     * MethodCall constructor.
+     * @param string $subject
+     * @param string $methodName
+     */
     public function __construct(
         string $subject,
         string $methodName

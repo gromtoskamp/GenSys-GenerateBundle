@@ -2,7 +2,9 @@
 
 namespace GenSys\GenerateBundle\Factory;
 
-use GenSys\GenerateBundle\Model\Structure\MethodCall;
+use GenSys\GenerateBundle\Mapper\ConstructorMapper;
+use GenSys\GenerateBundle\Model\MethodCall;
+use GenSys\GenerateBundle\Model\ParameterPropertyAssign;
 use GenSys\GenerateBundle\Service\Reflection\MethodService;
 use ReflectionException;
 use ReflectionMethod;
@@ -11,15 +13,20 @@ class MethodCallFactory
 {
     /** @var MethodService */
     private $methodService;
+    /** @var ConstructorMapper */
+    private $constructorMapper;
 
     /**
      * MethodCallFactory constructor.
      * @param MethodService $methodService
+     * @param ConstructorMapper $constructorMapper
      */
     public function __construct(
-        MethodService $methodService
+        MethodService $methodService,
+        ConstructorMapper $constructorMapper
     ) {
         $this->methodService = $methodService;
+        $this->constructorMapper = $constructorMapper;
     }
 
     /**
@@ -34,9 +41,12 @@ class MethodCallFactory
 
         $methodCalls = [];
         foreach ($propertyCalls as $propertyCall) {
-            foreach ($constructorMap as $className => $propertyAssignment) {
-                if ($propertyCall->var->name->name === $propertyAssignment->var->name->name) {
-                    $methodCalls[] = new MethodCall(lcfirst($className), $propertyCall->name->name);
+            foreach ($constructorMap as $parameterPropertyAssign) {
+                if ($propertyCall->var->name->name === $parameterPropertyAssign->getPropertyName()) {
+                    $methodCalls[] = new MethodCall(
+                        lcfirst($parameterPropertyAssign->getClassName()),
+                        $propertyCall->name->name
+                    );
                 }
             }
         }
@@ -56,7 +66,7 @@ class MethodCallFactory
 
     /**
      * @param ReflectionMethod $reflectionMethod
-     * @return array
+     * @return ParameterPropertyAssign[]
      */
     private function getConstructorMap(ReflectionMethod $reflectionMethod): array
     {
@@ -64,7 +74,7 @@ class MethodCallFactory
         if (null === $constructor) {
             return [];
         }
-        return $this->methodService->getMethodMap($constructor);
+        return $this->constructorMapper->map($constructor);
     }
 
 }

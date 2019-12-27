@@ -2,7 +2,12 @@
 
 namespace Tests\Unit\GenSys\GenerateBundle\Service\Reflection;
 
-use GenSys\GenerateBundle\Resources\Dummy\Service\DummyServiceWithDependency;
+use GenSys\GenerateBundle\PhpParser\Filter\MethodCall\InternalCallFilter;
+use GenSys\GenerateBundle\PhpParser\Filter\MethodCall\PropertyFetchFilter;
+use GenSys\GenerateBundle\PhpParser\Filter\MethodCall\VariableCallFilter;
+use GenSys\GenerateBundle\PhpParser\Filter\Node\MethodCallFilter;
+use GenSys\GenerateBundle\PhpParser\Filter\Node\PropertyAssignmentFilter;
+use GenSys\GenerateBundle\PhpParser\Parse\MethodParser;
 use GenSys\GenerateBundle\Resources\Dummy\Service\TestCaseMethods;
 use GenSys\GenerateBundle\Service\FileService;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -12,6 +17,7 @@ use PHPUnit\Util\Json;
 use ReflectionClass;
 use ReflectionException;
 use ReflectionMethod;
+use Tests\Providers\DummyServiceWithDependencyProvider;
 
 class MethodServiceTest extends TestCase
 {
@@ -31,6 +37,21 @@ class MethodServiceTest extends TestCase
     private $propertyAssignments;
     /** @var FileService */
     private $fileService;
+    /** @var MethodCallFilter  */
+    private $methodCallFilter;
+    /** @var PropertyAssignmentFilter  */
+    private $propertyAssignmentFilter;
+    /** @var InternalCallFilter  */
+    private $internalCallFilter;
+    /** @var PropertyFetchFilter  */
+    private $propertyFetchFilter;
+    /** @var VariableCallFilter  */
+    private $variableCallFilter;
+    /** @var MethodService */
+    private $fixture;
+    /** @var MethodParser */
+    private $methodParser;
+    private $dummyServiceWithDependencyProvider;
 
     public function __construct($name = null, array $data = [], $dataName = '')
     {
@@ -42,6 +63,24 @@ class MethodServiceTest extends TestCase
         $this->propertyAssignments = $this->getJsonAsset('getPropertyAssignments');
 
         $this->fileService = new FileService();
+        $this->methodCallFilter = new MethodCallFilter();
+        $this->propertyAssignmentFilter = new PropertyAssignmentFilter();
+        $this->internalCallFilter = new InternalCallFilter();
+        $this->propertyFetchFilter = new PropertyFetchFilter();
+        $this->variableCallFilter = new VariableCallFilter();
+        $this->methodParser = new MethodParser(new FileService());
+
+        $this->dummyServiceWithDependencyProvider = new DummyServiceWithDependencyProvider();
+
+        $this->fixture = new MethodService(
+            $this->methodCallFilter,
+            $this->propertyAssignmentFilter,
+            $this->internalCallFilter,
+            $this->propertyFetchFilter,
+            $this->variableCallFilter,
+            $this->methodParser
+        );
+
         parent::__construct($name, $data, $dataName);
     }
 
@@ -51,8 +90,7 @@ class MethodServiceTest extends TestCase
      */
     public function testGetInternalCalls(ReflectionMethod $reflectionMethod): void
     {
-        $fixture = new MethodService($this->fileService);
-        $result = $fixture->getInternalCalls($reflectionMethod);
+        $result = $this->fixture->getInternalCalls($reflectionMethod);
 
         $this->assertSame(
             json_encode($this->internalCalls[$reflectionMethod->getName()]),
@@ -66,9 +104,8 @@ class MethodServiceTest extends TestCase
      */
     public function testGetPropertyCalls(ReflectionMethod $reflectionMethod): void
     {
-        $fixture = new MethodService($this->fileService);
         try {
-            $result = $fixture->getPropertyCalls($reflectionMethod);
+            $result = $this->fixture->getPropertyCalls($reflectionMethod);
         } catch (ReflectionException $e) {
             $this->fail($e->getMessage());
         }
@@ -85,12 +122,9 @@ class MethodServiceTest extends TestCase
      */
     public function testFetchPrivateProperty(): void
     {
-        $fixture = new MethodService($this->fileService);
-        $reflectionClass = new ReflectionClass(DummyServiceWithDependency::class);
-        $this->assertTrue($reflectionClass->hasMethod('addToProperty'));
-        $method = $reflectionClass->getMethod('addToProperty');
+        $addToProperty = $this->dummyServiceWithDependencyProvider->getAddToProperty();
 
-        $result = $fixture->getPropertyCalls($method);
+        $result = $this->fixture->getPropertyCalls($addToProperty);
         $this->assertSame('dummyObjectA', $result[0]->var->name->name);
         $this->assertSame('getDummyValue', $result[0]->name->name);
     }
@@ -101,8 +135,7 @@ class MethodServiceTest extends TestCase
      */
     public function testGetVariableCalls(ReflectionMethod $reflectionMethod): void
     {
-        $fixture = new MethodService($this->fileService);
-        $result = $fixture->getVariableCalls($reflectionMethod);
+        $result = $this->fixture->getVariableCalls($reflectionMethod);
 
         $this->assertSame(
             json_encode($this->variableCalls[$reflectionMethod->getName()]),
@@ -117,8 +150,7 @@ class MethodServiceTest extends TestCase
      */
     public function testGetParameterCalls(ReflectionMethod $reflectionMethod): void
     {
-        $fixture = new MethodService($this->fileService);
-        $result = $fixture->getParameterCalls($reflectionMethod);
+        $result = $this->fixture->getParameterCalls($reflectionMethod);
 
         $this->assertSame(
             json_encode($this->parameterCalls[$reflectionMethod->getName()]),
@@ -130,30 +162,9 @@ class MethodServiceTest extends TestCase
      * @dataProvider getDummyServiceWithDependencyMethods
      * @param ReflectionMethod $reflectionMethod
      */
-    public function testGetBody(ReflectionMethod $reflectionMethod): void
-    {
-        $fixture = new MethodService($this->fileService);
-        $result = $fixture->getBody($reflectionMethod);
-
-        $name = $reflectionMethod->getName();
-        $this->assertNotNull(
-            $bodyResult = $this->bodyResults[$name]
-        );
-
-        $this->assertSame(
-            $this->stripWhitespace($result),
-            $this->stripWhitespace($bodyResult)
-        );
-    }
-
-    /**
-     * @dataProvider getDummyServiceWithDependencyMethods
-     * @param ReflectionMethod $reflectionMethod
-     */
     public function testGetPropertyAssignments(ReflectionMethod $reflectionMethod): void
     {
-        $fixture = new MethodService($this->fileService);
-        $result = $fixture->getPropertyAssignments($reflectionMethod);
+        $result = $this->fixture->getPropertyAssignments($reflectionMethod);
 
         $name = $reflectionMethod->getName();
         $this->assertNotNull(
@@ -169,16 +180,15 @@ class MethodServiceTest extends TestCase
     /**
      * @throws ReflectionException
      */
-    public function testBracketsDontMessAnythingUp()
+    public function testBracketsDontMessAnythingUp(): void
     {
         $reflectionClass = new ReflectionClass(TestCaseMethods::class);
 
         $this->assertTrue($reflectionClass->hasMethod('getByReflectionMethod'));
 
         $method = $reflectionClass->getMethod('getByReflectionMethod');
-        $fixture = new MethodService($this->fileService);
 
-        $result = $fixture->getParameterCalls($method);
+        $result = $this->fixture->getParameterCalls($method);
         $this->assertSame(
             'getName',
             $result[0]->name->name
@@ -186,27 +196,20 @@ class MethodServiceTest extends TestCase
     }
 
     /**
-     * @return ReflectionMethod[]
      * @throws ReflectionException
      */
-    public function getDummyServiceWithDependencyMethods(): array
+    public function testMultiplePropertyAssigns_bothGetAWillReturn(): void
     {
-        $reflectionClass = new ReflectionClass(DummyServiceWithDependency::class);
-        $methods = [];
-        foreach ($reflectionClass->getMethods() as $method) {
-            $methods[] = [$method];
-        }
-
-        return $methods;
+        $addToDummyValueMethod = $this->dummyServiceWithDependencyProvider->getAddToDummyValue();
+        $this->fixture->getPropertyCalls($addToDummyValueMethod);
     }
 
     /**
-     * @param $string
-     * @return string
+     * @return ReflectionMethod[]
      */
-    private function stripWhitespace($string): string
+    public function getDummyServiceWithDependencyMethods(): array
     {
-        return preg_replace('/\s/', '', $string);
+        return $this->dummyServiceWithDependencyProvider->getAllMethods();
     }
 
     /**
@@ -218,4 +221,8 @@ class MethodServiceTest extends TestCase
         $contents = file_get_contents(__DIR__ . '/assets/' . $name . '.json');
         return json_decode($contents, true);
     }
+
+
+
+
 }

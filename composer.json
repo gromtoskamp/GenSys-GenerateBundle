@@ -27,7 +27,8 @@
         "psr-4": {
             "GenSys\\GenerateBundle\\": "src/",
             "App\\Tests\\Unit\\": "tests/Unit",
-            "Tests\\Unit\\": "tests/Unit"
+            "Tests\\Unit\\": "tests/Unit",
+            "Tests\\Providers\\": "tests/Providers"
         }
     },
     "autoload-dev": {

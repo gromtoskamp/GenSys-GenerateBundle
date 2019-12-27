@@ -15,6 +15,14 @@ class Fixture
     /** @var string */
     private $methodParameters;
 
+    /**
+     * Fixture constructor.
+     * @param string $namespace
+     * @param string $className
+     * @param string $methodName
+     * @param array $mockDependencies
+     * @param string $methodParameters
+     */
     public function __construct(
         string $namespace,
         string $className,
@@ -53,6 +61,9 @@ class Fixture
         return $this->methodName;
     }
 
+    /**
+     * @return string
+     */
     public function getMethodParameters(): string
     {
         return $this->methodParameters;

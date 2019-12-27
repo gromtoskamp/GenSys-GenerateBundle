@@ -2,26 +2,19 @@
 
 namespace GenSys\GenerateBundle\Service\Reflection;
 
-use Exception;
 use GenSys\GenerateBundle\PhpParser\Filter\MethodCall\InternalCallFilter;
 use GenSys\GenerateBundle\PhpParser\Filter\MethodCall\PropertyFetchFilter;
 use GenSys\GenerateBundle\PhpParser\Filter\MethodCall\VariableCallFilter;
 use GenSys\GenerateBundle\PhpParser\Filter\Node\MethodCallFilter;
 use GenSys\GenerateBundle\PhpParser\Filter\Node\PropertyAssignmentFilter;
-use GenSys\GenerateBundle\Service\FileService;
+use GenSys\GenerateBundle\PhpParser\Parse\MethodParser;
 use PhpParser\Node;
 use PhpParser\Node\Expr\MethodCall;
-use PhpParser\Parser;
-use PhpParser\ParserFactory;
 use ReflectionException;
 use ReflectionMethod;
 
 class MethodService
 {
-    /** @var Parser */
-    private $parser;
-    /** @var FileService */
-    private $fileService;
     /** @var MethodCallFilter */
     private $methodCallFilter;
     /** @var PropertyAssignmentFilter */
@@ -32,22 +25,24 @@ class MethodService
     private $propertyFetchFilter;
     /** @var VariableCallFilter */
     private $variableCallFilter;
+    /** @var MethodParser */
+    private $methodParser;
 
     public function __construct(
-        FileService $fileService,
         MethodCallFilter $methodCallFilter,
         PropertyAssignmentFilter $propertyAssignmentFilter,
         InternalCallFilter $internalCallFilter,
         PropertyFetchFilter $propertyFetchFilter,
-        VariableCallFilter $variableCallFilter
+        VariableCallFilter $variableCallFilter,
+        MethodParser $methodParser
     ) {
-        $this->parser = (new ParserFactory())->create(ParserFactory::PREFER_PHP7);
-        $this->fileService = $fileService;
+
         $this->methodCallFilter = $methodCallFilter;
         $this->propertyAssignmentFilter = $propertyAssignmentFilter;
         $this->internalCallFilter = $internalCallFilter;
         $this->propertyFetchFilter = $propertyFetchFilter;
         $this->variableCallFilter = $variableCallFilter;
+        $this->methodParser = $methodParser;
     }
 
     /**
@@ -68,7 +63,6 @@ class MethodService
     public function getPropertyCalls(ReflectionMethod $reflectionMethod): array
     {
         $methodCalls = $this->getMethodCalls($reflectionMethod);
-
         $propertyCalls = $this->propertyFetchFilter->filter($methodCalls);
 
         $calledReflectionMethods = $this->getInternalCallReflectionMethods($reflectionMethod);
@@ -136,50 +130,8 @@ class MethodService
      */
     public function getPropertyAssignments(ReflectionMethod $reflectionMethod): array
     {
-        $nodes = $this->parse($reflectionMethod);
+        $nodes = $this->methodParser->parse($reflectionMethod);
         return $this->propertyAssignmentFilter->filter($nodes);
-    }
-
-    /**
-     * @param ReflectionMethod $reflectionMethod
-     * @return string
-     */
-    public function getBody(Reflectionmethod $reflectionMethod): string
-    {
-        $filename = $reflectionMethod->getFileName();
-        $startLine = $reflectionMethod->getStartLine();
-        $endLine = $reflectionMethod->getEndLine();
-
-        return $this->fileService->getContents(
-            $filename,
-            $startLine,
-            $endLine
-        );
-    }
-
-    /**
-     * @param ReflectionMethod $constructor
-     * @return array
-     */
-    public function getMethodMap(ReflectionMethod $constructor): array
-    {
-        $parameters = $constructor->getParameters();
-        $propertyAssignments = $this->getPropertyAssignments($constructor);
-
-        $constructorMap = [];
-        foreach ($parameters as $key => $parameter) {
-            if (null === $parameter->getClass()) {
-                continue;
-            }
-
-            foreach ($propertyAssignments as $propertyAssignment) {
-                if ($propertyAssignment->expr->name === $parameter->getName()) {
-                    $constructorMap[$parameter->getClass()->getShortName()] = $propertyAssignment;
-                }
-            }
-        }
-
-        return $constructorMap;
     }
 
     /**
@@ -192,8 +144,9 @@ class MethodService
         $internalCalls = $this->getInternalCalls($reflectionMethod);
 
         $calledReflectionMethods = [];
+        $reflectionClass = $reflectionMethod->getDeclaringClass();
         foreach ($internalCalls as $internalCall) {
-            $calledReflectionMethods[] = $reflectionMethod->getDeclaringClass()->getMethod($internalCall->name->name);
+            $calledReflectionMethods[] = $reflectionClass->getMethod($internalCall->name->name);
         }
 
         return $calledReflectionMethods;
@@ -205,23 +158,7 @@ class MethodService
      */
     private function getMethodCalls(ReflectionMethod $reflectionMethod): array
     {
-        $nodes = $this->parse($reflectionMethod);
+        $nodes = $this->methodParser->parse($reflectionMethod);
         return $this->methodCallFilter->filter($nodes);
-    }
-
-    /**
-     * @param ReflectionMethod $reflectionMethod
-     * @return array
-     */
-    private function parse(ReflectionMethod $reflectionMethod): ?array
-    {
-        $body = $this->getBody($reflectionMethod);
-        try {
-            $nodes = $this->parser->parse('<?php ' . $body);
-            return $nodes ?? [];
-        } catch (Exception $e) {
-            //well this sure wont bite me in the ass.
-            return [];
-        }
     }
 }
