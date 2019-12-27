@@ -15,6 +15,14 @@ class UnitTest
     /** @var TestMethod[] */
     private $testMethods;
 
+    /**
+     * UnitTest constructor.
+     * @param string $namespace
+     * @param string $className
+     * @param string $fixtureClassName
+     * @param array $mockDependencies
+     * @param array $testMethods
+     */
     public function __construct(
         string $namespace,
         string $className,

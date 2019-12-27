@@ -2,8 +2,6 @@
 
 namespace GenSys\GenerateBundle\Model;
 
-use GenSys\GenerateBundle\Model\Structure\MethodCall;
-
 class TestMethod
 {
     /** @var string */
@@ -17,8 +15,16 @@ class TestMethod
     /** @var Fixture */
     private $fixture;
 
+    /**
+     * TestMethod constructor.
+     * @param $name
+     * @param string $originalName
+     * @param bool $returnsVoid
+     * @param iterable $methodCalls
+     * @param Fixture $fixture
+     */
     public function __construct(
-        $name,
+        string $name,
         string $originalName,
         bool $returnsVoid,
         iterable $methodCalls,
