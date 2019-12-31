@@ -2,10 +2,10 @@
 
 namespace GenSys\GenerateBundle\Factory;
 
+use GenSys\GenerateBundle\Model\Collection\MockDependencyCollection;
 use GenSys\GenerateBundle\Service\Decorator\MethodCallSorter;
 use GenSys\GenerateBundle\Model\Fixture;
 use GenSys\GenerateBundle\Model\TestMethod;
-use GenSys\GenerateBundle\Repository\MockDependencyRepository;
 use GenSys\GenerateBundle\Service\Reflection\ClassService;
 use ReflectionClass;
 use ReflectionException;
@@ -43,11 +43,11 @@ class TestMethodFactory
      */
     public function createFromReflectionClass(ReflectionClass $reflectionClass): array
     {
-        $mockDependencyRepository = $this->mockDependencyFactory->createFromReflectionClass($reflectionClass);
+        $mockDependencyCollection = $this->mockDependencyFactory->createFromReflectionClass($reflectionClass);
 
         $testMethods = [];
         foreach($this->classService->getPublicNonMagicMethods($reflectionClass) as $reflectionMethod) {
-            $testMethods[] = $this->createFromReflectionMethod($reflectionMethod, $mockDependencyRepository);
+            $testMethods[] = $this->createFromReflectionMethod($reflectionMethod, $mockDependencyCollection);
         }
 
         return $testMethods;
@@ -55,11 +55,11 @@ class TestMethodFactory
 
     /**
      * @param ReflectionMethod $reflectionMethod
-     * @param MockDependencyRepository $mockDependencyRepository
+     * @param MockDependencyCollection $mockDependencyCollection
      * @return TestMethod
      * @throws ReflectionException
      */
-    private function createFromReflectionMethod(ReflectionMethod $reflectionMethod, MockDependencyRepository $mockDependencyRepository): TestMethod
+    private function createFromReflectionMethod(ReflectionMethod $reflectionMethod, MockDependencyCollection $mockDependencyCollection): TestMethod
     {
         $methodCalls = $this->methodCallFactory->createFromReflectionMethod($reflectionMethod);
         $reflectionClass = $reflectionMethod->getDeclaringClass();
@@ -74,7 +74,7 @@ class TestMethodFactory
         }
 
         $constructor = $reflectionClass->getConstructor();
-        $mockDependencies = null !== $constructor ? $mockDependencyRepository->getByReflectionMethod($constructor) : [];
+        $mockDependencies = null !== $constructor ? $mockDependencyCollection->getByReflectionMethod($constructor) : [];
 
         $fixture = new Fixture(
             $reflectionClass->getNamespaceName(),

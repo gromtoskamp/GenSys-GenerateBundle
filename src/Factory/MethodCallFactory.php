@@ -2,7 +2,7 @@
 
 namespace GenSys\GenerateBundle\Factory;
 
-use GenSys\GenerateBundle\Mapper\ConstructorMapper;
+use GenSys\GenerateBundle\Mapper\MethodMapper;
 use GenSys\GenerateBundle\Model\MethodCall;
 use GenSys\GenerateBundle\Model\ParameterPropertyAssign;
 use GenSys\GenerateBundle\Service\Reflection\MethodService;
@@ -13,20 +13,20 @@ class MethodCallFactory
 {
     /** @var MethodService */
     private $methodService;
-    /** @var ConstructorMapper */
-    private $constructorMapper;
+    /** @var MethodMapper */
+    private $methodMapper;
 
     /**
      * MethodCallFactory constructor.
      * @param MethodService $methodService
-     * @param ConstructorMapper $constructorMapper
+     * @param MethodMapper $methodMapper
      */
     public function __construct(
         MethodService $methodService,
-        ConstructorMapper $constructorMapper
+        MethodMapper $methodMapper
     ) {
         $this->methodService = $methodService;
-        $this->constructorMapper = $constructorMapper;
+        $this->methodMapper = $methodMapper;
     }
 
     /**
@@ -74,7 +74,7 @@ class MethodCallFactory
         if (null === $constructor) {
             return [];
         }
-        return $this->constructorMapper->map($constructor);
+        return $this->methodMapper->map($constructor);
     }
 
 }

@@ -4,9 +4,13 @@ namespace GenSys\GenerateBundle\Factory;
 
 use GenSys\GenerateBundle\Model\UnitTest;
 use ReflectionClass;
+use ReflectionException;
 
 class UnitTestFactory
 {
+    /** @var string  */
+    private const NAMESPACE_PREFIX = 'Tests\\Unit\\';
+
     /** @var MockDependencyFactory */
     private $mockDependencyFactory;
     /** @var TestMethodFactory */
@@ -23,17 +27,18 @@ class UnitTestFactory
     /**
      * @param ReflectionClass $reflectionClass
      * @return UnitTest
+     * @throws ReflectionException
      */
     public function createFromReflectionClass(ReflectionClass $reflectionClass): UnitTest
     {
         $testMethods = $this->testMethodFactory->createFromReflectionClass($reflectionClass);
-        $mockDependencyRepository = $this->mockDependencyFactory->createFromReflectionClass($reflectionClass);
+        $mockDependencyCollection = $this->mockDependencyFactory->createFromReflectionClass($reflectionClass);
 
         return new UnitTest(
-            'Tests\\Unit\\' . $reflectionClass->getNamespaceName(),
+            self::NAMESPACE_PREFIX . $reflectionClass->getNamespaceName(),
             $reflectionClass->getShortName() . 'Test',
             $reflectionClass->getName(),
-            $mockDependencyRepository->getAll(),
+            $mockDependencyCollection->getAll(),
             $testMethods
         );
     }

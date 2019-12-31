@@ -9,7 +9,7 @@ use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\Variable;
 use ReflectionMethod;
 
-class ConstructorMapper
+class MethodMapper
 {
     /** @var ParameterPropertyAssignFactory */
     private $parameterPropertyAssignFactory;

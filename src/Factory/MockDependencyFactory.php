@@ -2,8 +2,8 @@
 
 namespace GenSys\GenerateBundle\Factory;
 
+use GenSys\GenerateBundle\Model\Collection\MockDependencyCollection;
 use GenSys\GenerateBundle\Model\MockDependency;
-use GenSys\GenerateBundle\Repository\MockDependencyRepository;
 use ReflectionClass;
 use ReflectionMethod;
 
@@ -11,24 +11,24 @@ class MockDependencyFactory
 {
     /**
      * @param ReflectionClass $reflectionClass
-     * @return MockDependencyRepository
+     * @return MockDependencyCollection
      */
-    public function createFromReflectionClass(ReflectionClass $reflectionClass): MockDependencyRepository
+    public function createFromReflectionClass(ReflectionClass $reflectionClass): MockDependencyCollection
     {
-        $mockDependencyRepository = new MockDependencyRepository();
+        $mockDependencyCollection = new MockDependencyCollection();
         foreach ($reflectionClass->getMethods(ReflectionMethod::IS_PUBLIC) as $reflectionMethod) {
-            $this->createFromReflectionMethod($reflectionMethod, $mockDependencyRepository);
+            $this->createFromReflectionMethod($reflectionMethod, $mockDependencyCollection);
         }
 
-        return $mockDependencyRepository;
+        return $mockDependencyCollection;
     }
 
     /**
      * @param ReflectionMethod $reflectionMethod
-     * @param MockDependencyRepository $mockDependencyRepository
-     * @return MockDependencyRepository
+     * @param MockDependencyCollection $mockDependencyCollection
+     * @return MockDependencyCollection
      */
-    private function createFromReflectionMethod(ReflectionMethod $reflectionMethod, MockDependencyRepository $mockDependencyRepository): MockDependencyRepository
+    private function createFromReflectionMethod(ReflectionMethod $reflectionMethod, MockDependencyCollection $mockDependencyCollection): MockDependencyCollection
     {
         foreach ($reflectionMethod->getParameters() as $parameter) {
             $parameterClass = $parameter->getClass();
@@ -36,10 +36,10 @@ class MockDependencyFactory
                 continue;
             }
 
-            $mockDependencyRepository->add(new MockDependency($parameter), $reflectionMethod);
+            $mockDependencyCollection->add(new MockDependency($parameter), $reflectionMethod);
         }
 
-        return $mockDependencyRepository;
+        return $mockDependencyCollection;
     }
 
 }
