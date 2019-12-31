@@ -27,7 +27,7 @@ class Fixture
         string $namespace,
         string $className,
         string $methodName,
-        array $mockDependencies,
+        iterable $mockDependencies,
         string $methodParameters
     ) {
         $this->namespace = $namespace;

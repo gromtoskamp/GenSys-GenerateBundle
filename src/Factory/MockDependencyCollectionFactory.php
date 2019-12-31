@@ -7,7 +7,7 @@ use GenSys\GenerateBundle\Model\MockDependency;
 use ReflectionClass;
 use ReflectionMethod;
 
-class MockDependencyFactory
+class MockDependencyCollectionFactory
 {
     /**
      * @param ReflectionClass $reflectionClass

@@ -196,15 +196,6 @@ class MethodServiceTest extends TestCase
     }
 
     /**
-     * @throws ReflectionException
-     */
-    public function testMultiplePropertyAssigns_bothGetAWillReturn(): void
-    {
-        $addToDummyValueMethod = $this->dummyServiceWithDependencyProvider->getAddToDummyValue();
-        $this->fixture->getPropertyCalls($addToDummyValueMethod);
-    }
-
-    /**
      * @return ReflectionMethod[]
      */
     public function getDummyServiceWithDependencyMethods(): array

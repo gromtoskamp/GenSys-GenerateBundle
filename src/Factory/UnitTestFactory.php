@@ -3,6 +3,7 @@
 namespace GenSys\GenerateBundle\Factory;
 
 use GenSys\GenerateBundle\Model\UnitTest;
+use GenSys\GenerateBundle\Service\Reflection\ClassService;
 use ReflectionClass;
 use ReflectionException;
 
@@ -11,17 +12,21 @@ class UnitTestFactory
     /** @var string  */
     private const NAMESPACE_PREFIX = 'Tests\\Unit\\';
 
-    /** @var MockDependencyFactory */
-    private $mockDependencyFactory;
+    /** @var MockDependencyCollectionFactory */
+    private $mockDependencyCollectionFactory;
     /** @var TestMethodFactory */
     private $testMethodFactory;
+    /** @var ClassService */
+    private $classService;
 
     public function __construct(
-        MockDependencyFactory $mockDependencyFactory,
-        TestMethodFactory $testMethodFactory
+        MockDependencyCollectionFactory $mockDependencyCollectionFactory,
+        TestMethodFactory $testMethodFactory,
+        ClassService $classService
     ) {
-        $this->mockDependencyFactory = $mockDependencyFactory;
+        $this->mockDependencyCollectionFactory = $mockDependencyCollectionFactory;
         $this->testMethodFactory = $testMethodFactory;
+        $this->classService = $classService;
     }
 
     /**
@@ -31,8 +36,13 @@ class UnitTestFactory
      */
     public function createFromReflectionClass(ReflectionClass $reflectionClass): UnitTest
     {
-        $testMethods = $this->testMethodFactory->createFromReflectionClass($reflectionClass);
-        $mockDependencyCollection = $this->mockDependencyFactory->createFromReflectionClass($reflectionClass);
+        $mockDependencyCollection = $this->mockDependencyCollectionFactory->createFromReflectionClass($reflectionClass);
+
+        $testMethods = [];
+        $reflectionMethods = $this->classService->getPublicNonMagicMethods($reflectionClass);
+        foreach ($reflectionMethods as $reflectionMethod) {
+            $testMethods[] = $this->testMethodFactory->createFromReflectionMethod($reflectionMethod, $mockDependencyCollection);
+        }
 
         return new UnitTest(
             self::NAMESPACE_PREFIX . $reflectionClass->getNamespaceName(),

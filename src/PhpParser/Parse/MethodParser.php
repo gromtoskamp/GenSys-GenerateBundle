@@ -15,6 +15,10 @@ class MethodParser
     /** @var FileService */
     private $fileService;
 
+    /**
+     * MethodParser constructor.
+     * @param FileService $fileService
+     */
     public function __construct(
         FileService $fileService
     ) {
