@@ -2,60 +2,50 @@
 
 namespace GenSys\GenerateBundle\Mapper;
 
-use GenSys\GenerateBundle\Factory\ParameterPropertyAssignFactory;
-use GenSys\GenerateBundle\Model\ParameterPropertyAssign;
+use GenSys\GenerateBundle\Factory\PropertyClassFactory;
+use GenSys\GenerateBundle\Model\PropertyClass;
 use GenSys\GenerateBundle\Service\Reflection\MethodService;
-use PhpParser\Node\Expr\Assign;
-use PhpParser\Node\Expr\Variable;
 use ReflectionMethod;
 
 class MethodMapper
 {
-    /** @var ParameterPropertyAssignFactory */
-    private $parameterPropertyAssignFactory;
+    /** @var PropertyClassFactory */
+    private $propertyClassFactory;
     /** @var MethodService */
     private $methodService;
 
     public function __construct(
-        ParameterPropertyAssignFactory $parameterPropertyAssignFactory,
+        PropertyClassFactory $propertyClassFactory,
         MethodService $methodService
     ) {
-        $this->parameterPropertyAssignFactory = $parameterPropertyAssignFactory;
+        $this->propertyClassFactory = $propertyClassFactory;
         $this->methodService = $methodService;
     }
 
     /**
      * @param ReflectionMethod $reflectionMethod
-     * @return ParameterPropertyAssign[]
+     * @return PropertyClass[]
      */
     public function map(ReflectionMethod $reflectionMethod): array
     {
         $reflectionParameters = $reflectionMethod->getParameters();
         $propertyAssignments = $this->methodService->getPropertyAssignments($reflectionMethod);
 
-        $propertyAssignmentMap = [];
+        $propertyClasses = [];
         foreach ($reflectionParameters as $key => $parameter) {
             if (null === $parameter->getClass()) {
                 continue;
             }
 
             foreach ($propertyAssignments as $propertyAssignment) {
-                if (!$propertyAssignment instanceof Assign) {
-                    continue;
-                }
-
-                if (!$propertyAssignment->expr instanceof Variable) {
-                    continue;
-                }
-
-                $exprName = $propertyAssignment->expr->name;
-                if ($exprName === $parameter->getName()) {
+                $propertyName = $propertyAssignment->expr->name;
+                if ($propertyName === $parameter->getName()) {
                     $shortName = $parameter->getClass()->getShortName();
-                    $propertyAssignmentMap[] = $this->parameterPropertyAssignFactory->create($shortName, $exprName);
+                    $propertyClasses[] = $this->propertyClassFactory->create($propertyName, $shortName);
                 }
             }
         }
 
-        return $propertyAssignmentMap;
+        return $propertyClasses;
     }
 }

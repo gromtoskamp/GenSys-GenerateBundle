@@ -2,7 +2,7 @@
 
 namespace GenSys\GenerateBundle\Model;
 
-class ParameterPropertyAssign
+class PropertyClass
 {
     /** @var string */
     private $className;
@@ -10,13 +10,13 @@ class ParameterPropertyAssign
     private $propertyName;
 
     /**
-     * Meh constructor.
-     * @param $className
-     * @param $propertyName
+     * PropertyClass constructor.
+     * @param string $propertyName
+     * @param string $className
      */
     public function __construct(
-        string $className,
-        string $propertyName
+        string $propertyName,
+        string $className
     ) {
         $this->className = $className;
         $this->propertyName = $propertyName;
@@ -25,16 +25,16 @@ class ParameterPropertyAssign
     /**
      * @return string
      */
-    public function getClassName(): string
+    public function getPropertyName(): string
     {
-        return $this->className;
+        return $this->propertyName;
     }
 
     /**
      * @return string
      */
-    public function getPropertyName(): string
+    public function getClassName(): string
     {
-        return $this->propertyName;
+        return $this->className;
     }
 }

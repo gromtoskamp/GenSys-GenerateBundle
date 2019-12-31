@@ -4,7 +4,7 @@ namespace GenSys\GenerateBundle\Factory;
 
 use GenSys\GenerateBundle\Mapper\MethodMapper;
 use GenSys\GenerateBundle\Model\MethodCall;
-use GenSys\GenerateBundle\Model\ParameterPropertyAssign;
+use GenSys\GenerateBundle\Model\PropertyClass;
 use GenSys\GenerateBundle\Service\Reflection\MethodService;
 use ReflectionException;
 use ReflectionMethod;
@@ -66,7 +66,7 @@ class MethodCallFactory
 
     /**
      * @param ReflectionMethod $reflectionMethod
-     * @return ParameterPropertyAssign[]
+     * @return PropertyClass[]
      */
     private function getConstructorMap(ReflectionMethod $reflectionMethod): array
     {
