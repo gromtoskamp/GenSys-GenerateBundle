@@ -40,8 +40,4 @@ abstract class AbstractMaker extends SymfonyAbstractMaker
     public function configureDependencies(DependencyBuilder $dependencies): void
     {
     }
-
-
-
-
 }

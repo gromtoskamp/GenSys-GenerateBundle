@@ -6,6 +6,7 @@ use GenSys\GenerateBundle\Factory\PropertyTypeFactory;
 use GenSys\GenerateBundle\Model\PropertyType;
 use GenSys\GenerateBundle\Service\Reflection\MethodService;
 use ReflectionMethod;
+use RuntimeException;
 
 class FullMethodMapper
 {
@@ -42,7 +43,11 @@ class FullMethodMapper
                 $propertyName = $propertyAssignment->expr->name;
                 if ($propertyName === $parameter->getName()) {
                     if (null === $parameter->getClass()) {
-                        $propertyTypes[] = $this->propertyTypeFactory->create($propertyName, $parameter->getType()->getName());
+                        $type = $parameter->getType();
+                        if (null === $type) {
+                            throw new RuntimeException('No class nor type found');
+                        }
+                        $propertyTypes[] = $this->propertyTypeFactory->create($propertyName, $type->getName());
                     } else {
                         $shortName = $parameter->getClass()->getShortName();
                         $propertyTypes[] = $this->propertyTypeFactory->create($propertyName, $shortName);
