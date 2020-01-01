@@ -4,8 +4,11 @@ namespace GenSys\GenerateBundle\Formatter;
 
 use GenSys\GenerateBundle\Model\PropertyType;
 
-class ConstructorArgumentsFormatter extends AbstractFormatter
+class ConstructorArgumentsFormatter
 {
+    /** @var string  */
+    private const INDENT = '    ';
+
     /** @var ConstructorArgumentFormatter */
     private $constructorArgumentFormatter;
 
@@ -26,7 +29,7 @@ class ConstructorArgumentsFormatter extends AbstractFormatter
             $formattedPropertyTypes[] = $this->constructorArgumentFormatter->format($propertyType);
         }
 
-        $glue = ',' . PHP_EOL . $this->indent(3);
+        $glue = ',' . PHP_EOL . str_repeat(self::INDENT, 3);
         return implode($glue, $formattedPropertyTypes);
     }
 }

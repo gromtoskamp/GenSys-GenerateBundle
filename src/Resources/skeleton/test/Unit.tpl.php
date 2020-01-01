@@ -1,7 +1,18 @@
 <?php
 
-/** @var UnitTest $unitTest */
+use GenSys\GenerateBundle\Formatter\InitMockDependencyFormatter;
+use GenSys\GenerateBundle\Formatter\PropertyMockDependencyFormatter;
+use GenSys\GenerateBundle\Model\MockDependency;
 use GenSys\GenerateBundle\Model\UnitTest;
+use GenSys\GenerateBundle\Formatter\UseMockDependenciesFormatter;
+
+/** @var UnitTest $unitTest */
+/** @var UseMockDependenciesFormatter $useMockDependencyFormatter */
+/** @var PropertyMockDependencyFormatter $propertyMockDependencyFormatter */
+/** @var InitMockDependencyFormatter $initMockDependencyFormatter */
+
+/** @var MockDependency[] $mockDependencies */
+$mockDependencies = $unitTest->getMockDependencies();
 
 ?>
 <?= "<?php\n" ?>
@@ -11,23 +22,15 @@ namespace <?= $unitTest->getNamespace() ?>;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use <?= $unitTest->getFixtureClassName() ?>;
-<?php foreach ($unitTest->getMockDependencies() as $mockDependency): ?>
-use <?= $mockDependency->getFullyQualifiedClassName() ?>;
-<?php endforeach; ?>
+<?= $useMockDependencyFormatter->format($mockDependencies) ?>
 
 class <?= $unitTest->getClassName() ?> extends TestCase
 {
-<?php foreach($unitTest->getMockDependencies() as $mockDependency): ?>
-    /** @var <?= $mockDependency->getClassName() ?>|MockObject */
-    public $<?= $mockDependency->getPropertyName() ?>;
-
-<?php endforeach; ?>
+<?= $propertyMockDependencyFormatter->format($mockDependencies) ?>
 
     public function setUp(): void
     {
-<?php foreach($unitTest->getMockDependencies() as $mockDependency): ?>
-        $this-><?= $mockDependency->getPropertyName() ?> = $this->getMockBuilder(<?= $mockDependency->getClassName() ?>::class)->disableOriginalConstructor()->getMock();
-<?php endforeach; ?>
+        <?= $initMockDependencyFormatter->format($mockDependencies) ?>
     }
 
 <?php foreach($unitTest->getTestMethods() as $testMethod): ?>

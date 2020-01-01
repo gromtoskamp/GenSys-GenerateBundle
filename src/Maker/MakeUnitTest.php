@@ -4,6 +4,9 @@ namespace GenSys\GenerateBundle\Maker;
 
 use Exception;
 use GenSys\GenerateBundle\Factory\UnitTestFactory;
+use GenSys\GenerateBundle\Formatter\InitMockDependencyFormatter;
+use GenSys\GenerateBundle\Formatter\PropertyMockDependencyFormatter;
+use GenSys\GenerateBundle\Formatter\UseMockDependenciesFormatter;
 use GenSys\GenerateBundle\Service\FileService;
 use ReflectionClass;
 use Symfony\Bundle\MakerBundle\ConsoleStyle;
@@ -22,18 +25,33 @@ class MakeUnitTest extends AbstractMaker
     private $unitTestFactory;
     /** @var FileService */
     private $fileService;
+    /** @var UseMockDependenciesFormatter */
+    private $useMockDependenciesFormatter;
+    /** @var PropertyMockDependencyFormatter */
+    private $propertyMockDependencyFormatter;
+    /** @var InitMockDependencyFormatter */
+    private $initMockDependencyFormatter;
 
     /**
      * MakeUnitTest constructor.
      * @param UnitTestFactory $unitTestFactory
      * @param FileService $fileService
+     * @param UseMockDependenciesFormatter $useMockDependenciesFormatter
+     * @param PropertyMockDependencyFormatter $propertyMockDependencyFormatter
+     * @param InitMockDependencyFormatter $initMockDependencyFormatter
      */
     public function __construct(
         UnitTestFactory $unitTestFactory,
-        FileService $fileService
+        FileService $fileService,
+        UseMockDependenciesFormatter $useMockDependenciesFormatter,
+        PropertyMockDependencyFormatter $propertyMockDependencyFormatter,
+        InitMockDependencyFormatter $initMockDependencyFormatter
     ) {
         $this->unitTestFactory = $unitTestFactory;
         $this->fileService = $fileService;
+        $this->useMockDependenciesFormatter = $useMockDependenciesFormatter;
+        $this->propertyMockDependencyFormatter = $propertyMockDependencyFormatter;
+        $this->initMockDependencyFormatter = $initMockDependencyFormatter;
     }
 
     /**
@@ -93,7 +111,10 @@ class MakeUnitTest extends AbstractMaker
             $testClassNameDetails->getFullName(),
             $this->getTemplateFile('Unit'),
             [
-                'unitTest' => $unitTest
+                'unitTest' => $unitTest,
+                'useMockDependencyFormatter' => $this->useMockDependenciesFormatter,
+                'propertyMockDependencyFormatter' => $this->propertyMockDependencyFormatter,
+                'initMockDependencyFormatter' => $this->initMockDependencyFormatter
             ]
         );
 
