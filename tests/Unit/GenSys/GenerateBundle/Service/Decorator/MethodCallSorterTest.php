@@ -39,7 +39,7 @@ class MethodCallSorterTest extends TestCase
         ];
         $fixture = new MethodCallSorter();
         /** @var MethodCall[] $result */
-        $result = $fixture->decorate($testArray);
+        $result = $fixture->sort($testArray);
 
         $this->assertSame(
             $result[0]->getSubject(),

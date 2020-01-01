@@ -7,17 +7,17 @@ use GenSys\GenerateBundle\Factory\UnitTestFactory;
 use GenSys\GenerateBundle\Service\FileService;
 use ReflectionClass;
 use Symfony\Bundle\MakerBundle\ConsoleStyle;
-use Symfony\Bundle\MakerBundle\DependencyBuilder;
 use Symfony\Bundle\MakerBundle\Generator;
 use Symfony\Bundle\MakerBundle\InputConfiguration;
-use Symfony\Bundle\MakerBundle\Maker\AbstractMaker;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
 
 class MakeUnitTest extends AbstractMaker
 {
+    /** @var string */
+    private const PREFIX = '\\Tests\\Unit\\';
+
     /** @var UnitTestFactory */
     private $unitTestFactory;
     /** @var FileService */
@@ -43,7 +43,7 @@ class MakeUnitTest extends AbstractMaker
      */
     public static function getCommandName(): string
     {
-        return 'gensys:make:unit-test';
+        return self::COMMAND_PREFIX . 'unit-test';
     }
 
     /**
@@ -57,21 +57,11 @@ class MakeUnitTest extends AbstractMaker
      */
     public function configureCommand(Command $command, InputConfiguration $inputConfig): void
     {
+        parent::configureCommand($command, $inputConfig);
         $command
             ->setDescription('Creates a new unit test class')
             ->addArgument('filePath', InputArgument::REQUIRED, 'Filename of the class to generate a Unit Test for | this has to be the fully qualified filename, from the root of your own directory; In PHPStorm, this is the context menu option -copy path-')
-            ->addOption('force', '-f', InputOption::VALUE_NONE, 'Overwrite existing file')
         ;
-    }
-
-    /**
-     * Configure any library dependencies that your maker requires.
-     *
-     * @param DependencyBuilder $dependencies
-     */
-    public function configureDependencies(DependencyBuilder $dependencies): void
-    {
-        // TODO: Implement configureDependencies() method.
     }
 
     /**
@@ -84,18 +74,16 @@ class MakeUnitTest extends AbstractMaker
      */
     public function generate(InputInterface $input, ConsoleStyle $io, Generator $generator): void
     {
-        $className = $this->fileService->getClassNameFromFile(
-            $input->getArgument('filePath')
-        );
+        $className = $this->getClassName($input);
 
         $testClassNameDetails = $generator->createClassNameDetails(
-            '\\Tests\\Unit\\' . $className . 'Test',
-            'Tests\\Unit\\',
+            self::PREFIX . $className . 'Test',
+            self::PREFIX,
             'Test'
         );
 
         $reflectionClass = new ReflectionClass($className);
-        $unitTest = $this->unitTestFactory->createFromReflectionClass($reflectionClass);
+        $unitTest = $this->unitTestFactory->create($reflectionClass);
         if ($input->getOption('force')  && class_exists($testClassName = $unitTest->getFullyQualifiedName())) {
             $testReflectionClass = new ReflectionClass($testClassName);
             unlink($testReflectionClass->getFileName());
@@ -103,7 +91,7 @@ class MakeUnitTest extends AbstractMaker
 
         $filePath = $generator->generateClass(
             $testClassNameDetails->getFullName(),
-            __DIR__ . '/../Resources/skeleton/test/Unit.tpl.php',
+            $this->getTemplateFile('Unit'),
             [
                 'unitTest' => $unitTest
             ]
@@ -117,5 +105,17 @@ class MakeUnitTest extends AbstractMaker
             'Next: Open your new test class and start customizing it: ',
             ' at ' . $generator->getRootDirectory() . '/' . $filePath,
         ]);
+    }
+
+    /**
+     * @param InputInterface $input
+     * @return string
+     */
+    private function getClassName(InputInterface $input): string
+    {
+        $className = $this->fileService->getClassNameFromFile(
+            $input->getArgument('filePath')
+        );
+        return $className;
     }
 }

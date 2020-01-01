@@ -20,6 +20,12 @@ class TestMethodFactory
     /** @var FixtureFactory */
     private $fixtureFactory;
 
+    /**
+     * TestMethodFactory constructor.
+     * @param MethodCallFactory $methodCallFactory
+     * @param MethodCallSorter $methodCallSorter
+     * @param FixtureFactory $fixtureFactory
+     */
     public function __construct(
         MethodCallFactory $methodCallFactory,
         MethodCallSorter $methodCallSorter,
@@ -44,7 +50,7 @@ class TestMethodFactory
         );
 
         $methodCalls = $this->methodCallFactory->createFromReflectionMethod($reflectionMethod);
-        $methodCalls = $this->methodCallSorter->decorate($methodCalls);
+        $methodCalls = $this->methodCallSorter->sort($methodCalls);
         $returnsVoid = $this->getReturnsVoid($reflectionMethod);
 
         return new TestMethod(

@@ -4,7 +4,7 @@ namespace GenSys\GenerateBundle\Factory;
 
 use GenSys\GenerateBundle\Mapper\MethodMapper;
 use GenSys\GenerateBundle\Model\MethodCall;
-use GenSys\GenerateBundle\Model\PropertyClass;
+use GenSys\GenerateBundle\Model\PropertyType;
 use GenSys\GenerateBundle\Service\Reflection\MethodService;
 use ReflectionException;
 use ReflectionMethod;
@@ -41,10 +41,10 @@ class MethodCallFactory
 
         $methodCalls = [];
         foreach ($propertyCalls as $propertyCall) {
-            foreach ($constructorMap as $parameterPropertyAssign) {
-                if ($propertyCall->var->name->name === $parameterPropertyAssign->getPropertyName()) {
+            foreach ($constructorMap as $propertyType) {
+                if ($propertyCall->var->name->name === $propertyType->getPropertyName()) {
                     $methodCalls[] = new MethodCall(
-                        lcfirst($parameterPropertyAssign->getClassName()),
+                        lcfirst($propertyType->getTypeName()),
                         $propertyCall->name->name
                     );
                 }
@@ -66,7 +66,7 @@ class MethodCallFactory
 
     /**
      * @param ReflectionMethod $reflectionMethod
-     * @return PropertyClass[]
+     * @return PropertyType[]
      */
     private function getConstructorMap(ReflectionMethod $reflectionMethod): array
     {

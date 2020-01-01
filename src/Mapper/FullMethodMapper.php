@@ -7,13 +7,18 @@ use GenSys\GenerateBundle\Model\PropertyType;
 use GenSys\GenerateBundle\Service\Reflection\MethodService;
 use ReflectionMethod;
 
-class MethodMapper
+class FullMethodMapper
 {
     /** @var PropertyTypeFactory */
     private $propertyTypeFactory;
     /** @var MethodService */
     private $methodService;
 
+    /**
+     * FullMethodMapper constructor.
+     * @param PropertyTypeFactory $propertyTypeFactory
+     * @param MethodService $methodService
+     */
     public function __construct(
         PropertyTypeFactory $propertyTypeFactory,
         MethodService $methodService
@@ -33,15 +38,15 @@ class MethodMapper
 
         $propertyTypes = [];
         foreach ($reflectionParameters as $key => $parameter) {
-            if (null === $parameter->getClass()) {
-                continue;
-            }
-
             foreach ($propertyAssignments as $propertyAssignment) {
                 $propertyName = $propertyAssignment->expr->name;
                 if ($propertyName === $parameter->getName()) {
-                    $shortName = $parameter->getClass()->getShortName();
-                    $propertyTypes[] = $this->propertyTypeFactory->create($propertyName, $shortName);
+                    if (null === $parameter->getClass()) {
+                        $propertyTypes[] = $this->propertyTypeFactory->create($propertyName, $parameter->getType()->getName());
+                    } else {
+                        $shortName = $parameter->getClass()->getShortName();
+                        $propertyTypes[] = $this->propertyTypeFactory->create($propertyName, $shortName);
+                    }
                 }
             }
         }

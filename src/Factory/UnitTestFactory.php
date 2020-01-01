@@ -19,6 +19,12 @@ class UnitTestFactory
     /** @var ClassService */
     private $classService;
 
+    /**
+     * UnitTestFactory constructor.
+     * @param MockDependencyCollectionFactory $mockDependencyCollectionFactory
+     * @param TestMethodFactory $testMethodFactory
+     * @param ClassService $classService
+     */
     public function __construct(
         MockDependencyCollectionFactory $mockDependencyCollectionFactory,
         TestMethodFactory $testMethodFactory,
@@ -34,7 +40,7 @@ class UnitTestFactory
      * @return UnitTest
      * @throws ReflectionException
      */
-    public function createFromReflectionClass(ReflectionClass $reflectionClass): UnitTest
+    public function create(ReflectionClass $reflectionClass): UnitTest
     {
         $mockDependencyCollection = $this->mockDependencyCollectionFactory->createFromReflectionClass($reflectionClass);
 

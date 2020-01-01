@@ -4,7 +4,7 @@ namespace GenSys\GenerateBundle\Service\Decorator;
 
 use Iterator;
 
-abstract class IterableDecorator implements Iterator
+abstract class IterableSorter implements Iterator
 {
     /** @var int  */
     private $index = 0;
@@ -16,7 +16,7 @@ abstract class IterableDecorator implements Iterator
      * @param iterable $items
      * @return iterable
      */
-    abstract public function decorate(iterable $items): iterable;
+    abstract public function sort(iterable $items): iterable;
 
     /**
      * @return mixed

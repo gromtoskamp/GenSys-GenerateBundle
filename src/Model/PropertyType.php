@@ -2,24 +2,24 @@
 
 namespace GenSys\GenerateBundle\Model;
 
-class PropertyClass
+class PropertyType
 {
     /** @var string */
-    private $className;
-    /** @var string */
     private $propertyName;
+    /** @var string */
+    private $typeName;
 
     /**
-     * PropertyClass constructor.
+     * PropertyType constructor.
      * @param string $propertyName
-     * @param string $className
+     * @param string $typeName
      */
     public function __construct(
         string $propertyName,
-        string $className
+        string $typeName
     ) {
-        $this->className = $className;
         $this->propertyName = $propertyName;
+        $this->typeName = $typeName;
     }
 
     /**
@@ -33,8 +33,9 @@ class PropertyClass
     /**
      * @return string
      */
-    public function getClassName(): string
+    public function getTypeName(): string
     {
-        return $this->className;
+        return $this->typeName;
     }
+
 }
