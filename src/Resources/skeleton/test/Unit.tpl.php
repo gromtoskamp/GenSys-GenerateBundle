@@ -1,18 +1,12 @@
 <?php
 
-use GenSys\GenerateBundle\Formatter\InitMockDependencyFormatter;
-use GenSys\GenerateBundle\Formatter\PropertyMockDependencyFormatter;
-use GenSys\GenerateBundle\Model\MockDependency;
+use GenSys\GenerateBundle\Formatter\UnitTestFormatter;
 use GenSys\GenerateBundle\Model\UnitTest;
-use GenSys\GenerateBundle\Formatter\UseMockDependenciesFormatter;
+use GenSys\GenerateBundle\Formatter\TestMethodFormatter;
 
 /** @var UnitTest $unitTest */
-/** @var UseMockDependenciesFormatter $useMockDependencyFormatter */
-/** @var PropertyMockDependencyFormatter $propertyMockDependencyFormatter */
-/** @var InitMockDependencyFormatter $initMockDependencyFormatter */
-
-/** @var MockDependency[] $mockDependencies */
-$mockDependencies = $unitTest->getMockDependencies();
+/** @var UnitTestFormatter $unitTestFormatter */
+/** @var TestMethodFormatter $testMethodFormatter */
 
 ?>
 <?= "<?php\n" ?>
@@ -22,26 +16,23 @@ namespace <?= $unitTest->getNamespace() ?>;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use <?= $unitTest->getFixtureClassName() ?>;
-<?= $useMockDependencyFormatter->format($mockDependencies) ?>
+<?= $unitTestFormatter->formatUseMockDependencies($unitTest) ?>
 
 class <?= $unitTest->getClassName() ?> extends TestCase
 {
-<?= $propertyMockDependencyFormatter->format($mockDependencies) ?>
+<?= $unitTestFormatter->formatPropertyMockDependencies($unitTest) ?>
 
     public function setUp(): void
     {
-        <?= $initMockDependencyFormatter->format($mockDependencies) ?>
+        <?= $unitTestFormatter->formatInitMockDependencies($unitTest) ?>
     }
 
 <?php foreach($unitTest->getTestMethods() as $testMethod): ?>
     public function <?= $testMethod->getName() ?>(): void
     {
-<?php foreach($testMethod->getMethodCalls() as $methodCall): ?>
-        $this-><?= $methodCall->getSubject() ?>->method('<?= $methodCall->getMethodName() ?>')->willReturn(null);
-<?php endforeach; ?>
-<?php $fixture = $testMethod->getFixture() ?>
-        $fixture = new <?= $fixture->getClassName() ?>(<?= $fixture->getFixtureArguments() ?>);
-        <?php if (!$testMethod->isReturnsVoid()): ?>$result = <?php endif; ?>$fixture-><?= $testMethod->getOriginalName() ?>(<?= $fixture->getMethodParameters() ?>);
+        <?= $testMethodFormatter->formatTestMethodCalls($testMethod) ?>
+        <?= $testMethodFormatter->formatFixture($testMethod) ?>
+        <?= $testMethodFormatter->formatResult($testMethod) ?>
 
         //TODO: Write assertion.
 

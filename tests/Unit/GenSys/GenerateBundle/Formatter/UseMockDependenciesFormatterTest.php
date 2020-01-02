@@ -37,7 +37,7 @@ class UseMockDependenciesFormatterTest extends TestCase
         $result = $fixture->format([$this->mockDependency, $this->mockDependency]);
 
         $this->assertSame(
-            "use fullyQualifiedName;\nuse fullyQualifiedName;\n",
+            "use fullyQualifiedName;\nuse fullyQualifiedName;",
             $result
         );
     }

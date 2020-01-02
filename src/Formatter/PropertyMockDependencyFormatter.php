@@ -26,6 +26,6 @@ class PropertyMockDependencyFormatter
             $formatted[] = implode(PHP_EOL, $rows);
         }
 
-        return implode(PHP_EOL . PHP_EOL, $formatted) . PHP_EOL;
+        return implode(PHP_EOL . PHP_EOL, $formatted);
     }
 }

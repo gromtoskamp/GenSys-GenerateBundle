@@ -38,7 +38,7 @@ class PropertyMockDependencyFormatterTest extends TestCase
         $result = $fixture->format([$this->mockDependency, $this->mockDependency]);
 
         $this->assertSame(
-            "    /** @var ClassName|MockObject */\n    public \$propertyName;\n\n    /** @var ClassName|MockObject */\n    public \$propertyName;\n",
+            "    /** @var ClassName|MockObject */\n    public \$propertyName;\n\n    /** @var ClassName|MockObject */\n    public \$propertyName;",
             $result
         );
 

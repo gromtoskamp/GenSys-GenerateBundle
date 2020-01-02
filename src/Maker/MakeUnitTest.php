@@ -4,9 +4,8 @@ namespace GenSys\GenerateBundle\Maker;
 
 use Exception;
 use GenSys\GenerateBundle\Factory\UnitTestFactory;
-use GenSys\GenerateBundle\Formatter\InitMockDependencyFormatter;
-use GenSys\GenerateBundle\Formatter\PropertyMockDependencyFormatter;
-use GenSys\GenerateBundle\Formatter\UseMockDependenciesFormatter;
+use GenSys\GenerateBundle\Formatter\TestMethodFormatter;
+use GenSys\GenerateBundle\Formatter\UnitTestFormatter;
 use GenSys\GenerateBundle\Service\FileService;
 use ReflectionClass;
 use Symfony\Bundle\MakerBundle\ConsoleStyle;
@@ -25,33 +24,28 @@ class MakeUnitTest extends AbstractMaker
     private $unitTestFactory;
     /** @var FileService */
     private $fileService;
-    /** @var UseMockDependenciesFormatter */
-    private $useMockDependenciesFormatter;
-    /** @var PropertyMockDependencyFormatter */
-    private $propertyMockDependencyFormatter;
-    /** @var InitMockDependencyFormatter */
-    private $initMockDependencyFormatter;
+    /** @var TestMethodFormatter */
+    private $testMethodFormatter;
+    /** @var UnitTestFormatter */
+    private $unitTestFormatter;
 
     /**
      * MakeUnitTest constructor.
      * @param UnitTestFactory $unitTestFactory
      * @param FileService $fileService
-     * @param UseMockDependenciesFormatter $useMockDependenciesFormatter
-     * @param PropertyMockDependencyFormatter $propertyMockDependencyFormatter
-     * @param InitMockDependencyFormatter $initMockDependencyFormatter
+     * @param UnitTestFormatter $unitTestFormatter
+     * @param TestMethodFormatter $testMethodFormatter
      */
     public function __construct(
         UnitTestFactory $unitTestFactory,
         FileService $fileService,
-        UseMockDependenciesFormatter $useMockDependenciesFormatter,
-        PropertyMockDependencyFormatter $propertyMockDependencyFormatter,
-        InitMockDependencyFormatter $initMockDependencyFormatter
+        UnitTestFormatter $unitTestFormatter,
+        TestMethodFormatter $testMethodFormatter
     ) {
         $this->unitTestFactory = $unitTestFactory;
         $this->fileService = $fileService;
-        $this->useMockDependenciesFormatter = $useMockDependenciesFormatter;
-        $this->propertyMockDependencyFormatter = $propertyMockDependencyFormatter;
-        $this->initMockDependencyFormatter = $initMockDependencyFormatter;
+        $this->unitTestFormatter = $unitTestFormatter;
+        $this->testMethodFormatter = $testMethodFormatter;
     }
 
     /**
@@ -112,9 +106,8 @@ class MakeUnitTest extends AbstractMaker
             $this->getTemplateFile('Unit'),
             [
                 'unitTest' => $unitTest,
-                'useMockDependencyFormatter' => $this->useMockDependenciesFormatter,
-                'propertyMockDependencyFormatter' => $this->propertyMockDependencyFormatter,
-                'initMockDependencyFormatter' => $this->initMockDependencyFormatter
+                'unitTestFormatter' => $this->unitTestFormatter,
+                'testMethodFormatter' => $this->testMethodFormatter,
             ]
         );
 

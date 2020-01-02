@@ -30,7 +30,7 @@ class InitMockDependencyFormatterTest extends TestCase
         $result = $fixture->format([$this->mockDependency, $this->mockDependency]);
 
         $this->assertSame(
-            "\$this->$propertyName = \$this->getMockBuilder($className::class)->disableOriginalConstructor()->getMock();" . PHP_EOL . '        ' . "\$this->$propertyName = \$this->getMockBuilder($className::class)->disableOriginalConstructor()->getMock();" . PHP_EOL,
+            "\$this->$propertyName = \$this->getMockBuilder($className::class)->disableOriginalConstructor()->getMock();" . PHP_EOL . '        ' . "\$this->$propertyName = \$this->getMockBuilder($className::class)->disableOriginalConstructor()->getMock();",
             $result
         );
     }

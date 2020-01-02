@@ -19,6 +19,6 @@ class InitMockDependencyFormatter
             $formatted[] = "\$this->$propertyName = \$this->getMockBuilder($className::class)->disableOriginalConstructor()->getMock();";
         }
 
-        return implode(PHP_EOL . '        ', $formatted) . PHP_EOL;
+        return implode(PHP_EOL . '        ', $formatted);
     }
 }
