@@ -4,6 +4,7 @@ namespace GenSys\GenerateBundle\Maker;
 
 use Exception;
 use GenSys\GenerateBundle\Factory\UnitTestFactory;
+use GenSys\GenerateBundle\Formatter\FixtureFormatter;
 use GenSys\GenerateBundle\Formatter\TestMethodFormatter;
 use GenSys\GenerateBundle\Formatter\UnitTestFormatter;
 use GenSys\GenerateBundle\Service\FileService;
@@ -28,6 +29,8 @@ class MakeUnitTest extends AbstractMaker
     private $testMethodFormatter;
     /** @var UnitTestFormatter */
     private $unitTestFormatter;
+    /** @var FixtureFormatter */
+    private $fixtureFormatter;
 
     /**
      * MakeUnitTest constructor.
@@ -40,12 +43,14 @@ class MakeUnitTest extends AbstractMaker
         UnitTestFactory $unitTestFactory,
         FileService $fileService,
         UnitTestFormatter $unitTestFormatter,
-        TestMethodFormatter $testMethodFormatter
+        TestMethodFormatter $testMethodFormatter,
+        FixtureFormatter $fixtureFormatter
     ) {
         $this->unitTestFactory = $unitTestFactory;
         $this->fileService = $fileService;
         $this->unitTestFormatter = $unitTestFormatter;
         $this->testMethodFormatter = $testMethodFormatter;
+        $this->fixtureFormatter = $fixtureFormatter;
     }
 
     /**
@@ -108,6 +113,7 @@ class MakeUnitTest extends AbstractMaker
                 'unitTest' => $unitTest,
                 'unitTestFormatter' => $this->unitTestFormatter,
                 'testMethodFormatter' => $this->testMethodFormatter,
+                'fixtureFormatter' => $this->fixtureFormatter
             ]
         );
 

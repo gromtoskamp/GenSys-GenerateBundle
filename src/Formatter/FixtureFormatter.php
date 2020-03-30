@@ -28,6 +28,12 @@ class FixtureFormatter
     {
         $className = $fixture->getClassName();
         $fixtureArguments = $this->fixtureArgumentsFormatter->format($fixture->getMockDependencies());
-        return sprintf('$fixture = new %s(%s);', $className, $fixtureArguments);
+        return sprintf('$this->fixture = new %s(%s);', $className, $fixtureArguments);
+    }
+
+    public function formatProperty(Fixture $fixture): string
+    {
+        $className = $fixture->getClassName();
+        return sprintf('    /** @var %s $fixture */' . PHP_EOL . '    private $fixture;', $className);
     }
 }

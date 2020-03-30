@@ -8,33 +8,23 @@ class Fixture
     private $namespace;
     /** @var string */
     private $className;
-    /** @var string */
-    private $methodName;
     /** @var array */
     private $mockDependencies;
-    /** @var string */
-    private $methodParameters;
 
     /**
      * Fixture constructor.
      * @param string $namespace
      * @param string $className
-     * @param string $methodName
      * @param array $mockDependencies
-     * @param string $methodParameters
      */
     public function __construct(
         string $namespace,
         string $className,
-        string $methodName,
-        iterable $mockDependencies,
-        string $methodParameters
+        iterable $mockDependencies
     ) {
         $this->namespace = $namespace;
         $this->className = $className;
-        $this->methodName = $methodName;
         $this->mockDependencies = $mockDependencies;
-        $this->methodParameters = $methodParameters;
     }
 
     /**
@@ -51,22 +41,6 @@ class Fixture
     public function getClassName(): string
     {
         return $this->className;
-    }
-
-    /**
-     * @return string
-     */
-    public function getMethodName(): string
-    {
-        return $this->methodName;
-    }
-
-    /**
-     * @return string
-     */
-    public function getMethodParameters(): string
-    {
-        return $this->methodParameters;
     }
 
     /**

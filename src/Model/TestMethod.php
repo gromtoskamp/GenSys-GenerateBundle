@@ -12,29 +12,29 @@ class TestMethod
     private $returnsVoid;
     /** @var MethodCall[] */
     private $methodCalls;
-    /** @var Fixture */
-    private $fixture;
+    /** @var string */
+    private $methodParameters;
 
     /**
      * TestMethod constructor.
-     * @param $name
+     * @param string $name
      * @param string $originalName
      * @param bool $returnsVoid
      * @param iterable $methodCalls
-     * @param Fixture $fixture
+     * @param string $methodParameters
      */
     public function __construct(
         string $name,
         string $originalName,
         bool $returnsVoid,
         iterable $methodCalls,
-        Fixture $fixture
+        string $methodParameters
     ) {
         $this->name = $name;
         $this->originalName = $originalName;
         $this->returnsVoid = $returnsVoid;
         $this->methodCalls = $methodCalls;
-        $this->fixture = $fixture;
+        $this->methodParameters = $methodParameters;
     }
 
     /**
@@ -70,10 +70,10 @@ class TestMethod
     }
 
     /**
-     * @return Fixture
+     * @return string
      */
-    public function getFixture(): Fixture
+    public function getMethodParameters(): string
     {
-        return $this->fixture;
+        return $this->methodParameters;
     }
 }

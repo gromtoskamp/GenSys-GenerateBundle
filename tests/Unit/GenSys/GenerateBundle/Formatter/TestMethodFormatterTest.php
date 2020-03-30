@@ -42,19 +42,6 @@ class TestMethodFormatterTest extends TestCase
         );
     }
 
-    public function testFormatFixture(): void
-    {
-        $this->fixtureFormatter->method('format')->willReturn('formatted');
-        $this->testMethod->method('getFixture')->willReturn($this->fixture);
-        $fixture = new TestMethodFormatter($this->testMethodCallsFormatter, $this->fixtureFormatter);
-        $result = $fixture->formatFixture($this->testMethod);
-
-        $this->assertSame(
-            'formatted' . PHP_EOL,
-            $result
-        );
-    }
-
     public function testFormatResult_returnsVoid(): void
     {
         $this->testMethod->method('isReturnsVoid')->willReturn(true);

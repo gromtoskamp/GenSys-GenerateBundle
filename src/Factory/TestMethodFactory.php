@@ -2,9 +2,8 @@
 
 namespace GenSys\GenerateBundle\Factory;
 
-use GenSys\GenerateBundle\Model\Collection\MockDependencyCollection;
-use GenSys\GenerateBundle\Service\Decorator\MethodCallSorter;
 use GenSys\GenerateBundle\Model\TestMethod;
+use GenSys\GenerateBundle\Service\Decorator\MethodCallSorter;
 use ReflectionException;
 use ReflectionMethod;
 
@@ -17,48 +16,39 @@ class TestMethodFactory
     private $methodCallFactory;
     /** @var MethodCallSorter */
     private $methodCallSorter;
-    /** @var FixtureFactory */
-    private $fixtureFactory;
 
     /**
      * TestMethodFactory constructor.
      * @param MethodCallFactory $methodCallFactory
      * @param MethodCallSorter $methodCallSorter
-     * @param FixtureFactory $fixtureFactory
      */
     public function __construct(
         MethodCallFactory $methodCallFactory,
-        MethodCallSorter $methodCallSorter,
-        FixtureFactory $fixtureFactory
+        MethodCallSorter $methodCallSorter
     ) {
         $this->methodCallFactory = $methodCallFactory;
         $this->methodCallSorter = $methodCallSorter;
-        $this->fixtureFactory = $fixtureFactory;
     }
 
     /**
      * @param ReflectionMethod $reflectionMethod
-     * @param MockDependencyCollection $mockDependencyCollection
      * @return TestMethod
      * @throws ReflectionException
      */
-    public function createFromReflectionMethod(ReflectionMethod $reflectionMethod, MockDependencyCollection $mockDependencyCollection): TestMethod
+    public function createFromReflectionMethod(ReflectionMethod $reflectionMethod): TestMethod
     {
-        $fixture = $this->fixtureFactory->create(
-            $reflectionMethod,
-            $mockDependencyCollection
-        );
-
         $methodCalls = $this->methodCallFactory->createFromReflectionMethod($reflectionMethod);
         $methodCalls = $this->methodCallSorter->sort($methodCalls);
         $returnsVoid = $this->getReturnsVoid($reflectionMethod);
+
+        $parameters = $this->getParameters($reflectionMethod);
 
         return new TestMethod(
             'test' . ucfirst($reflectionMethod->getName()),
             $reflectionMethod->getName(),
             $returnsVoid,
             $methodCalls,
-            $fixture
+            implode(',', $parameters)
         );
     }
 
@@ -75,5 +65,22 @@ class TestMethodFactory
 
         $returnTypeName = $returnType->getName();
         return $returnTypeName === self::RETURN_VOID;
+    }
+
+    /**
+     * @param ReflectionMethod $reflectionMethod
+     * @return array
+     */
+    private function getParameters(ReflectionMethod $reflectionMethod): array
+    {
+        $parameters = [];
+        foreach ($reflectionMethod->getParameters() as $parameter) {
+            if ($parameter->getClass()) {
+                $parameters[] = '$this->' . lcfirst($parameter->getClass()->getShortName());
+            } else {
+                $parameters[] = 'null';
+            }
+        }
+        return $parameters;
     }
 }

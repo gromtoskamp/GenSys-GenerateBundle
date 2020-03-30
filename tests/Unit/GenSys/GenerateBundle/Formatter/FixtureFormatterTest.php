@@ -18,23 +18,37 @@ class FixtureFormatterTest extends TestCase
     public $fixture;
     /** @var MockObject|MockDependency */
     private $mockDependency;
+    /** @var FixtureFormatter */
+    private $fixtureFormatter;
 
     public function setUp(): void
     {
         $this->fixtureArgumentsFormatter = $this->getMockBuilder(FixtureArgumentsFormatter::class)->disableOriginalConstructor()->getMock();
         $this->fixture = $this->getMockBuilder(Fixture::class)->disableOriginalConstructor()->getMock();
         $this->mockDependency = $this->createMock(MockDependency::class);
+
+        $this->fixtureFormatter = new FixtureFormatter($this->fixtureArgumentsFormatter);
     }
 
     public function testFormat(): void
     {
         $this->fixtureArgumentsFormatter->method('format')->willReturn('formatted');
         $this->fixture->method('getClassName')->willReturn('ClassName');
-        $fixture = new FixtureFormatter($this->fixtureArgumentsFormatter);
-        $result = $fixture->format($this->fixture);
+        $result = $this->fixtureFormatter->format($this->fixture);
 
         $this->assertSame(
-            '$fixture = new ClassName(formatted);',
+            '$this->className = new ClassName(formatted);',
+            $result
+        );
+    }
+
+    public function testFormatProperty(): void
+    {
+        $this->fixture->method('getClassName')->willReturn('ClassName');
+        $result = $this->fixtureFormatter->formatProperty($this->fixture);
+
+        $this->assertSame(
+            '    /** @var ClassName $fixture */' . PHP_EOL . '    private $fixture;',
             $result
         );
     }

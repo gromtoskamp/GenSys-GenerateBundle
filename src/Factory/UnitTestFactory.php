@@ -25,6 +25,7 @@ class UnitTestFactory
      * UnitTestFactory constructor.
      * @param MockDependencyCollectionFactory $mockDependencyCollectionFactory
      * @param TestMethodFactory $testMethodFactory
+     * @param FixtureFactory $fixtureFactory
      * @param ClassService $classService
      */
     public function __construct(
@@ -47,11 +48,12 @@ class UnitTestFactory
     public function create(ReflectionClass $reflectionClass): UnitTest
     {
         $mockDependencyCollection = $this->mockDependencyCollectionFactory->createFromReflectionClass($reflectionClass);
+        $fixture = $this->fixtureFactory->create($reflectionClass, $mockDependencyCollection);
 
         $testMethods = [];
         $reflectionMethods = $this->classService->getPublicNonMagicMethods($reflectionClass);
         foreach ($reflectionMethods as $reflectionMethod) {
-            $testMethods[] = $this->testMethodFactory->createFromReflectionMethod($reflectionMethod, $mockDependencyCollection);
+            $testMethods[] = $this->testMethodFactory->createFromReflectionMethod($reflectionMethod);
         }
 
         return new UnitTest(
@@ -59,7 +61,8 @@ class UnitTestFactory
             $reflectionClass->getShortName() . 'Test',
             $reflectionClass->getName(),
             $mockDependencyCollection->getAll(),
-            $testMethods
+            $testMethods,
+            $fixture
         );
     }
 

@@ -38,16 +38,6 @@ class TestMethodFormatter
      * @param TestMethod $testMethod
      * @return string
      */
-    public function formatFixture(TestMethod $testMethod): string
-    {
-        $fixture = $testMethod->getFixture();
-        return $this->fixtureFormatter->format($fixture) . PHP_EOL;
-    }
-
-    /**
-     * @param TestMethod $testMethod
-     * @return string
-     */
     public function formatResult(TestMethod $testMethod): string
     {
         $formatted = '';
@@ -56,8 +46,8 @@ class TestMethodFormatter
         }
 
         $originalName = $testMethod->getOriginalName();
-        $methodParameters = $testMethod->getFixture()->getMethodParameters();
+        $methodParameters = $testMethod->getMethodParameters();
 
-        return sprintf($formatted . '$fixture->%s(%s);', $originalName, $methodParameters) . PHP_EOL;
+        return sprintf($formatted . '$this->fixture->%s(%s);', $originalName, $methodParameters) . PHP_EOL;
     }
 }
