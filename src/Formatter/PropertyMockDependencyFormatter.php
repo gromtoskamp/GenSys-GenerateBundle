@@ -4,28 +4,19 @@ namespace GenSys\GenerateBundle\Formatter;
 
 use GenSys\GenerateBundle\Model\MockDependency;
 
-class PropertyMockDependencyFormatter
+class PropertyMockDependencyFormatter implements MockDependencyFormatter
 {
     /**
-     * @param MockDependency[] $mockDependencies
+     * @param MockDependency $mockDependency
      * @return string
      */
-    public function format(iterable $mockDependencies): string
+    public function format(MockDependency $mockDependency): string
     {
-        if (empty($mockDependencies)) {
-            return '';
-        }
+        $className = $mockDependency->getClassName();
+        $propertyName = $mockDependency->getPropertyName();
 
-        $formatted = [];
-        foreach ($mockDependencies as $mockDependency) {
-            $className = $mockDependency->getClassName();
-            $propertyName = $mockDependency->getPropertyName();
-            $rows = [];
-            $rows[] = "    /** @var $className|MockObject */";
-            $rows[] = "    public $$propertyName;";
-            $formatted[] = implode(PHP_EOL, $rows);
-        }
-
-        return implode(PHP_EOL . PHP_EOL, $formatted);
+        $rows[] = "    /** @var $className|MockObject */";
+        $rows[] = "    public $$propertyName;";
+        return implode(PHP_EOL, $rows);
     }
 }

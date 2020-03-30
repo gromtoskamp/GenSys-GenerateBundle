@@ -12,19 +12,22 @@ class ConstructorArgumentsFormatterTest extends TestCase
 {
     /** @var ConstructorArgumentFormatter|MockObject */
     public $constructorArgumentFormatter;
+    /** @var ConstructorArgumentsFormatter */
+    private $fixture;
 
 
     public function setUp(): void
     {
         $this->constructorArgumentFormatter = $this->getMockBuilder(ConstructorArgumentFormatter::class)->disableOriginalConstructor()->getMock();
+        $this->fixture = new ConstructorArgumentsFormatter($this->constructorArgumentFormatter);
     }
 
     public function testFormat(): void
     {
         $this->constructorArgumentFormatter->method('format')->willReturn('');
-        $fixture = new ConstructorArgumentsFormatter($this->constructorArgumentFormatter);
+
         $emptyPropertyType = new PropertyType('', '');
-        $result = $fixture->format([$emptyPropertyType, $emptyPropertyType, $emptyPropertyType]);
+        $result = $this->fixture->format([$emptyPropertyType, $emptyPropertyType, $emptyPropertyType]);
 
         $this->assertSame(
             ",\n            ,\n            ",

@@ -4,10 +4,10 @@ namespace Tests\Unit\GenSys\GenerateBundle\Formatter;
 
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
-use GenSys\GenerateBundle\Formatter\InitMockDependencyFormatter;
+use GenSys\GenerateBundle\Formatter\UseMockDependencyFormatter;
 use GenSys\GenerateBundle\Model\MockDependency;
 
-class InitMockDependencyFormatterTest extends TestCase
+class UseMockDependencyFormatterTest extends TestCase
 {
     /** @var MockDependency|MockObject */
     public $mockDependency;
@@ -19,13 +19,12 @@ class InitMockDependencyFormatterTest extends TestCase
 
     public function testFormat(): void
     {
-        $this->mockDependency->method('getPropertyName')->willReturn('propertyName');
-        $this->mockDependency->method('getClassName')->willReturn('ClassName');
-        $fixture = new InitMockDependencyFormatter();
+        $this->mockDependency->method('getFullyQualifiedClassName')->willReturn('fullyQualifiedClassName');
+        $fixture = new UseMockDependencyFormatter();
         $result = $fixture->format($this->mockDependency);
 
         $this->assertSame(
-            '$this->propertyName = $this->createMock(ClassName::class);',
+            'use fullyQualifiedClassName;',
             $result
         );
     }

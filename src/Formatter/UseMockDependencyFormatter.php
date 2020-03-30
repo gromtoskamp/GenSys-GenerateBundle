@@ -4,7 +4,7 @@ namespace GenSys\GenerateBundle\Formatter;
 
 use GenSys\GenerateBundle\Model\MockDependency;
 
-class InitMockDependencyFormatter implements MockDependencyFormatter
+class UseMockDependencyFormatter
 {
     /**
      * @param MockDependency $mockDependency
@@ -12,8 +12,6 @@ class InitMockDependencyFormatter implements MockDependencyFormatter
      */
     public function format(MockDependency $mockDependency): string
     {
-        $propertyName = $mockDependency->getPropertyName();
-        $className = $mockDependency->getClassName();
-        return "\$this->$propertyName = \$this->createMock($className::class);";
+        return 'use ' . $mockDependency->getFullyQualifiedClassName() . ';';
     }
 }

@@ -16,6 +16,8 @@ class UnitTestFactory
     private $mockDependencyCollectionFactory;
     /** @var TestMethodFactory */
     private $testMethodFactory;
+    /** @var FixtureFactory */
+    private $fixtureFactory;
     /** @var ClassService */
     private $classService;
 
@@ -28,10 +30,12 @@ class UnitTestFactory
     public function __construct(
         MockDependencyCollectionFactory $mockDependencyCollectionFactory,
         TestMethodFactory $testMethodFactory,
+        FixtureFactory $fixtureFactory,
         ClassService $classService
     ) {
         $this->mockDependencyCollectionFactory = $mockDependencyCollectionFactory;
         $this->testMethodFactory = $testMethodFactory;
+        $this->fixtureFactory = $fixtureFactory;
         $this->classService = $classService;
     }
 

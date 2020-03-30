@@ -8,25 +8,25 @@ class UnitTestFormatter
 {
     /** @var UseMockDependenciesFormatter */
     private $useMockDependenciesFormatter;
-    /** @var PropertyMockDependencyFormatter */
-    private $propertyMockDependencyFormatter;
-    /** @var InitMockDependencyFormatter */
-    private $initMockDependencyFormatter;
+    /** @var PropertyMockDependenciesFormatter */
+    private $propertyMockDependenciesFormatter;
+    /** @var InitMockDependenciesFormatter */
+    private $initMockDependenciesFormatter;
 
     /**
      * UnitTestFormatter constructor.
      * @param UseMockDependenciesFormatter $useMockDependenciesFormatter
-     * @param PropertyMockDependencyFormatter $propertyMockDependencyFormatter
-     * @param InitMockDependencyFormatter $initMockDependencyFormatter
+     * @param PropertyMockDependenciesFormatter $propertyMockDependenciesFormatter
+     * @param InitMockDependenciesFormatter $initMockDependenciesFormatter
      */
     public function __construct(
         UseMockDependenciesFormatter $useMockDependenciesFormatter,
-        PropertyMockDependencyFormatter $propertyMockDependencyFormatter,
-        InitMockDependencyFormatter $initMockDependencyFormatter
+        PropertyMockDependenciesFormatter $propertyMockDependenciesFormatter,
+        InitMockDependenciesFormatter $initMockDependenciesFormatter
     ) {
         $this->useMockDependenciesFormatter = $useMockDependenciesFormatter;
-        $this->propertyMockDependencyFormatter = $propertyMockDependencyFormatter;
-        $this->initMockDependencyFormatter = $initMockDependencyFormatter;
+        $this->propertyMockDependenciesFormatter = $propertyMockDependenciesFormatter;
+        $this->initMockDependenciesFormatter = $initMockDependenciesFormatter;
     }
 
     /**
@@ -46,7 +46,7 @@ class UnitTestFormatter
     public function formatPropertyMockDependencies(UnitTest $unitTest): string
     {
         $mockDependencies = $unitTest->getMockDependencies();
-        return $this->propertyMockDependencyFormatter->format($mockDependencies) . PHP_EOL;
+        return $this->propertyMockDependenciesFormatter->format($mockDependencies) . PHP_EOL;
     }
 
     /**
@@ -56,6 +56,6 @@ class UnitTestFormatter
     public function formatInitMockDependencies(UnitTest $unitTest): string
     {
         $mockDependencies = $unitTest->getMockDependencies();
-        return $this->initMockDependencyFormatter->format($mockDependencies) . PHP_EOL;
+        return $this->initMockDependenciesFormatter->format($mockDependencies) . PHP_EOL;
     }
 }
