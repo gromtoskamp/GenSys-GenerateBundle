@@ -2,6 +2,9 @@
 
 namespace GenSys\GenerateBundle\Formatter;
 
+use GenSys\GenerateBundle\Formatter\MockDependencies\InitMockDependenciesFormatter;
+use GenSys\GenerateBundle\Formatter\MockDependencies\PropertyMockDependenciesFormatter;
+use GenSys\GenerateBundle\Formatter\MockDependencies\UseMockDependenciesFormatter;
 use GenSys\GenerateBundle\Model\UnitTest;
 
 class UnitTestFormatter

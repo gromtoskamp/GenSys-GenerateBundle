@@ -1,13 +1,13 @@
 <?php
 
-namespace Tests\Unit\GenSys\GenerateBundle\Formatter;
+namespace Tests\Unit\GenSys\GenerateBundle\Formatter\MockDependency;
 
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
-use GenSys\GenerateBundle\Formatter\InitMockDependencyFormatter;
+use GenSys\GenerateBundle\Formatter\MockDependency\FixtureArgumentFormatter;
 use GenSys\GenerateBundle\Model\MockDependency;
 
-class InitMockDependencyFormatterTest extends TestCase
+class FixtureArgumentFormatterTest extends TestCase
 {
     /** @var MockDependency|MockObject */
     public $mockDependency;
@@ -20,13 +20,13 @@ class InitMockDependencyFormatterTest extends TestCase
     public function testFormat(): void
     {
         $this->mockDependency->method('getPropertyName')->willReturn('propertyName');
-        $this->mockDependency->method('getClassName')->willReturn('ClassName');
-        $fixture = new InitMockDependencyFormatter();
+        $fixture = new FixtureArgumentFormatter();
         $result = $fixture->format($this->mockDependency);
 
         $this->assertSame(
-            '$this->propertyName = $this->createMock(ClassName::class);',
+            '$this->propertyName',
             $result
         );
     }
+
 }

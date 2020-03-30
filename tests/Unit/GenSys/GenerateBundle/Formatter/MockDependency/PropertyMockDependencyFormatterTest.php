@@ -1,10 +1,10 @@
 <?php
 
-namespace Tests\Unit\GenSys\GenerateBundle\Formatter;
+namespace Tests\Unit\GenSys\GenerateBundle\Formatter\MockDependency;
 
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
-use GenSys\GenerateBundle\Formatter\PropertyMockDependencyFormatter;
+use GenSys\GenerateBundle\Formatter\MockDependency\PropertyMockDependencyFormatter;
 use GenSys\GenerateBundle\Model\MockDependency;
 
 class PropertyMockDependencyFormatterTest extends TestCase

@@ -1,10 +1,12 @@
 <?php
 
-namespace GenSys\GenerateBundle\Formatter;
+namespace GenSys\GenerateBundle\Formatter\MockDependencies;
 
+use GenSys\GenerateBundle\Formatter\MockDependenciesFormatter;
+use GenSys\GenerateBundle\Formatter\MockDependency\PropertyMockDependencyFormatter;
 use GenSys\GenerateBundle\Model\MockDependency;
 
-class PropertyMockDependenciesFormatter
+class PropertyMockDependenciesFormatter implements MockDependenciesFormatter
 {
     /** @var PropertyMockDependencyFormatter */
     private $propertyMockDependencyFormatter;

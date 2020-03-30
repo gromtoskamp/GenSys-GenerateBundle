@@ -1,10 +1,10 @@
 <?php
 
-namespace Tests\Unit\GenSys\GenerateBundle\Formatter;
+namespace Tests\Unit\GenSys\GenerateBundle\Formatter\PropertyType;
 
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
-use GenSys\GenerateBundle\Formatter\ConstructorArgumentFormatter;
+use GenSys\GenerateBundle\Formatter\PropertyType\ConstructorArgumentFormatter;
 use GenSys\GenerateBundle\Model\PropertyType;
 
 class ConstructorArgumentFormatterTest extends TestCase

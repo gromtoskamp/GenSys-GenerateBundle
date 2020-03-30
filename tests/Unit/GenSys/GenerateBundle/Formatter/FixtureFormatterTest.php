@@ -6,7 +6,7 @@ use GenSys\GenerateBundle\Model\MockDependency;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use GenSys\GenerateBundle\Formatter\FixtureFormatter;
-use GenSys\GenerateBundle\Formatter\FixtureArgumentsFormatter;
+use GenSys\GenerateBundle\Formatter\MockDependencies\FixtureArgumentsFormatter;
 use GenSys\GenerateBundle\Model\Fixture;
 
 class FixtureFormatterTest extends TestCase

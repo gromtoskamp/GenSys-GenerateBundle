@@ -1,10 +1,11 @@
 <?php
 
-namespace GenSys\GenerateBundle\Formatter;
+namespace GenSys\GenerateBundle\Formatter\PropertyType;
 
+use GenSys\GenerateBundle\Formatter\PropertyTypeFormatter;
 use GenSys\GenerateBundle\Model\PropertyType;
 
-class InitArgumentFormatter
+class InitArgumentFormatter implements PropertyTypeFormatter
 {
     /**
      * @param PropertyType $propertyType

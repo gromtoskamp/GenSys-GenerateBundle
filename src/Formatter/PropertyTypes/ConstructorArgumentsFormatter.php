@@ -1,10 +1,12 @@
 <?php /** @noinspection PhpParamsInspection */
 
-namespace GenSys\GenerateBundle\Formatter;
+namespace GenSys\GenerateBundle\Formatter\PropertyTypes;
 
+use GenSys\GenerateBundle\Formatter\PropertyType\ConstructorArgumentFormatter;
+use GenSys\GenerateBundle\Formatter\PropertyTypesFormatter;
 use GenSys\GenerateBundle\Model\PropertyType;
 
-class ConstructorArgumentsFormatter
+class ConstructorArgumentsFormatter implements PropertyTypesFormatter
 {
     /** @var string  */
     private const INDENT = '    ';

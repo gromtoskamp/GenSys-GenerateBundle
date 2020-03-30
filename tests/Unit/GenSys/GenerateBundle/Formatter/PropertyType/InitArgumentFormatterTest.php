@@ -1,9 +1,9 @@
 <?php
 
-namespace Tests\Unit\GenSys\GenerateBundle\Formatter;
+namespace Tests\Unit\GenSys\GenerateBundle\Formatter\PropertyType;
 
 use PHPUnit\Framework\TestCase;
-use GenSys\GenerateBundle\Formatter\InitArgumentFormatter;
+use GenSys\GenerateBundle\Formatter\PropertyType\InitArgumentFormatter;
 use GenSys\GenerateBundle\Model\PropertyType;
 
 class InitArgumentFormatterTest extends TestCase

@@ -1,12 +1,12 @@
 <?php
 
-namespace Tests\Unit\GenSys\GenerateBundle\Formatter;
+namespace Tests\Unit\GenSys\GenerateBundle\Formatter\MockDependencies;
 
 use GenSys\GenerateBundle\Model\MockDependency;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
-use GenSys\GenerateBundle\Formatter\UseMockDependenciesFormatter;
-use GenSys\GenerateBundle\Formatter\UseMockDependencyFormatter;
+use GenSys\GenerateBundle\Formatter\MockDependencies\UseMockDependenciesFormatter;
+use GenSys\GenerateBundle\Formatter\MockDependency\UseMockDependencyFormatter;
 
 class UseMockDependenciesFormatterTest extends TestCase
 {

@@ -5,9 +5,9 @@ namespace Tests\Unit\GenSys\GenerateBundle\Formatter;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use GenSys\GenerateBundle\Formatter\UnitTestFormatter;
-use GenSys\GenerateBundle\Formatter\UseMockDependenciesFormatter;
-use GenSys\GenerateBundle\Formatter\PropertyMockDependenciesFormatter;
-use GenSys\GenerateBundle\Formatter\InitMockDependenciesFormatter;
+use GenSys\GenerateBundle\Formatter\MockDependencies\UseMockDependenciesFormatter;
+use GenSys\GenerateBundle\Formatter\MockDependencies\PropertyMockDependenciesFormatter;
+use GenSys\GenerateBundle\Formatter\MockDependencies\InitMockDependenciesFormatter;
 use GenSys\GenerateBundle\Model\UnitTest;
 
 class UnitTestFormatterTest extends TestCase

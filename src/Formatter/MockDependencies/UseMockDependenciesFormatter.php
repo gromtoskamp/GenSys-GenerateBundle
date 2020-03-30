@@ -1,10 +1,12 @@
 <?php
 
-namespace GenSys\GenerateBundle\Formatter;
+namespace GenSys\GenerateBundle\Formatter\MockDependencies;
 
+use GenSys\GenerateBundle\Formatter\MockDependenciesFormatter;
+use GenSys\GenerateBundle\Formatter\MockDependency\UseMockDependencyFormatter;
 use GenSys\GenerateBundle\Model\MockDependency;
 
-class UseMockDependenciesFormatter
+class UseMockDependenciesFormatter implements MockDependenciesFormatter
 {
     /** @var UseMockDependencyFormatter */
     private $useMockDependencyFormatter;

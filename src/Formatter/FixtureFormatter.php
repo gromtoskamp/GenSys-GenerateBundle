@@ -2,6 +2,7 @@
 
 namespace GenSys\GenerateBundle\Formatter;
 
+use GenSys\GenerateBundle\Formatter\MockDependencies\FixtureArgumentsFormatter;
 use GenSys\GenerateBundle\Model\Fixture;
 
 class FixtureFormatter

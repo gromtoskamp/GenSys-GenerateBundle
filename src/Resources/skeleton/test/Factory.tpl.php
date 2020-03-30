@@ -1,7 +1,7 @@
 <?php
 
-use GenSys\GenerateBundle\Formatter\ConstructorArgumentsFormatter;
-use GenSys\GenerateBundle\Formatter\InitArgumentsFormatter;
+use GenSys\GenerateBundle\Formatter\PropertyTypes\ConstructorArgumentsFormatter;
+use GenSys\GenerateBundle\Formatter\PropertyTypes\InitArgumentsFormatter;
 use GenSys\GenerateBundle\Model\Factory;
 
 /** @var Factory $factory */

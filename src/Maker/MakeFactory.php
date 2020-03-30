@@ -3,8 +3,8 @@
 namespace GenSys\GenerateBundle\Maker;
 
 use GenSys\GenerateBundle\Factory\FactoryFactory;
-use GenSys\GenerateBundle\Formatter\ConstructorArgumentsFormatter;
-use GenSys\GenerateBundle\Formatter\InitArgumentsFormatter;
+use GenSys\GenerateBundle\Formatter\PropertyTypes\ConstructorArgumentsFormatter;
+use GenSys\GenerateBundle\Formatter\PropertyTypes\InitArgumentsFormatter;
 use GenSys\GenerateBundle\Service\FileService;
 use ReflectionClass;
 use Symfony\Bundle\MakerBundle\ConsoleStyle;
