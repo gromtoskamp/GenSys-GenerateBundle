@@ -10,18 +10,23 @@ class MethodCall
     private $subject;
     /** @var string */
     private $methodName;
+    /** @var string */
+    private $returnType;
 
     /**
      * MethodCall constructor.
      * @param string $subject
      * @param string $methodName
+     * @param string $returnType
      */
     public function __construct(
         string $subject,
-        string $methodName
+        string $methodName,
+        string $returnType
     ) {
         $this->subject = $subject;
         $this->methodName = $methodName;
+        $this->returnType = $returnType;
     }
 
     /**
@@ -40,4 +45,11 @@ class MethodCall
         return $this->methodName;
     }
 
+    /**
+     * @return string
+     */
+    public function getReturnType(): string
+    {
+        return $this->returnType;
+    }
 }

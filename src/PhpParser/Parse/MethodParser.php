@@ -28,9 +28,9 @@ class MethodParser
 
     /**
      * @param ReflectionMethod $reflectionMethod
-     * @return array|null
+     * @return array
      */
-    public function parse(ReflectionMethod $reflectionMethod): ?array
+    public function parse(ReflectionMethod $reflectionMethod): array
     {
         $body = $this->getBody($reflectionMethod);
         try {

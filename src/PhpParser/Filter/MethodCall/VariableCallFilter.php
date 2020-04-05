@@ -13,7 +13,7 @@ class VariableCallFilter implements MethodCallFilter
      * @param MethodCall[] $methodCalls
      * @return MethodCall[]
      */
-    public function filter(iterable $methodCalls): iterable
+    public function filter(iterable $methodCalls): array
     {
         $variableCalls = [];
         foreach ($methodCalls as $methodCall) {

@@ -6,6 +6,15 @@ use GenSys\GenerateBundle\Model\MethodCall;
 
 class TestMethodCallFormatter
 {
+    /** @var ReturnTypeFormatter */
+    private $returnTypeFormatter;
+
+    public function __construct(
+        ReturnTypeFormatter $returnTypeFormatter
+    ) {
+        $this->returnTypeFormatter = $returnTypeFormatter;
+    }
+
     /**
      * @param MethodCall $methodCall
      * @return string
@@ -14,7 +23,8 @@ class TestMethodCallFormatter
     {
         $subject = $methodCall->getSubject();
         $methodName = $methodCall->getMethodName();
+        $formattedReturnType = $this->returnTypeFormatter->format($methodCall->getReturnType());
 
-        return sprintf('$this->%s->method(\'%s\')->willReturn(null);', $subject, $methodName);
+        return sprintf('$this->%s->method(\'%s\')->willReturn(%s);', $subject, $methodName, $formattedReturnType);
     }
 }

@@ -1,4 +1,4 @@
-<?php
+<?php /** @noinspection PhpExpressionResultUnusedInspection */
 
 namespace GenSys\GenerateBundle\Resources\Dummy\Service;
 
@@ -47,6 +47,21 @@ class DummyServiceWithDependency
     public function addToProperty(int $addTo): int
     {
         return $this->privateAddToProperty($addTo);
+    }
+
+    public function getDummyObjectDummyObject()
+    {
+        return $this->dummyObjectA->getDummyObject();
+    }
+
+    public function getString()
+    {
+        return $this->dummyObjectA->getDummyString();
+    }
+
+    public function getBool()
+    {
+        return $this->dummyObjectA->isDummyBool();
     }
 
     private function privateAddToDummyValue(DummyObject $dummyObjectE, int $addTo): int

@@ -41,7 +41,8 @@ class MethodMapper
                 $propertyName = $propertyAssignment->expr->name;
                 if ($propertyName === $parameter->getName()) {
                     $shortName = $parameter->getClass()->getShortName();
-                    $propertyTypes[] = $this->propertyTypeFactory->create($propertyName, $shortName);
+                    $fullyQualifiedName = $parameter->getClass()->getName();
+                    $propertyTypes[] = $this->propertyTypeFactory->create($propertyName, $shortName, $fullyQualifiedName);
                 }
             }
         }

@@ -9,10 +9,11 @@ class PropertyTypeFactory
     /**
      * @param string $propertyName
      * @param string $typeName
+     * @param string $fullyQualifiedName
      * @return PropertyType
      */
-    public function create(string $propertyName, string $typeName): PropertyType
+    public function create(string $propertyName, string $typeName, string $fullyQualifiedName): PropertyType
     {
-        return new PropertyType($propertyName, $typeName);
+        return new PropertyType($propertyName, $typeName, $fullyQualifiedName);
     }
 }

@@ -40,12 +40,17 @@ class MethodCallFactory
         $constructorMap = $this->getConstructorMap($reflectionMethod);
 
         $methodCalls = [];
+
         foreach ($propertyCalls as $propertyCall) {
             foreach ($constructorMap as $propertyType) {
                 if ($propertyCall->var->name->name === $propertyType->getPropertyName()) {
+                    $calledReflectionMethod = new ReflectionMethod($propertyType->getFullyQualifiedName(), $propertyCall->name->name);
+                    $returnType = $calledReflectionMethod->getReturnType();
+                    $returnTypeName = $returnType ? $returnType->getName() : 'void';
                     $methodCalls[] = new MethodCall(
                         lcfirst($propertyType->getTypeName()),
-                        $propertyCall->name->name
+                        $propertyCall->name->name,
+                        $returnTypeName
                     );
                 }
             }
@@ -56,7 +61,14 @@ class MethodCallFactory
             $reflectionParameters = $reflectionMethod->getParameters();
             foreach ($reflectionParameters as $reflectionParameter) {
                 if ($reflectionParameter->getName() === $parameterCall->var->name) {
-                    $methodCalls[] = new MethodCall(lcfirst($reflectionParameter->getClass()->getShortName()), $parameterCall->name->name);
+                    $calledReflectionMethod = new ReflectionMethod($reflectionParameter->getClass()->getName(), $parameterCall->name->name);
+                    $returnType = $calledReflectionMethod->getReturnType();
+                    $returnTypeName = $returnType ? $returnType->getName() : 'void';
+                    $methodCalls[] = new MethodCall(
+                        lcfirst($reflectionParameter->getClass()->getShortName()),
+                        $parameterCall->name->name,
+                        $returnTypeName
+                    );
                 }
             }
         }

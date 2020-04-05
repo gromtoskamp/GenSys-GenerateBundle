@@ -37,7 +37,7 @@ class FixtureFormatterTest extends TestCase
         $result = $this->fixtureFormatter->format($this->fixture);
 
         $this->assertSame(
-            '$this->className = new ClassName(formatted);',
+            '$this->fixture = new ClassName(formatted);',
             $result
         );
     }

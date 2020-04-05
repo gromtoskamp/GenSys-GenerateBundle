@@ -3,12 +3,24 @@
 namespace GenSys\GenerateBundle\Factory;
 
 use GenSys\GenerateBundle\Model\Collection\MockDependencyCollection;
-use GenSys\GenerateBundle\Model\MockDependency;
 use ReflectionClass;
 use ReflectionMethod;
 
 class MockDependencyCollectionFactory
 {
+    /** @var MockDependencyFactory */
+    private $mockDependencyFactory;
+
+    /**
+     * MockDependencyCollectionFactory constructor.
+     * @param MockDependencyFactory $mockDependencyFactory
+     */
+    public function __construct(
+        MockDependencyFactory $mockDependencyFactory
+    ) {
+        $this->mockDependencyFactory = $mockDependencyFactory;
+    }
+
     /**
      * @param ReflectionClass $reflectionClass
      * @return MockDependencyCollection
@@ -36,7 +48,8 @@ class MockDependencyCollectionFactory
                 continue;
             }
 
-            $mockDependencyCollection->add(new MockDependency($parameter), $reflectionMethod);
+            $mockDependency = $this->mockDependencyFactory->create($parameter);
+            $mockDependencyCollection->add($mockDependency, $reflectionMethod);
         }
 
         return $mockDependencyCollection;

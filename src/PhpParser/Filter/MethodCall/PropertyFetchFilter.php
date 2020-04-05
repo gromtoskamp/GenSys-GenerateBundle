@@ -12,7 +12,7 @@ class PropertyFetchFilter implements MethodCallFilter
      * @param MethodCall[] $methodCalls
      * @return MethodCall[]
      */
-    public function filter(iterable $methodCalls): iterable
+    public function filter(iterable $methodCalls): array
     {
         $propertyFetches = [];
         foreach ($methodCalls as $methodCall) {

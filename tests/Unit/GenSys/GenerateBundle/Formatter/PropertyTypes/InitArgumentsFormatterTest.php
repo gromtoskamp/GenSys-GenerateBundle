@@ -26,9 +26,9 @@ class InitArgumentsFormatterTest extends TestCase
         );
 
         $properties = [
-            new PropertyType('', ''),
-            new PropertyType('', ''),
-            new PropertyType('', '')
+            new PropertyType('', '', ''),
+            new PropertyType('', '', ''),
+            new PropertyType('', '', '')
         ];
 
         $result = $fixture->format($properties);

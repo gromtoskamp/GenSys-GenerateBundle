@@ -22,10 +22,10 @@ class MethodCallSorterTest extends TestCase
      */
     public function __construct(
     ) {
-        $this->methodCallAA = new MethodCall('testSubjectA','methodNameA');
-        $this->methodCallAB = new MethodCall('testSubjectA','methodNameB');
-        $this->methodCallBA = new MethodCall('testSubjectB','methodNameA');
-        $this->methodCallBB = new MethodCall('testSubjectB','methodNameB');
+        $this->methodCallAA = new MethodCall('testSubjectA','methodNameA', 'string');
+        $this->methodCallAB = new MethodCall('testSubjectA','methodNameB', 'string');
+        $this->methodCallBA = new MethodCall('testSubjectB','methodNameA', 'string');
+        $this->methodCallBB = new MethodCall('testSubjectB','methodNameB', 'string');
         parent::__construct();
     }
 

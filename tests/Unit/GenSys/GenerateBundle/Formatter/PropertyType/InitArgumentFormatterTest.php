@@ -12,7 +12,7 @@ class InitArgumentFormatterTest extends TestCase
     {
         $fixture = new InitArgumentFormatter();
         
-        $propertyType = new PropertyType('testInt', 'int');
+        $propertyType = new PropertyType('testInt', 'int', '');
         $result = $fixture->format($propertyType);
 
         $this->assertSame(
@@ -25,7 +25,7 @@ class InitArgumentFormatterTest extends TestCase
     {
         $fixture = new InitArgumentFormatter();
 
-        $propertyType = new PropertyType('testString', 'string');
+        $propertyType = new PropertyType('testString', 'string', '');
         $result = $fixture->format($propertyType);
 
         $this->assertSame(
@@ -38,7 +38,7 @@ class InitArgumentFormatterTest extends TestCase
     {
         $fixture = new InitArgumentFormatter();
 
-        $propertyType = new PropertyType('testBool', 'bool');
+        $propertyType = new PropertyType('testBool', 'bool', '');
         $result = $fixture->format($propertyType);
 
         $this->assertSame(
@@ -51,7 +51,7 @@ class InitArgumentFormatterTest extends TestCase
     {
         $fixture = new InitArgumentFormatter();
 
-        $propertyType = new PropertyType('testClass', 'ClassName');
+        $propertyType = new PropertyType('testClass', 'ClassName', 'Namespace/ClassName');
         $result = $fixture->format($propertyType);
 
         $this->assertSame(

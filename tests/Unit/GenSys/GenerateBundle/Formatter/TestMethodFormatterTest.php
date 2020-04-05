@@ -46,12 +46,11 @@ class TestMethodFormatterTest extends TestCase
     {
         $this->testMethod->method('isReturnsVoid')->willReturn(true);
         $this->testMethod->method('getOriginalName')->willReturn('originalName');
-        $this->testMethod->method('getFixture')->willReturn($this->fixture);
         $fixture = new TestMethodFormatter($this->testMethodCallsFormatter, $this->fixtureFormatter);
         $result = $fixture->formatResult($this->testMethod);
 
         $this->assertSame(
-            '$fixture->originalName();' . PHP_EOL,
+            '$this->fixture->originalName();' . PHP_EOL,
             $result
         );
     }
@@ -60,12 +59,11 @@ class TestMethodFormatterTest extends TestCase
     {
         $this->testMethod->method('isReturnsVoid')->willReturn(false);
         $this->testMethod->method('getOriginalName')->willReturn('originalName');
-        $this->testMethod->method('getFixture')->willReturn($this->fixture);
         $fixture = new TestMethodFormatter($this->testMethodCallsFormatter, $this->fixtureFormatter);
         $result = $fixture->formatResult($this->testMethod);
 
         $this->assertSame(
-            '$result = $fixture->originalName();' . PHP_EOL,
+            '$result = $this->fixture->originalName();' . PHP_EOL,
             $result
         );
     }

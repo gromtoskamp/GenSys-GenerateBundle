@@ -8,7 +8,6 @@ use GenSys\GenerateBundle\PhpParser\Filter\MethodCall\VariableCallFilter;
 use GenSys\GenerateBundle\PhpParser\Filter\Node\MethodCallFilter;
 use GenSys\GenerateBundle\PhpParser\Filter\Node\PropertyAssignmentFilter;
 use GenSys\GenerateBundle\PhpParser\Parse\MethodParser;
-use PhpParser\Node;
 use PhpParser\Node\Expr\MethodCall;
 use ReflectionException;
 use ReflectionMethod;
@@ -154,7 +153,7 @@ class MethodService
 
     /**
      * @param ReflectionMethod $reflectionMethod
-     * @return Node[]
+     * @return MethodCall[]
      */
     private function getMethodCalls(ReflectionMethod $reflectionMethod): array
     {

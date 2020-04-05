@@ -26,7 +26,7 @@ class ConstructorArgumentsFormatterTest extends TestCase
     {
         $this->constructorArgumentFormatter->method('format')->willReturn('');
 
-        $emptyPropertyType = new PropertyType('', '');
+        $emptyPropertyType = new PropertyType('', '', '');
         $result = $this->fixture->format([$emptyPropertyType, $emptyPropertyType, $emptyPropertyType]);
 
         $this->assertSame(

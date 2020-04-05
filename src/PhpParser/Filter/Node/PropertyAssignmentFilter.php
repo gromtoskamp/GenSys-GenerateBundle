@@ -13,7 +13,7 @@ class PropertyAssignmentFilter extends AbstractNodeFilter
      * @param Node[] $nodes
      * @return Node[]
      */
-    public function filter(iterable $nodes): iterable
+    public function filter(iterable $nodes): array
     {
         return $this->nodeFinder->find($nodes, static function (Node $node) {
             return $node instanceof Assign

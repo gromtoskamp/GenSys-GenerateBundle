@@ -2,21 +2,29 @@
 
 namespace GenSys\GenerateBundle\Model;
 
-use ReflectionParameter;
-
 class MockDependency
 {
-    /** @var ReflectionParameter */
-    private $parameter;
+    /** @var string */
+    private $className;
+    /** @var string */
+    private $propertyName;
+    /** @var string */
+    private $fullyQualifiedClassName;
 
     /**
      * MockDependency constructor.
-     * @param ReflectionParameter $parameter
+     * @param string $className
+     * @param string $propertyName
+     * @param string $fullyQualifiedClassName
      */
     public function __construct(
-        ReflectionParameter $parameter
+        string $className,
+        string $propertyName,
+        string $fullyQualifiedClassName
     ) {
-        $this->parameter = $parameter;
+        $this->className = $className;
+        $this->propertyName = $propertyName;
+        $this->fullyQualifiedClassName = $fullyQualifiedClassName;
     }
 
     /**
@@ -24,7 +32,7 @@ class MockDependency
      */
     public function getClassName(): string
     {
-        return $this->parameter->getClass()->getShortName();
+        return $this->className;
     }
 
     /**
@@ -32,7 +40,7 @@ class MockDependency
      */
     public function getPropertyName(): string
     {
-        return lcfirst($this->getClassName());
+        return $this->propertyName;
     }
 
     /**
@@ -40,6 +48,6 @@ class MockDependency
      */
     public function getFullyQualifiedClassName(): string
     {
-        return $this->parameter->getClass()->getName();
+        return $this->fullyQualifiedClassName;
     }
 }
